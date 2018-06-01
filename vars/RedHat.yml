@@ -21,7 +21,7 @@ ma_packages:
 #    config:
 #     - { section: "defaults", key: "inventory", value: "/home/admin/.ansible/hosts" }
 #     - { section: "defaults", key: "roles_path", value: "/home/admin/.ansible/roles" }
-#     - { section: "defaults", key: "remote_tmp", value: "/home/admin/.ansible/tmp" }
+#     - { section: "defaults", key: "remote_tmp", value: "/tmp" }
 #     - { section: "defaults", key: "timeout", value: "30" }
 #     - { section: "defaults", key: "remote_user", value: "admin" }
 #     - { section: "defaults", key: "log_path", value: "/var/log/ansible.log" }
