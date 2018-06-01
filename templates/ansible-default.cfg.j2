@@ -1,0 +1,74 @@
+# {{ ansible_managed }}
+# template: {{ item.template }}
+
+[defaults]
+{% for conf in item.config %}
+{% if conf.section == "defaults" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[inventory]
+{% for conf in item.config %}
+{% if conf.section == "inventory" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[privilege_escalation]
+{% for conf in item.config %}
+{% if conf.section == "privilege_escalation" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[paramiko_connection]
+{% for conf in item.config %}
+{% if conf.section == "paramiko_connection" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[ssh_connection]
+{% for conf in item.config %}
+{% if conf.section == "ssh_connection" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[persistent_connection]
+{% for conf in item.config %}
+{% if conf.section == "persistent_connection" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[accelerate]
+{% for conf in item.config %}
+{% if conf.section == "accelerate" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[selinux]
+{% for conf in item.config %}
+{% if conf.section == "selinux" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[colors]
+{% for conf in item.config %}
+{% if conf.section == "colors" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+[diff]
+{% for conf in item.config %}
+{% if conf.section == "diff" %}
+{{ conf.key }} = {{ conf.value }}
+{% endif %}
+{% endfor %}
+
+# EOF
