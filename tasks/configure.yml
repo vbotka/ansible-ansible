@@ -1,12 +1,12 @@
 ---
 
 - block:
-    - name: Create directories for Ansible configuration
+    - name: "configure: Create directories for Ansible configuration"
       file:
         dest: "{{ item.path | dirname }}"
-        state: directory
+        state: "directory"
       with_items: "{{ ma_config }}"
-    - name: Create Ansible configuration from template
+    - name: "configure: Create Ansible configuration from template"
       template:
         src: "{{ item.template }}"
         dest: "{{ item.path }}"
@@ -18,7 +18,7 @@
     - ma_config_type|lower == "template"
     - ma_config > 0
 
-- name: Configure Ansible
+- name: "configure: Configure Ansible"
   lineinfile:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
@@ -27,7 +27,7 @@
     regexp: "^{{ item.1.key }}"
     line: "{{ item.1.key }}={{ item.1.value }}"
     insertafter: "\\[{{ item.1.section }}\\]"
-    create: "yes"
+    create: yes
   with_subelements:
     - "{{ ma_config }}"
     - config

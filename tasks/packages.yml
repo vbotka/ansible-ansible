@@ -1,25 +1,23 @@
 ---
 
-- name: Install Ansible packages FreeBSD
+- name: "packages: Install Ansible packages FreeBSD"
   pkgng:
     name: "{{ item }}"
-    state: "present"
   with_items: "{{ ma_packages }}"
   when:
     - ansible_os_family == "FreeBSD"
     - freebsd_install_method|lower == "packages"
 
-- name: Install Ansible ports FreeBSD
+- name: "packages: Install Ansible ports FreeBSD"
   portinstall:
     name: "{{ item }}"
-    state: "present"
     use_packages: "{{ freebsd_use_packages }}"
   with_items: "{{ ma_packages }}"
   when:
     - ansible_os_family == "FreeBSD"
     - freebsd_install_method|lower == "ports"
 
-- name: Install Ansible packages Linux
+- name: "packages: Install Ansible packages Linux"
   package:
     name: "{{ item }}"
   with_items: "{{ ma_packages }}"

@@ -1,8 +1,8 @@
 ---
 # default vars for ansible
 
-ma_debug: "no"
-ma_install: "yes"
+ma_debug: False
+ma_install: True
 ma_config_type: "template" # or lineinfile
 ma_config_template_default: "ansible-default.cfg.j2"
 ma_config: {}

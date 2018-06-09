@@ -3,7 +3,7 @@
 
 - name: Add {{ ansible_os_family }} specific variables
   include_vars: "{{ ansible_os_family }}.yml"
-  tags: [bsd_packages, linux_packages, ma_vars, ma_all]
+  tags: [bsd_packages, linux_packages, ma_vars]
 
 - name: Debug
   vars:
@@ -18,16 +18,16 @@
       ma_config [ {{ ma_config|to_nice_yaml }} ]
   debug:
     msg: "{{ msg.split('\n') }}"
-  when: ma_debug|lower == "yes"
-  tags: [ma_debug, ma_all]
+  when: ma_debug
+  tags: ma_debug
 
 - import_tasks: packages.yml
-  when: ma_install|lower == "yes"
-  tags: [bsd_packages, linux_packages, ma_packages, ma_all]
+  when: ma_install
+  tags: [bsd_packages, linux_packages, ma_packages]
 
 - import_tasks: configure.yml
   when: ma_config > 0
-  tags: [ma_config, ma_all]
+  tags: ma_config
 
 # EOF
 ...
