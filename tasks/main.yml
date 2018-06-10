@@ -15,7 +15,8 @@
       ma_packages [ {{ ma_packages }} ]
       ma_config_type [ {{ ma_config_type }} ]
       ma_config_template_default [ {{ ma_config_template_default }} ]
-      ma_config [ {{ ma_config|to_nice_yaml }} ]
+      ma_config [
+      {{ ma_config|to_nice_yaml }} ]
   debug:
     msg: "{{ msg.split('\n') }}"
   when: ma_debug
