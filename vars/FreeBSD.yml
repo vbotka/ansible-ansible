@@ -5,7 +5,8 @@ freebsd_install_method: "ports"
 freebsd_use_packages: "yes"
 
 ma_packages:
-  - sysutils/ansible
+  - sysutils/ansible24
+# - sysutils/ansible
 
 #ma_config:
 #  - path: "/usr/local/etc/ansible/ansible.cfg"
