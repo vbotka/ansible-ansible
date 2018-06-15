@@ -3,7 +3,7 @@
 
 - name: Add {{ ansible_os_family }} specific variables
   include_vars: "{{ ansible_os_family }}.yml"
-  tags: [bsd_packages, linux_packages, ma_vars]
+  tags: ma_vars
 
 - name: Debug
   vars:
@@ -11,12 +11,16 @@
       ansible_os_family [ {{ ansible_os_family }} ]
       ansible_distribution [ {{ ansible_distribution }} ]
       ansible_distribution_major_version [ {{ ansible_distribution_major_version }} ]
+      ansible_distribution_version [ {{ ansible_distribution_version }} ]
+      ansible_distribution_release [ {{ ansible_distribution_release }} ]
+
       ma_install [ {{ ma_install }} ]
-      ma_packages [ {{ ma_packages }} ]
+      ma_packages [
+      {{ ma_packages | to_nice_yaml }} ]
       ma_config_type [ {{ ma_config_type }} ]
       ma_config_template_default [ {{ ma_config_template_default }} ]
       ma_config [
-      {{ ma_config|to_nice_yaml }} ]
+      {{ ma_config | to_yaml }} ]
   debug:
     msg: "{{ msg.split('\n') }}"
   when: ma_debug
@@ -24,7 +28,7 @@
 
 - import_tasks: packages.yml
   when: ma_install
-  tags: [bsd_packages, linux_packages, ma_packages]
+  tags: ma_packages
 
 - import_tasks: configure.yml
   when: ma_config > 0
