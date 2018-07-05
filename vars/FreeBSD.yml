@@ -1,9 +1,6 @@
 ---
 # FreeBSD vars for ansible
 
-freebsd_install_method: "ports"
-freebsd_use_packages: "yes"
-
 ma_packages:
   - sysutils/ansible24
 # - sysutils/ansible

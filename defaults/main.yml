@@ -7,6 +7,8 @@ ma_config_type: "template" # or lineinfile
 ma_config_template_default: "ansible-default.cfg.j2"
 ma_config: {}
 
+freebsd_install_method: "ports"
+freebsd_use_packages: "yes"
 
 # EOF
 ...

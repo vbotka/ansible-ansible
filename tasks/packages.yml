@@ -3,7 +3,7 @@
 - name: "packages: Install Ansible packages FreeBSD"
   pkgng:
     name: "{{ item }}"
-  with_items: "{{ ma_packages }}"
+  loop: "{{ ma_packages }}"
   when:
     - ansible_os_family == "FreeBSD"
     - freebsd_install_method|lower == "packages"
@@ -12,7 +12,7 @@
   portinstall:
     name: "{{ item }}"
     use_packages: "{{ freebsd_use_packages }}"
-  with_items: "{{ ma_packages }}"
+  loop: "{{ ma_packages }}"
   when:
     - ansible_os_family == "FreeBSD"
     - freebsd_install_method|lower == "ports"
@@ -20,7 +20,7 @@
 - name: "packages: Install Ansible packages Linux"
   package:
     name: "{{ item }}"
-  with_items: "{{ ma_packages }}"
+  loop: "{{ ma_packages }}"
   when: (ansible_os_family == "Debian") or
         (ansible_os_family == "RedHat")
 
