@@ -3,7 +3,7 @@ Ansible
 
 [![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)
 
-[Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure *Ansible*. Tested with FreeBSD 10.3, Ubuntu 18.04 and CentOS 7.
+[Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure *Ansible*.
 
 
 Requirements
@@ -15,7 +15,7 @@ None.
 Role Variables
 --------------
 
-Read the defaults and examples in vars.
+Review the defaults and examples in vars.
 
 
 Dependencies

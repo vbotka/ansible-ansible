@@ -2,7 +2,7 @@
 # tasks for ansible
 
 - import_tasks: vars.yml
-  tags: ma_vars
+  tags: [ ma_vars, always ]
 
 - import_tasks: debug.yml
   when: ma_debug
