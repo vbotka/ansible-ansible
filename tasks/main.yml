@@ -2,18 +2,18 @@
 # tasks for ansible
 
 - import_tasks: vars.yml
-  tags: [ ma_vars, always ]
+  tags: [ma_vars, always]
 
 - import_tasks: debug.yml
   when: ma_debug
-  tags: ma_debug
+  tags: [ma_debug, always]
 
 - import_tasks: packages.yml
   when: ma_install
   tags: ma_packages
 
 - import_tasks: configure.yml
-  when: ma_config > 0
+  when: ma_config|length > 0
   tags: ma_config
 
 # EOF

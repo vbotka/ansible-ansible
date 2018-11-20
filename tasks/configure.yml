@@ -4,7 +4,7 @@
     - name: "configure: Create directories for Ansible configuration"
       file:
         dest: "{{ item.path | dirname }}"
-        state: "directory"
+        state: directory
       loop: "{{ ma_config }}"
     - name: "configure: Create Ansible configuration from template"
       template:
@@ -16,7 +16,7 @@
       loop: "{{ ma_config }}"
   when:
     - ma_config_type|lower == "template"
-    - ma_config > 0
+    - ma_config|length > 0
 
 - name: "configure: Configure Ansible"
   lineinfile:
@@ -28,12 +28,10 @@
     line: "{{ item.1.key }}={{ item.1.value }}"
     insertafter: "\\[{{ item.1.section }}\\]"
     create: yes
-  with_subelements:
-    - "{{ ma_config }}"
-    - config
+  loop: "{{ ma_config|subelements('config') }}"
   when:
     - ma_config_type|lower == "lineinfile"
-    - ma_config > 0
+    - ma_config|length > 0
 
 # EOF
 ...

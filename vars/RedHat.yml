@@ -4,7 +4,7 @@
 ma_packages:
   - ansible
 
-#ma_config:
+# ma_config:
 #  - path: "/etc/ansible/ansible.cfg"
 #    template: "{{ ma_config_template_default }}"
 #    owner: "root"

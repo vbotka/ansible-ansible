@@ -1,14 +1,14 @@
+---
 galaxy_info:
   author: Vladimir Botka
   description: Install and configure Ansible.
   company: https://botka.link
   github_branch: master
   license: BSD
-  min_ansible_version: 2.5
+  min_ansible_version: 2.7
   platforms:
     - name: FreeBSD
       versions:
-        - 10.4
         - 11.2
     - name: Ubuntu
       versions:
@@ -16,5 +16,9 @@ galaxy_info:
     - name: EL
       versions:
         - 7
-  galaxy_tags: [ freebsd, ubuntu, centos, ansible ]
+  galaxy_tags:
+    - freebsd
+    - ubuntu
+    - centos
+    - ansible
 dependencies: []

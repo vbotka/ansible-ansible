@@ -2,8 +2,7 @@
 
 - name: "packages: Install Ansible packages FreeBSD"
   pkgng:
-    name: "{{ item }}"
-  loop: "{{ ma_packages }}"
+    name: "{{ ma_packages }}"
   when:
     - ansible_os_family == "FreeBSD"
     - freebsd_install_method|lower == "packages"

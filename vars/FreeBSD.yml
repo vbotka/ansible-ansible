@@ -5,7 +5,7 @@ ma_packages:
   - sysutils/ansible24
 # - sysutils/ansible
 
-#ma_config:
+# ma_config:
 #  - path: "/usr/local/etc/ansible/ansible.cfg"
 #    template: "{{ ma_config_template_default }}"
 #    owner: "root"
