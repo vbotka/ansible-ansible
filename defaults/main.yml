@@ -9,6 +9,10 @@ ma_config: []
 
 freebsd_install_method: "ports"
 freebsd_use_packages: "yes"
+freebsd_install_retries: 10
+freebsd_install_delay: 5
+linux_install_retries: 10
+linux_install_delay: 5
 
 # EOF
 ...
