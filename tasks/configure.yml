@@ -1,14 +1,15 @@
 ---
 
+# template flagged:stableinterface/core
 - block:
     - name: "configure: Create directories for Ansible configuration"
       file:
         dest: "{{ item.path | dirname }}"
         state: directory
       loop: "{{ ma_config }}"
-    - name: "configure: Create Ansible configuration from template"
+    - name: "configure: Ansible configuration from template"
       template:
-        src: "{{ item.template }}"
+        src: "{{ item.template|default(ma_config_template_default) }}"
         dest: "{{ item.path }}"
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
@@ -18,7 +19,8 @@
     - ma_config_type|lower == "template"
     - ma_config|length > 0
 
-- name: "configure: Configure Ansible"
+# lineinfile flagged:preview/core (tested OK)
+- name: "configure: Ansible configuration by lineinfile"
   lineinfile:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
@@ -31,6 +33,22 @@
   loop: "{{ ma_config|subelements('config') }}"
   when:
     - ma_config_type|lower == "lineinfile"
+    - ma_config|length > 0
+
+# ini_file flagged:preview/community (buggy)
+- name: "configure: Ansible configuration by ini_file"
+  ini_file:
+    path: "{{ item.0.path }}"
+    owner: "{{ item.0.owner }}"
+    group: "{{ item.0.group }}"
+    mode: "{{ item.0.mode }}"
+    section: "{{ item.1.section }}"
+    option: "{{ item.1.key }}"
+    value: "{{ item.1.key }}={{ item.1.value }}"
+    create: yes
+  loop: "{{ ma_config|subelements('config') }}"
+  when:
+    - ma_config_type|lower == "ini_file"
     - ma_config|length > 0
 
 # EOF

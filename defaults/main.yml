@@ -3,7 +3,12 @@
 
 ma_debug: False
 ma_install: True
-ma_config_type: "template"           # or lineinfile
+
+# Module to configure Ansible:
+# template   flagged:stableinterface/core
+# lineinfile flagged:preview/core (tested OK)
+# ini_file   flagged:preview/community (buggy)
+ma_config_type: "template"
 ma_config_template_default: "ansible-default.cfg.j2"
 ma_config: []
 
