@@ -10,6 +10,7 @@
       ansible_distribution_release [ {{ ansible_distribution_release }} ]
 
       ma_install [ {{ ma_install }} ]
+      ma_backup_conf [ {{ ma_backup_conf }} ]
       freebsd_install_method [ {{ freebsd_install_method }} ]
       freebsd_use_packages [ {{ freebsd_use_packages }} ]
       ma_packages

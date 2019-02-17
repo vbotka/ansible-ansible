@@ -3,6 +3,7 @@
 
 ma_debug: False
 ma_install: True
+ma_backup_conf: no
 
 # Module to configure Ansible:
 # template   flagged:stableinterface/core

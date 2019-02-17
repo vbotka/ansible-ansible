@@ -14,6 +14,7 @@
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
         mode: "{{ item.mode }}"
+        backup: "{{ ma_backup_conf }}"
       loop: "{{ ma_config }}"
   when:
     - ma_config_type|lower == "template"
@@ -30,6 +31,7 @@
     line: "{{ item.1.key }}={{ item.1.value }}"
     insertafter: "\\[{{ item.1.section }}\\]"
     create: yes
+    backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
   when:
     - ma_config_type|lower == "lineinfile"
@@ -46,6 +48,7 @@
     option: "{{ item.1.key }}"
     value: "{{ item.1.key }}={{ item.1.value }}"
     create: yes
+    backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
   when:
     - ma_config_type|lower == "ini_file"
