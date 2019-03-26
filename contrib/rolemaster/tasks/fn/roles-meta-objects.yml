@@ -1,0 +1,11 @@
+---
+
+- include_vars: "{{ item }}/meta/main.yml"
+- set_fact:
+    rm_roles_meta: "{{ rm_roles_meta|default([]) |
+                       combine({item:
+                                {'galaxy_info': galaxy_info,
+                                'dependencies': dependencies}}) }}"
+
+# EOF
+...

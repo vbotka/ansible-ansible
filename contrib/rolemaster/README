@@ -1,0 +1,16 @@
+# RoleMaster
+# Management of roles' meta-data and licenses.
+#
+# Examples:
+# 1) Create list of roles' paths rm-roles-path
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path
+# 2) Write roles' meta-data to rm_roles_meta_file
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+# 4) Restore meta-data
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+# 5) Restore licenses
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license
+#
+# Notes:
+# 1) Create LICENSE-test and see the diff.
+#    $ for i in `find roles -name "MY-PROJECT*"`; do (echo $i; cd $i; diff LICENSE LICENSE-test); done

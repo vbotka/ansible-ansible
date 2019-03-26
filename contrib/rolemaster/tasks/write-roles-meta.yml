@@ -1,0 +1,36 @@
+---
+- include_tasks: fn/roles-meta-objects.yml
+  loop: "{{ rm_roles_path|default([]) }}"
+- debug:
+    var: rm_roles_meta
+  when: rm_debug
+- block:
+    - set_fact:
+        rm_roles_meta_dir: "{{ rm_roles_meta_file|dirname }}"
+    - file:
+        state: directory
+        path: "{{ rm_roles_meta_dir }}"
+    - tempfile:
+        path: "{{ rm_roles_meta_dir }}"
+      register: result
+    - file:
+        path: "{{ result.path }}"
+        mode: "0644"
+    - debug:
+        msg: "{{ result.path }}"
+      when: rm_debug
+    - debug:
+        msg: "{{ rm_roles_meta_file }}"
+      when: rm_debug
+    - file:
+        state: link
+        src: "{{ result.path }}"
+        dest: "{{ rm_roles_meta_file }}"
+    - template:
+        src: templates/roles_meta.j2
+        dest: "{{ rm_roles_meta_file }}"
+        follow: true
+  when: rm_roles_meta_file_write
+
+# EOF
+...

@@ -1,0 +1,20 @@
+---
+
+- include_vars: "{{ rm_roles_meta_file }}"
+- debug:
+    var: rm_roles_meta
+  when: rm_debug
+# - debug:
+#     msg: "{{ item.key }}/meta/main-test.yml - {{ item.value.galaxy_info.role_name }}"
+#   loop: "{{ rm_roles_meta|dict2items }}" 
+- template:
+    src: templates/main.j2
+    dest: "{{ item.key }}/meta/main.yml"
+    owner: "{{ rm_owner }}"
+    group: "{{ rm_group }}"
+    backup: "{{ rm_backup_conf }}"
+#   validate: "{{ rm_ansible_lint }} %s"
+  loop: "{{ rm_roles_meta|dict2items }}" 
+
+# EOF
+...

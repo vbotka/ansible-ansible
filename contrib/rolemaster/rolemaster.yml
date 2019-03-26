@@ -1,0 +1,60 @@
+---
+
+# RoleMaster
+# Management of roles' meta-data and licenses.
+#
+# Examples:
+# 1) Create list of roles' paths rm-roles-path
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path
+# 2) Write roles' meta-data to rm_roles_meta_file
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+# 4) Restore meta-data
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+# 5) Restore licenses
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license
+#
+# Notes:
+# 1) Create LICENSE-test and see the diff.
+#    $ for i in `find roles -name "MY-PROJECT*"`; do (echo $i; cd $i; diff LICENSE LICENSE-test); done
+
+
+- hosts: localhost
+  gather_facts: false
+
+  vars:
+
+    rm_debug: false
+    rm_backup_conf: false
+    rm_owner: admin
+    rm_group: admin
+    rm_roles_meta_file_write: true
+    rm_roles_meta_file: "/home/admin/.ansible/db/roles_meta.yml"
+    rm_roles_license_file: "/home/admin/.ansible/db/roles_license.yml"
+    rm_roles_license_year_to: 2019
+    rm_roles_license_holder: "Holder of the license"
+    # rm_ansible_lint: "/home/admin/bin/ansible-lint -c /home/admin/.ansible/.ansible-lint"
+
+  tasks:
+
+    # Create list of roles' paths rm-roles-path
+    - import_tasks: tasks/list-roles-path.yml
+      tags: rm-list-roles-path
+
+      # Write roles' meta-data to rm_roles_meta_file
+    - import_tasks: tasks/write-roles-meta.yml
+      tags: rm-write-roles-meta
+
+      # Read roles' meta-data rm-roles-meta from rm_roles_meta_file
+    - import_tasks: tasks/read-roles-meta.yml
+      tags: rm-read-roles-meta
+
+      # Restore roles' meta-data from rm_roles_meta_file
+    - import_tasks: tasks/restore-roles-meta.yml
+      tags: rm-restore-roles-meta
+
+      # Restore roles' license from rm_roles_license_file
+    - import_tasks: tasks/restore-roles-license.yml
+      tags: rm-restore-roles-license
+
+# EOF
+...

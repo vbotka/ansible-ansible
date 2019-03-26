@@ -1,0 +1,17 @@
+---
+
+- include_vars: "{{ rm_roles_license_file }}"
+- debug:
+    var: rm_roles_license
+  when: rm_debug
+- template:
+    src: "templates/{{ item.value.template }}"
+    dest: "{{ item.key }}/LICENSE"
+    owner: "{{ rm_owner }}"
+    group: "{{ rm_group }}"
+    mode: "0644"
+    backup: "{{ rm_backup_conf }}"
+  loop: "{{ rm_roles_license|dict2items }}"
+
+# EOF
+...
