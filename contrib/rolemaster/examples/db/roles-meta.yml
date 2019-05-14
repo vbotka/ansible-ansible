@@ -7,24 +7,24 @@ rm_roles_meta:
       company: COMPANY
       description: "Install and configure Ansible."
       galaxy_tags:
-      - freebsd
-      - ubuntu
-      - centos
-      - ansible
+        - freebsd
+        - ubuntu
+        - centos
+        - ansible
       github_branch: master
       license: BSD
       min_ansible_version: 2.7
       platforms:
-      - name: FreeBSD
-        versions:
-        - 11.2
-        - 12.0
-      - name: Ubuntu
-        versions:
-        - bionic
-      - name: EL
-        versions:
-        - 7
+        - name: FreeBSD
+          versions:
+            - 11.2
+            - 12.0
+        - name: Ubuntu
+          versions:
+            - bionic
+        - name: EL
+          versions:
+            - 7
       role_name: ansible
   /home/admin/.ansible/roles/contrib.ansible_lint:
     dependencies: []
@@ -33,25 +33,25 @@ rm_roles_meta:
       company: COMPANY
       description: "Install and configure Ansible Lint."
       galaxy_tags:
-      - freebsd
-      - ubuntu
-      - centos
-      - ansible
-      - lint
+        - freebsd
+        - ubuntu
+        - centos
+        - ansible
+        - lint
       github_branch: master
       license: BSD
       min_ansible_version: 2.7
       platforms:
-      - name: FreeBSD
-        versions:
-        - 11.2
-        - 12.0
-      - name: Ubuntu
-        versions:
-        - bionic
-      - name: EL
-        versions:
-        - 7
+        - name: FreeBSD
+          versions:
+            - 11.2
+            - 12.0
+        - name: Ubuntu
+          versions:
+            - bionic
+        - name: EL
+          versions:
+            - 7
       role_name: ansible_lint
   /home/admin/.ansible/roles/contrib.apache:
     dependencies: []
@@ -60,15 +60,15 @@ rm_roles_meta:
       company: COMPANY
       description: "Configure Apache."
       galaxy_tags:
-      - freebsd
-      - apache
+        - freebsd
+        - apache
       github_branch: master
       license: BSD
       min_ansible_version: 2.7
       platforms:
-      - name: FreeBSD
-        versions:
-        - 11.2
-        - 12.0
+        - name: FreeBSD
+          versions:
+            - 11.2
+            - 12.0
       role_name: apache
 ...
