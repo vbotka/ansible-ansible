@@ -23,10 +23,10 @@ None.
 ## Plugins
 
 No plugins are isntalled by default. Variable default is *ma_plugins:
-[]*. Examples how to configure plugins can be found in vars/main.yml .
+[ ]*. Examples how to configure plugins can be found in vars/main.yml .
 
-To activate installed plugins use template '*ansible-plugins.cfg.j2*"
-and configure '*_plugins' in ansible.cfg .
+To activate installed plugins use template *ansible-plugins.cfg.j2*
+and configure *_plugins in *ansible.cfg* .
 
 ```
 ma_config_type: "template"
@@ -41,7 +41,7 @@ Check mode will fail if the directories *ma_plugins_path* and *ma_src_path* are 
 ansible-playbook ansible.yml -t ma_plugins_dirs
 ```
 
-Check mode will fail for the first time when there are plugins configured in *ma_plugins:* and the archives haven't been downloaded yet. To avoid the failure downloda the archives first
+Check mode will fail for the first time when there are plugins configured in *ma_plugins* and the archives haven't been downloaded yet. To avoid the failure download the archives first
 
 ```
 ansible-playbook ansible.yml -t ma_plugins_download
