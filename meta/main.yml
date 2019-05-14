@@ -23,5 +23,6 @@ galaxy_info:
     - ubuntu
     - centos
     - ansible
+    - mitogen
 dependencies: []
 ...

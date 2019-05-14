@@ -13,8 +13,17 @@
       ma_backup_conf [ {{ ma_backup_conf }} ]
       freebsd_install_method [ {{ freebsd_install_method }} ]
       freebsd_use_packages [ {{ freebsd_use_packages }} ]
+      freebsd_install_retries [ {{ freebsd_install_retries }} ]
+      freebsd_install_delay [ {{ freebsd_install_delay }} ]
+      linux_install_retries [ {{ linux_install_retries }} ]
+      linux_install_delay [ {{ linux_install_delay }} ]
       ma_packages
       {{ ma_packages | to_nice_yaml }}
+      ma_plugins_paths_list [ {{ ma_plugins_paths_list }} ]
+      ma_plugins_path [ {{ ma_plugins_path }} ]
+      ma_src_path [ {{ ma_src_path }} ]
+      ma_plugins
+      {{ ma_plugins | to_yaml }}
       ma_config_type [ {{ ma_config_type }} ]
       ma_config_template_default [ {{ ma_config_template_default }} ]
       ma_config

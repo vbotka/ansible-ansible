@@ -1,0 +1,80 @@
+---
+
+- name: "plugins: Create directories"
+  file:
+    state: directory
+    path: "{{ item }}"
+  loop:
+    - "{{ ma_plugins_path }}"
+    - "{{ ma_src_path }}"
+  tags: ma_plugins_dirs
+
+- name: "plugins: Download archives"
+  get_url:
+    url: "{{ item.archive_url }}"
+    dest: "{{ ma_src_path }}"
+    checksum: "{{ item.checksum }}"
+  loop: "{{ ma_plugins }}"
+  tags: ma_plugins_download
+
+- name: "plugins: Extract archives"
+  unarchive:
+    src: "{{ ma_src_path }}/{{ item.archive }}"
+    dest: "{{ ma_plugins_path }}"
+  loop: "{{ ma_plugins }}"
+  tags: ma_plugins_extract
+
+- name: "plugins: Create lists"
+  block:
+    - name: "plugins: Create list of used ini_keys ma_plugins_inikeys"
+      set_fact:
+        ma_plugins_inikeys: "{{ ma_plugins|json_query('[].plugins[].ini_key')|list|unique }}"
+    - name: "plugins: Debug ma_plugins_inikeys"
+      when: ma_debug
+      debug:
+        var: ma_plugins_inikeys
+    - name: "plugins: Create list of plugins ma_plugins_list"
+      set_fact:
+        ma_plugins_list: "{{ ma_plugins|json_query('[].plugins[].{path: path,
+                                                                  ini_key: ini_key,
+                                                                  enable: enable}')
+                                                                  |list }}"
+    - name: "plugins: Debug ma_plugins_list"
+      when: ma_debug
+      debug:
+        var: ma_plugins_list
+    - name: "plugins: Group plugins by ini_key to ma_plugins_grouped"
+      set_fact:
+        ma_plugins_grouped: "{{ ma_plugins_list|groupby('ini_key') }}"
+    - name: "plugins: Debug ma_plugins_grouped"
+      when: ma_debug
+      debug:
+        var: ma_plugins_grouped
+    - name: "plugins: Create list of ini_key ma_plugins_inikeys_list"
+      set_fact:
+        ma_plugins_inikeys_list: "{{ ma_plugins_sections.keys() }}"
+    - name: "plugins: Debug ma_plugins_inikeys_list"
+      when: ma_debug
+      debug:
+        var: ma_plugins_inikeys_list
+    - name: "plugins: Create lists of paths ma_plugins_paths_list"
+      set_fact:
+        ma_plugins_paths_list: "{{ ma_plugins_paths_list +
+                                   [ {item.0: {'paths': item.1|json_query('[?enable].path')} } ] }}"
+      loop: "{{ ma_plugins_grouped }}"
+    - name: "plugins: Debug ma_plugins_paths_list"
+      when: ma_debug
+      debug:
+        msg: "{{ item }}"
+      loop: "{{ ma_plugins_paths_list }}"
+  tags: ma_plugins_lists
+
+- name: "plugins: Test used ini_keys"
+  when: item not in ma_plugins_inikeys_list
+  fail:
+    msg: "[ERROR] wrong ini_key: {{ item }}. End of play."
+  loop: "{{ ma_plugins_inikeys }}"
+  tags: ma_plugins_test_inikeys
+
+# EOF
+...

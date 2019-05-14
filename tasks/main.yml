@@ -12,6 +12,10 @@
   when: ma_install
   tags: ma_packages
 
+- import_tasks: plugins.yml
+  when: ma_plugins|length > 0
+  tags: ma_plugins
+
 - import_tasks: configure.yml
   when: ma_config|length > 0
   tags: ma_config
