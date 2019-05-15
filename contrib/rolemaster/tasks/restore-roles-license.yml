@@ -6,7 +6,7 @@
   when: rm_debug
 - template:
     src: "templates/{{ item.value.template }}"
-    dest: "{{ item.key }}/LICENSE"
+    dest: "{{ rm_roles_path }}/{{ item.key }}/LICENSE"
     owner: "{{ rm_owner }}"
     group: "{{ rm_group }}"
     mode: "0644"

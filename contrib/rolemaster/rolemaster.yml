@@ -27,6 +27,7 @@
     rm_backup_conf: false
     rm_owner: admin
     rm_group: admin
+    rm_roles_path: "/home/admin/.ansible/roles"
     rm_roles_meta_file_write: true
     rm_roles_meta_file: "/home/admin/.ansible/db/roles_meta.yml"
     rm_roles_license_file: "/home/admin/.ansible/db/roles_license.yml"

@@ -1,16 +1,16 @@
 ---
 rm_roles_license:
-  /home/admin/.ansible/roles/contrib.ansible:
+  contrib.ansible:
     template: bsd-2clause.j2
     year_from: 2018
     year_to: "{{ rm_roles_license_year_to }}"
     holder: "{{ rm_roles_license_holder }}"
-  /home/admin/.ansible/roles/contrib.ansible_lint:
+  contrib.ansible_lint:
     template: bsd-2clause.j2
     year_from: 2019
     year_to: "{{ rm_roles_license_year_to }}"
     holder: "{{ rm_roles_license_holder }}"
-  /home/admin/.ansible/roles/contrib.apache:
+  contrib.apache:
     template: bsd-2clause.j2
     year_from: 2016
     year_to: "{{ rm_roles_license_year_to }}"
