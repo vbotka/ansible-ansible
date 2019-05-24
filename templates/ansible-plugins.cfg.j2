@@ -11,12 +11,14 @@
 # Plugins
 {% for dict_item in ma_plugins_paths_list %}
 {% for key,value in dict_item.items() %}
-{{ key }} ={% for path in value.paths %} {{ ma_plugins_path }}/{{ path }}
-{%- if not loop.last %},{% endif %}
 
+{{ key }} =
+{%- for path in value.paths %} {{ ma_plugins_path }}/{{ path }}
+{%- if not loop.last %}:{% endif %}
 {% endfor %}
 {% endfor %}
 {% endfor %}
+
 
 [inventory]
 {% for conf in item.config %}
