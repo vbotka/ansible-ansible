@@ -13,7 +13,7 @@
 {% for key,value in dict_item.items() %}
 
 {{ key }} =
-{%- for path in value.paths %} {{ ma_plugins_path }}/{{ path }}
+{%- for path in value.paths %}{{ ma_plugins_path }}/{{ path }}
 {%- if not loop.last %}:{% endif %}
 {% endfor %}
 {% endfor %}
