@@ -1,0 +1,7 @@
+[localhost]
+127.0.0.1
+[localhost:vars]
+ansible_become=no
+ansible_connection=local
+ansible_python_interpreter=/usr/bin/python
+ansible_perl_interpreter=/usr/bin/perl

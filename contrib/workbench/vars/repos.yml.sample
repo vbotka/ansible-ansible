@@ -1,0 +1,56 @@
+requirements:
+
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-awx"
+    name: ansible-awx
+    link: awx
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-bin"
+    name: ansible-bin
+    link: bin
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-copy"
+    name: ansible-copy
+    link: copy
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-db"
+    name: ansible-db
+    link: db
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-global_vars"
+    name: ansible-global_vars
+    link: global_vars
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-group_vars"
+    name: ansible-group_vars
+    link: group_vars
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-inventory"
+    name: ansible-inventory
+    link: inventory
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-jails"
+    name: ansible-jails
+    link: jails
+    install: true
+  
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-misc"
+    name: ansible-misc
+    link: misc
+    install: false
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-servers"
+    name: ansible-servers
+    link: servers
+    install: true
+      
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-vault"
+    name: ansible-vault
+    link: vault
+    install: true

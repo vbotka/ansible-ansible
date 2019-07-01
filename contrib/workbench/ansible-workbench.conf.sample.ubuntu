@@ -1,0 +1,9 @@
+git_user=vlado
+owner=vlado
+owner_group=vlado
+mode="u=+rwX,g=+rX-w,o=-rwx"
+base_dir=/home/${owner}/.ansible
+repos_dir=${base_dir}
+roles_dir=${base_dir}/roles
+projects_dir=${base_dir}/projects
+misc_dir=${base_dir}/ansible-misc

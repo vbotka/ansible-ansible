@@ -1,0 +1,16 @@
+
+Installation
+============
+
+1) Create base directory
+   $ mkdir .ansible
+2) Create directory .ansible/roles
+   $ mkdir .ansible/roles
+3) Clone vbotka.ansible
+   $ git clone https://github.com/vbotka/ansible-ansible .ansible/roles/vbotka.ansible
+4) Copy contrib/workbench to ansible-misc
+   $ cp -r .ansible/roles/vbotka.ansible/contrib/workbench .ansible/ansible-misc
+5) Create link to ansible-misc
+   $ cd .ansible && ln -s ansible-misc misc
+
+# EOF

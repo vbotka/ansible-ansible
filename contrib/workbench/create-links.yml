@@ -1,0 +1,64 @@
+---
+
+# (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License (opensource.org/licenses/BSD-2-Clause)
+
+# ------------------------------------------------------------------------------
+# Create links.
+#
+# Parameters:
+#   my_links_file ............. file with the list of the links
+#   my_base_path .............. base directory
+#
+# Notes:
+#   * Used by ansible-workbench.sh
+# ------------------------------------------------------------------------------
+
+- hosts: localhost
+  debugger: on_failed
+  gather_facts: no
+
+  vars:
+    my_version: "0.1.2-CURRENT"
+    my_base_path: "{{ lookup('env','HOME') }}/.ansible"
+    my_links_file: vars/links.yml
+
+  tasks:
+
+    - name: Debug
+      debug:
+        msg: "{{ msg.split('\n') }}"
+      vars:
+        msg: |
+          my_version [ {{ my_version }} ]
+          my_base_path [ {{ my_base_path }} ]
+          my_links_file [ {{ my_links_file }} ]
+      when: debug|default(false)|bool
+
+    - name: "Include list of links from {{ my_links_file }}"
+      include_vars: "{{ my_links_file }}"
+
+    - name: Debug
+      debug:
+        msg: "path {{ item.path }} link {{ item.link }} 0 {{ item.path.0 }}"
+      loop: "{{ requirements }}"
+      when: debug|default(false)|bool
+
+    - name: Create links to absolute paths
+      file:
+        state: link
+        src: "{{ item.path }}"
+        dest: "{{ my_base_path }}/{{ item.link }}"
+      loop: "{{ requirements }}"
+      when: item.path.0 == '/'
+
+    - name: Create links to relative paths
+      file:
+        state: link
+        src: "{{ my_base_path }}/{{ item.path }}"
+        dest: "{{ my_base_path }}/{{ item.link }}"
+      loop: "{{ requirements }}"
+      when: item.path.0 != '/'
+
+# EOF
+...

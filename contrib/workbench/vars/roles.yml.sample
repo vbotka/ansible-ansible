@@ -1,0 +1,127 @@
+requirements:
+
+  - src: https://github.com/jtyr/ansible-config_encoder_filters
+    name: jtyr.config_encoder_filters
+
+  - src: https://github.com/vbotka/ansible-ansible
+    name: vbotka.ansible
+
+  - src: https://github.com/vbotka/ansible-lib
+    name: vbotka.ansible_lib
+
+  - src: https://github.com/vbotka/ansible-lint
+    name: vbotka.ansible_lint
+
+  - src: https://github.com/vbotka/ansible-runner
+    name: vbotka.ansible_runner
+
+  - src: https://github.com/vbotka/ansible-apache
+    name: vbotka.apache
+
+  - src: https://github.com/vbotka/ansible-bsdutils
+    name: vbotka.bsdutils
+
+  - src: https://github.com/vbotka/ansible-certificate
+    name: vbotka.certificate
+
+  - src: https://github.com/vbotka/ansible-doctl
+    name: vbotka.doctl
+
+  - src: https://github.com/vbotka/ansible-freebsd-bash
+    name: vbotka.freebsd_bash
+
+  - src: https://github.com/vbotka/ansible-freebsd-dhcp
+    name: vbotka.freebsd_dhcp
+
+  - src: https://github.com/vbotka/ansible-freebsd-dns
+    name: vbotka.freebsd_dns
+
+  - src: https://github.com/vbotka/ansible-freebsd-jail
+    name: vbotka.freebsd_jail
+
+  - src: https://github.com/vbotka/ansible-freebsd-mailserver
+    name: vbotka.freebsd_mailserver
+
+  - src: https://github.com/vbotka/ansible-freebsd-mailserver-roundcube
+    name: vbotka.freebsd_mailserver_roundcube
+
+  - src: https://github.com/vbotka/ansible-freebsd-mailserver-sieve
+    name: vbotka.freebsd_mailserver_sieve
+
+  - src: https://github.com/vbotka/ansible-freebsd-mailserver-spamassassin
+    name: vbotka.freebsd_mailserver_spamassassin
+
+  - src: https://github.com/vbotka/ansible-freebsd-mysql
+    name: vbotka.freebsd_mysql
+
+  - src: https://github.com/vbotka/ansible-freebsd-nagios
+    name: vbotka.freebsd_nagios
+
+  - src: https://github.com/vbotka/ansible-freebsd-network
+    name: vbotka.freebsd_network
+
+  - src: https://github.com/vbotka/ansible-freebsd-packages
+    name: vbotka.freebsd_packages
+
+  - src: https://github.com/vbotka/ansible-freebsd-pf
+    name: vbotka.freebsd_pf
+
+  - src: https://github.com/vbotka/ansible-freebsd-php
+    name: vbotka.freebsd_php
+
+  - src: https://github.com/vbotka/ansible-freebsd-ports
+    name: vbotka.freebsd_ports
+
+  - src: https://github.com/vbotka/ansible-freebsd-postinstall
+    name: vbotka.freebsd_postinstall
+
+  - src: https://github.com/vbotka/ansible-freebsd-poudriere
+    name: vbotka.freebsd_poudriere
+
+  - src: https://github.com/vbotka/ansible-freebsd-redis
+    name: vbotka.freebsd_redis
+
+  - src: https://github.com/vbotka/ansible-freebsd-ssmtp
+    name: vbotka.freebsd_ssmtp
+
+  - src: https://github.com/vbotka/ansible-freebsd-timezone
+    name: vbotka.freebsd_timezone
+
+  - src: https://github.com/vbotka/ansible-freebsd-wpa-cli
+    name: vbotka.freebsd_wpa_cli
+
+  - src: https://github.com/vbotka/ansible-freebsd-zfs
+    name: vbotka.freebsd_zfs
+
+  - src: https://github.com/vbotka/ansible-integrity
+    name: vbotka.integrity
+
+  - src: https://github.com/vbotka/ansible-leutils
+    name: vbotka.leutils
+
+  - src: https://github.com/vbotka/ansible-linux-lib
+    name: vbotka.linux_lib
+
+  - src: https://github.com/vbotka/ansible-linux-postinstall
+    name: vbotka.linux_postinstall
+
+  - src: https://github.com/vbotka/ansible-nginx
+    name: vbotka.nginx
+
+  - src: https://github.com/vbotka/ansible-nrpe
+    name: vbotka.nrpe
+
+  - src: https://github.com/vbotka/ansible-role-ntp
+    name: vbotka.ntp
+
+  - src: https://github.com/vbotka/ansible-rcb
+    name: vbotka.rcb
+
+  - src: https://github.com/vbotka/ansible-rsnapshot
+    name: vbotka.rsnapshot
+
+  - src: https://github.com/vbotka/ansible-tower-cli
+    name: vbotka.tower_cli
+
+  - src: https://github.com/vbotka/ansible-yazvs
+    name: vbotka.yazvs

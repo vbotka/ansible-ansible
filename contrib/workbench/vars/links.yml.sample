@@ -1,0 +1,4 @@
+requirements:
+
+  - path: /usr/local/src/ansible-lint/lib/ansiblelint/rules/
+    link: ansible-lint-rules
