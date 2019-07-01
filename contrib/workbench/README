@@ -36,7 +36,15 @@ Installation
     $ ansible-misc/ansible-workbench.sh -d -n links
 17) Create links
     $ ansible-misc/ansible-workbench.sh links
-18) Update all (skipping steps 10-17)
+
+Update all (skipping steps 10-17)
+=================================
+ 1) Update all
     $ ansible-misc/ansible-workbench.sh all
+ 2) Dry-run synchronize ansible-misc
+    $ rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
+ 3) Synchronize ansible-misc
+    $ rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
+
 
 # EOF
