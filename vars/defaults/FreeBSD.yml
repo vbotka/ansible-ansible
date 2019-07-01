@@ -2,8 +2,8 @@
 # FreeBSD vars for ansible
 
 ma_packages:
-  - sysutils/ansible24
-# - sysutils/ansible
+  - sysutils/ansible
+  - sysutils/py-ansible-lint
 
 # ma_config:
 #  - path: "/usr/local/etc/ansible/ansible.cfg"
