@@ -1,16 +1,42 @@
-
 Installation
 ============
 
-1) Create base directory
-   $ mkdir .ansible
-2) Create directory .ansible/roles
-   $ mkdir .ansible/roles
-3) Clone vbotka.ansible
-   $ git clone https://github.com/vbotka/ansible-ansible .ansible/roles/vbotka.ansible
-4) Copy contrib/workbench to ansible-misc
-   $ cp -r .ansible/roles/vbotka.ansible/contrib/workbench .ansible/ansible-misc
-5) Create link to ansible-misc
-   $ cd .ansible && ln -s ansible-misc misc
+ 1) Create base directory
+    $ mkdir $HOME/.ansible
+ 2) Create directory .ansible/roles
+    $ mkdir $HOME/.ansible/roles
+ 3) Clone role vbotka.ansible
+    $ git clone https://github.com/vbotka/ansible-ansible $HOME/.ansible/roles/vbotka.ansible
+ 4) Copy contrib/workbench to ansible-misc
+    $ cp -r $HOME/.ansible/roles/vbotka.ansible/contrib/workbench $HOME/.ansible/ansible-misc
+ 5) Create link to ansible-misc
+    $ cd $HOME/.ansible && ln -s ansible-misc misc
+ 6) Copy sample configuration. Review and fit the configuration to your needs.
+    $ cp .ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
+ 6) Copy sample configuration. Review and fit the configuration to your needs.
+    $ cp .ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
+ 7) Copy sample configuration. Review and fit the configuration to your needs.
+    $ cp $HOME/.ansible/ansible-misc/ansible.cfg.sample.freebsd $HOME/.ansible/ansible-misc/ansible.cfg
+ 8) Copy sample hosts. Review and fit the hosts to your needs.
+    $ cp $HOME/.ansible/ansible-misc/hosts.sample.freebsd $HOME/.ansible/ansible-misc/hosts
+ 9) Create lists in $HOME/.ansible/ansible-misc/vars
+10) Dry-run installation of repos with debug
+    $ ansible-misc/ansible-workbench.sh -d -n repos
+11) Install repos
+    $ ansible-misc/ansible-workbench.sh repos
+12) Dry-run installation of roles with debug
+    $ ansible-misc/ansible-workbench.sh -d -n roles
+13) Install roles
+    $ ansible-misc/ansible-workbench.sh roles
+14) Dry-run installation of projects with debug
+    $ ansible-misc/ansible-workbench.sh -d -n projects
+15) Install projects
+    $ ansible-misc/ansible-workbench.sh projects
+16) Dry-run create links with debug
+    $ ansible-misc/ansible-workbench.sh -d -n links
+17) Create links
+    $ ansible-misc/ansible-workbench.sh links
+18) Update all (skipping steps 10-17)
+    $ ansible-misc/ansible-workbench.sh all
 
 # EOF

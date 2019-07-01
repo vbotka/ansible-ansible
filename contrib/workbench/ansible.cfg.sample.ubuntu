@@ -5,8 +5,8 @@ roles_path = $PWD/../roles
 retry_files_enabled = false
 stdout_callback = default
 transport = ssh
-strategy_plugins =/usr/local/ansible/plugins/mitogen-0.2.6/ansible_mitogen/plugins/strategy
-strategy = mitogen_linear
+# strategy_plugins =/usr/local/ansible/plugins/mitogen-0.2.6/ansible_mitogen/plugins/strategy
+# strategy = mitogen_linear
 
 [inventory]
 

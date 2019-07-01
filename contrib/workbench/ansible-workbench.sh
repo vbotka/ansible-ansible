@@ -3,7 +3,7 @@
 # (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License (opensource.org/licenses/BSD-2-Clause)
 
-version="0.1.2-CURRENT"
+version="0.1.3-CURRENT"
 
 usage="ansible-workbench ver $version
 Usage:

@@ -1,6 +1,6 @@
-git_user=vlado
-owner=vlado
-owner_group=vlado
+git_user=admin
+owner=admin
+owner_group=admin
 mode="u=+rwX,g=+rX-w,o=-rwx"
 base_dir=/home/${owner}/.ansible
 repos_dir=${base_dir}
