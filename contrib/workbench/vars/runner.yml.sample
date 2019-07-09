@@ -1,0 +1,5 @@
+requirements:
+
+  - path: srv
+    project: srv.example.com
+    force: yes

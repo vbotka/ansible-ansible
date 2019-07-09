@@ -19,7 +19,7 @@
   gather_facts: no
 
   vars:
-    my_version: "0.1.3-CURRENT"
+    my_version: "0.1.4-CURRENT"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_links_file: vars/links.yml
 

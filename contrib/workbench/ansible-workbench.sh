@@ -3,7 +3,7 @@
 # (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License (opensource.org/licenses/BSD-2-Clause)
 
-version="0.1.3-CURRENT"
+version="0.1.4-CURRENT"
 
 usage="ansible-workbench ver $version
 Usage:
@@ -15,7 +15,7 @@ Where:
       -V --version ....... print version and exit
       -d --debug ......... run the playbooks with debug=true
       -n --dry-run ....... run the playbooks with --check
-      command ............ repos, roles, projects, links, all"
+      command ............ repos, roles, projects, links, runner, all, none"
 
 expected_args=1
 if [ "$#" -lt "$expected_args" ]; then
@@ -31,6 +31,7 @@ base_dir=/home/${owner}/.ansible
 repos_dir=${base_dir}
 roles_dir=${base_dir}/roles
 projects_dir=${base_dir}/projects
+runner_dir=${base_dir}/runner
 misc_dir=${base_dir}/ansible-misc
 
 # Configuration file
@@ -146,6 +147,21 @@ create_links() {
     (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} create-links.yml)
 }
 
+# Create ansible-runner private data
+runner_create_private() {
+    printf "runner_dir: ${runner_dir}\n"
+    if [ ! -e "${runner_dir}" ]; then
+	mkdir -p ${runner_dir}
+    fi
+    ansible_params="my_repos_file=${misc_dir}/vars/runner.yml \
+                    my_repos_path=${runner_dir} \
+                    my_git_user=${git_user} \
+                    my_mode=${mode} \
+                    debug=${playbook_debug}"
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} create-runner-private.yml)
+    chown -R ${owner}:${owner_group} ${runner_dir}
+}
+
 playbook_debug="false"
 playbook_dryrun=""
 for i in "$@"; do
@@ -160,6 +176,16 @@ for i in "$@"; do
             ;;
         -d|--debug)
             playbook_debug="true"
+            printf "git_user: ${git_user}\n"
+            printf "owner: ${owner}\n"
+            printf "owner_group: ${owner_group}\n"
+            printf "mode: ${mode}\n"
+            printf "base_dir: ${base_dir}\n"
+            printf "repos_dir: ${repos_dir}\n"
+            printf "roles_dir: ${roles_dir}\n"
+            printf "projects_dir: ${projects_dir}\n"
+            printf "runner_dir: ${runner_dir}\n"
+            printf "misc_dir: ${misc_dir}\n"
             ;;
         -n|--dry-run)
             playbook_dryrun="--check"
@@ -180,11 +206,19 @@ for i in "$@"; do
             create_links
             exit 0
             ;;
+        runner)
+            runner_create_private
+            exit 0
+            ;;
+        none)
+            exit 0
+            ;;
         all)
             repos_clone_update_link
             roles_clone_update_link
             projects_clone_update_link
             create_links
+	    runner_create_private
             exit 0
             ;;
         *)
