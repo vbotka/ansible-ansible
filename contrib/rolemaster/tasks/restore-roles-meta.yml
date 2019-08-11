@@ -1,19 +1,22 @@
 ---
 
-- include_vars: "{{ rm_roles_meta_file }}"
-- debug:
+- name: 'rm restore-roles-meta: Include vars'
+  include_vars: "{{ rm_roles_meta_file }}"
+- name: 'rm restore-roles-meta: Debug'
+  debug:
     var: rm_roles_meta
   when: rm_debug
 # - debug:
 #     msg: "{{ item.key }}/meta/main-test.yml - {{ item.value.galaxy_info.role_name }}"
 #   loop: "{{ rm_roles_meta|dict2items }}"
-- template:
+- name: 'rm restore-roles-meta: Create meta files'
+  template:
     src: templates/main.j2
     dest: "{{ item.key }}/meta/main.yml"
     owner: "{{ rm_owner }}"
     group: "{{ rm_group }}"
     backup: "{{ rm_backup_conf }}"
-    # validate: "{{ rm_ansible_lint }} %s"
+#   validate: "{{ rm_ansible_lint }} %s"
   loop: "{{ rm_roles_meta|dict2items }}"
 
 # EOF

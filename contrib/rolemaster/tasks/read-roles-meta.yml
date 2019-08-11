@@ -1,9 +1,12 @@
 ---
 
-- include_vars: "{{ rm_roles_meta_file }}"
-- debug:
-    var: rm_roles_meta
+- name: 'rm: read-roles-meta: Include vars'
+  include_vars: "{{ rm_roles_meta_file }}"
+- name: 'rm: read-roles-meta: Debug'
   when: rm_debug
+  debug:
+    var: rm_roles_meta
+
 # - debug:
 #     var: rm_roles_meta.keys()
 #   when: rm_debug

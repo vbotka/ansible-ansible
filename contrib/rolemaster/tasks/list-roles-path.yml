@@ -1,19 +1,21 @@
 ---
 
-- set_fact:
-    roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
-- debug:
-    var: roles_path
-  when: rm_debug
-- find:
+- name: 'rm: list-roles-path: Find roles in {{ roles_path }}'
+  find:
     paths: "{{ roles_path }}"
-    patterns: "MY-PROJECT.*"
+    patterns: "{{ rm_roles_pattern }}"
     file_type: directory
   register: results
-- set_fact:
+- name: 'rm: list-roles-path: Collect roles paths'
+  set_fact:
     rm_roles_path: "{{ results.files|json_query('[].path') }}"
-- debug:
-    var: rm_roles_path
+- name: 'rm: list-roles-path: Debug number of roles {{ rm_roles_path|length }}'
+  debug:
+    msg: "Number of roles: {{ rm_roles_path|length }}"
+  when: rm_debug
+- name: 'rm: list-roles-path: Debug list roles paths'
+  debug:
+    var: rm_roles_path|sort
   when: rm_debug
 
 # EOF

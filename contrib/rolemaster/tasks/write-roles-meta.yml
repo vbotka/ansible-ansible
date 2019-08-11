@@ -1,32 +1,45 @@
 ---
 - include_tasks: fn/roles-meta-objects.yml
   loop: "{{ rm_roles_path|default([]) }}"
-- debug:
+- name: 'rm: write-roles-meta: Debug'
+  debug:
     var: rm_roles_meta
   when: rm_debug
+- name: 'rm: write-roles-meta: Create dirs'
+  file:
+    state: directory
+    path: "{{ item }}"
+  loop:
+    - "{{ rm_roles_license_dir }}"
+    - "{{ rm_roles_meta_dir }}"
 - block:
-    - set_fact:
-        rm_roles_meta_dir: "{{ rm_roles_meta_file|dirname }}"
-    - file:
-        state: directory
-        path: "{{ rm_roles_meta_dir }}"
-    - tempfile:
+    - name: 'rm: write-roles-meta: Create temp file'
+      tempfile:
         path: "{{ rm_roles_meta_dir }}"
       register: result
-    - file:
+    - name: 'rm: write-roles-meta: Set temp file permissions'
+      when: not ansible_check_mode
+      file:
         path: "{{ result.path }}"
-        mode: "0644"
-    - debug:
+        mode: "{{ rm_roles_file_mode }}"
+    - name: 'rm: write-roles-meta: Debug temp file'
+      when:
+        - rm_debug
+        - not ansible_check_mode
+      debug:
         msg: "{{ result.path }}"
+    - name: 'rm: write-roles-meta: Debug meta link'
       when: rm_debug
-    - debug:
+      debug:
         msg: "{{ rm_roles_meta_file }}"
-      when: rm_debug
-    - file:
+    - name: 'rm: write-roles-meta: Link temp file to {{ rm_roles_meta_file }}'
+      when: not ansible_check_mode
+      file:
         state: link
         src: "{{ result.path }}"
         dest: "{{ rm_roles_meta_file }}"
-    - template:
+    - name: 'rm: write-roles-meta: Write {{ rm_roles_meta_file }}'
+      template:
         src: templates/roles_meta.j2
         dest: "{{ rm_roles_meta_file }}"
         follow: true

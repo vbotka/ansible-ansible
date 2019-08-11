@@ -1,60 +1,130 @@
 ---
-
-# RoleMaster
-# Management of roles' meta-data and licenses.
 #
-# Examples:
+# Copyright 2019 Vladimir Botka <vbotka@gmail.com>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# RoleMaster. Management of roles' meta-data and licenses.
+#
+# Examples
+#
 # 1) Create list of roles' paths rm-roles-path
 #    $ ansible-playbook rolemaster.yml -t rm-list-roles-path
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path -e 'rm_debug=true'
+#
 # 2) Write roles' meta-data to rm_roles_meta_file
 #    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta -e 'rm_debug=true'
+#
+# 3) Read roles' meta-data from rm_roles_meta_file
+#    $ ansible-playbook rolemaster.yml -t rm-read-roles-meta
+#    $ ansible-playbook rolemaster.yml -t rm-read-roles-meta -e 'rm_debug=true'
+#
 # 4) Restore meta-data
 #    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta -e 'rm_debug=true'
+#
 # 5) Restore licenses
 #    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license
+#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license -e 'rm_debug=true'
 #
 # Notes:
 # 1) Create LICENSE-test and see the diff.
-#    $ for i in `find roles -name "MY-PROJECT*"`; do (echo $i; cd $i; diff LICENSE LICENSE-test); done
+#    $ for i in `find roles -name "MY-PROJECT*"`; do
+#      (echo $i; cd $i; diff LICENSE LICENSE-test); done
 
 
 - hosts: localhost
   gather_facts: false
+  become: false
 
   vars:
 
-    rm_debug: false
-    rm_backup_conf: false
+    rm_version: 1.0.0
+
+    # >>> CHANGE THIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     rm_owner: admin
     rm_group: admin
-    rm_roles_path: "/home/admin/.ansible/roles"
-    rm_roles_meta_file_write: true
-    rm_roles_meta_file: "/home/admin/.ansible/db/roles_meta.yml"
-    rm_roles_license_file: "/home/admin/.ansible/db/roles_license.yml"
+    rm_roles_pattern: my_roles.*
+    rm_roles_license_holder: 'License.Holder<lh@example.com>'
     rm_roles_license_year_to: 2019
-    rm_roles_license_holder: "Holder of the license"
-    # rm_ansible_lint: "/home/admin/bin/ansible-lint -c /home/admin/.ansible/.ansible-lint"
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CHANGE THIS <<<
+
+    rm_debug: false
+    rm_backup_conf: false
+    rm_roles_path: ''  # Get roles_path from ansible.cfg
+    # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
+    rm_roles_file_mode: '0644'
+    rm_roles_meta_file_write: true
+    rm_roles_meta_file: '/home/{{ rm_owner }}/.ansible/db/roles_meta.yml'
+    rm_roles_meta_dir: '/home/{{ rm_owner }}/.ansible/db/meta'
+    rm_roles_license_file: '/home/{{ rm_owner }}/.ansible/db/roles_license.yml'
+    rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
+    # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
+    #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
 
   tasks:
 
-    # Create list of roles' paths rm-roles-path
-    - import_tasks: tasks/list-roles-path.yml
+    - block:
+      - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+        when: rm_roles_path|length == 0
+        set_fact:
+          roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+      - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+        when: rm_roles_path|length > 0
+        set_fact:
+          roles_path: "{{ rm_roles_path }}"
+      - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+        when: rm_debug
+        debug:
+          var: roles_path
+      - name: 'rm: list-roles-path: Fail when roles_path is undefined'
+        when: roles_path is undefined
+        fail:
+          msg: '[ERROR] roles_path is undefined. End of play.'
+      tags: always
+
+    - name: 'rm: Create list of roles paths rm-roles-path'
+      import_tasks: tasks/list-roles-path.yml
       tags: rm-list-roles-path
 
-      # Write roles' meta-data to rm_roles_meta_file
-    - import_tasks: tasks/write-roles-meta.yml
+    - name: 'rm: Write roles meta-data to rm_roles_meta_file'
+      import_tasks: tasks/write-roles-meta.yml
       tags: rm-write-roles-meta
 
-      # Read roles' meta-data rm-roles-meta from rm_roles_meta_file
-    - import_tasks: tasks/read-roles-meta.yml
+    - name: 'rm: Read roles meta-data from rm_roles_meta_file'
+      import_tasks: tasks/read-roles-meta.yml
       tags: rm-read-roles-meta
 
-      # Restore roles' meta-data from rm_roles_meta_file
-    - import_tasks: tasks/restore-roles-meta.yml
+    - name: 'rm: Restore roles meta-data from rm_roles_meta_file'
+      import_tasks: tasks/restore-roles-meta.yml
       tags: rm-restore-roles-meta
 
-      # Restore roles' license from rm_roles_license_file
-    - import_tasks: tasks/restore-roles-license.yml
+    - name: 'rm: Restore roles license from rm_roles_license_file'
+      import_tasks: tasks/restore-roles-license.yml
       tags: rm-restore-roles-license
 
 # EOF

@@ -1,15 +1,18 @@
 ---
 
-- include_vars: "{{ rm_roles_license_file }}"
-- debug:
-    var: rm_roles_license
+- name: 'rm: retore-roles-license: Include vars'
+  include_vars: "{{ rm_roles_license_file }}"
+- name: 'rm: retore-roles-license: Debug'
   when: rm_debug
-- template:
+  debug:
+    var: rm_roles_license
+- name: 'rm: restore-roles-license: Create roles license files'
+  template:
     src: "templates/{{ item.value.template }}"
-    dest: "{{ rm_roles_path }}/{{ item.key }}/LICENSE"
+    dest: "{{ roles_path }}/{{ item.key }}/LICENSE"
     owner: "{{ rm_owner }}"
     group: "{{ rm_group }}"
-    mode: "0644"
+    mode: "{{ rm_roles_file_mode }}"
     backup: "{{ rm_backup_conf }}"
   loop: "{{ rm_roles_license|dict2items }}"
 

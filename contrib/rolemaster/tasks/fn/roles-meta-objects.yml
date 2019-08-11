@@ -1,11 +1,14 @@
 ---
 
-- include_vars: "{{ item }}/meta/main.yml"
-- set_fact:
+- name: 'rm: fn: roles-meta-objects: Include vars {{ item }}/meta/main.yml'
+  include_vars: "{{ item }}/meta/main.yml"
+- name: 'rm: fn: roles-meta-objects: Get role galaxy info'
+  set_fact:
     rm_roles_meta: "{{ rm_roles_meta|default([]) |
                        combine({item:
                                 {'galaxy_info': galaxy_info,
-                                'dependencies': dependencies}}) }}"
+                                'dependencies': dependencies}
+                                }) }}"
 
 # EOF
 ...
