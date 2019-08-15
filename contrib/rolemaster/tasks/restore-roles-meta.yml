@@ -16,7 +16,7 @@
     owner: "{{ rm_owner }}"
     group: "{{ rm_group }}"
     backup: "{{ rm_backup_conf }}"
-#   validate: "{{ rm_ansible_lint }} %s"
+    # validate: "{{ rm_ansible_lint }} %s"
   loop: "{{ rm_roles_meta|dict2items }}"
 
 # EOF
