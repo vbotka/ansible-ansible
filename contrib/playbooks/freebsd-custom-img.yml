@@ -1,0 +1,218 @@
+---
+
+#
+# Copyright 2019 Vladimir Botka <vbotka@gmail.com>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# -------------------------------------------------------------------
+#
+#                        Customize FreeBSD image
+#
+# Ansible playbook: freebsd-custom-img.yml
+# Description: This playbook mounts partition with installed FreeBSD
+# and configures the system
+# Usage:
+# * Dump the image to the media:
+#   $ dd if=FreeBSD-12.0-RELEASE-arm-armv6-RPI-B.img of=/dev/mmcsd0 \
+#        bs=1m conv=sync status=progress
+# * Fit the variables in the playbook to your needs.
+# * Run the playbook:
+#   $ ansible-playbook freebsd-custom-img.yml
+# * Review the changes and umount the partition manually
+# * The system should automaticaly connect to the preconfigured AP and
+#   configure IP adress. It should be possible to ssh to the
+#   preinstalled user.
+#
+# -------------------------------------------------------------------
+
+- hosts: lab1.example.com
+
+# BEGIN ANSIBLE MANAGED BLOCK preamble
+  connection: ssh
+  remote_user: admin
+  become: true
+  become_user: root
+  become_method: sudo
+# END ANSIBLE MANAGED BLOCK preamble
+
+  vars:
+
+    fci_version: 0.1.0
+
+    # mount image
+    fci_mount: true
+    fci_mount_point: true
+    fci_mount_image: '/dev/mmcsd0s2a'
+    fci_mount_fstype: 'ufs'
+    fci_mount_path: '/mnt3'
+
+    # /boot/loader.conf
+    fci_loaderconf: true
+    fci_loaderconf_modules:
+      - 'pf'
+      - 'pflog'
+      - 'wlan'
+      - 'wlan_wep'
+      - 'wlan_tkip'
+      - 'wlan_ccmp'
+      - 'wlan_amrr'
+      - 'if_rtwn_usb'
+    fci_loaderconf_data:
+      - 'hw.usb.template=3'
+      - 'umodem_load="YES"'
+      - 'beastie_disable="YES"'
+      - 'loader_color="NO"'
+      - 'legal.realtek.license_ack=1'
+    fci_loaderconf_data_sysctl: []
+
+    # /etc/rc.conf
+    fci_rcconf: true
+    fci_rcconf_data:
+      - {key: 'wlans_rtwn0', value: 'wlan0'}
+      - {key: 'ifconfig_wlan0', value: 'WPA SYNCDHCP'}
+
+    # /etc/wpa_supplicant.conf
+    fci_wpasupconf: true
+    fci_wpasupconf_link: true
+    fci_wpasupconf_file: '/etc/wpa_supplicant.conf'
+    fci_wpasupconf_owner: 'root'
+    fci_wpasupconf_group: 'wheel'
+    fci_wpasupconf_mode: '0640'
+    fci_wpasupconf_backup: false
+    fci_wpasupconf_dev_link: 'wlan0'
+    fci_wpasupconf_global:
+      - {key: 'ctrl_interface', value: '/var/run/wpa_supplicant'}
+      - {key: 'ctrl_interface_group', value: 'wheel'}
+      - {key: 'fast_reauth', value: '1'}
+    fci_wpasupconf_data:
+      - dev: 'wlan0'
+        network:
+          - conf:
+              - {key: 'ssid', value: '"MY-AP1"'}
+              - {key: 'psk', value: '"MY-AP1-PASSWORD"'}
+              - {key: 'disabled', value: '1'}
+          - conf:
+              - {key: 'ssid', value: '"MY-AP2"'}
+              - {key: 'psk', value: '"MY-AP2-PASSWORD"'}
+              - {key: 'disabled', value: '0'}
+
+    # authorized keys
+    # fci_authkeys: true
+    # fci_authorized_key:
+    #   - user: "freebsd"
+    #     key: "{{ lookup('file', 'copy/ssh-pub-keys/admin-ar1/id_rsa.pub') }}"
+    #   - user: "freebsd"
+    #     key: "{{ lookup('file', 'copy/ssh-pub-keys/admin-ar2/id_rsa.pub') }}"
+
+  tasks:
+
+    - name: 'Create mount point'
+      when: fci_mount_point
+      file:
+        state: 'directory'
+        path: '{{ fci_mount_path }}'
+      tags: fci_mount_point
+
+    - name: 'Mount image'
+      when: fci_mount
+      mount:
+        state: 'mounted'
+        src: '{{ fci_mount_image }}'
+        path: '{{ fci_mount_path }}'
+        fstype: '{{ fci_mount_fstype }}'
+      tags: fci_mount
+
+    - name: 'Configure /boot/loader.conf'
+      when: fci_loaderconf
+      template:
+        src: 'loader.conf.j2'
+        dest: '{{ fci_mount_path }}/boot/loader.conf'
+        owner: 'root'
+        group: 'wheel'
+        mode: '0644'
+      tags: fci_loaderconf
+
+    - name: 'Configure /etc/rc.conf'
+      when: fci_rcconf
+      lineinfile:
+        dest: '{{ fci_mount_path }}/etc/rc.conf'
+        regexp: '^\s*{{ item.key }}\s*='
+        line: '{{ item.key }}="{{ item.value }}"'
+        owner: 'root'
+        group: 'wheel'
+        mode: '0644'
+      loop: '{{ fci_rcconf_data }}'
+      tags: fci_rcconf
+
+    - name: 'Configure /etc/wpasupplicant.conf'
+      when: fci_wpasupconf
+      template:
+        src: "wpa_supplicant.conf.j2"
+        dest: "{{ fci_mount_path }}/{{ fci_wpasupconf_file }}.{{ item.dev }}"
+        owner: "{{ fci_wpasupconf_owner }}"
+        group: "{{ fci_wpasupconf_group }}"
+        mode: "{{ fci_wpasupconf_mode }}"
+        backup: "{{ fci_wpasupconf_backup }}"
+      loop: "{{ fci_wpasupconf_data }}"
+      tags: fp_wpasupconf
+
+    - name: 'Link /etc/wpasupplicant.conf'
+      when: fci_wpasupconf_link
+      file:
+        state: link
+        src: "{{ fci_wpasupconf_file }}.{{ fci_wpasupconf_dev_link }}"
+        dest: "{{ fci_wpasupconf_file }}"
+        force: true
+      tags: fp_wpasupconf_link
+
+# Error: The module authorized_key does not work if the user does not exist.
+# "msg": "Failed to lookup user freebsd: 'getpwnam(): name not found: freebsd'"
+#
+#    - name: 'Configure authorized keys'
+#      when: fci_authkeys
+#      authorized_key:
+#        user: '{{ item.user }}'
+#        key: '{{ item.key }}'
+#        exclusive: '{{ item.exclusive|default(omit) }}'
+#        comment: '{{ item.comment|default(omit) }}'
+#        follow: '{{ item.follow|default(omit) }}'
+#        key_options: '{{ item.key_iptions|default(omit) }}'
+#        manage_dir: '{{ item.manage_dir|default(omit) }}'
+#        # path: '{{ item.path|default(omit) }}'
+#        path: '{{ fci_mount_path }}/home/{{ item.user }}/.ssh/authorized_keys'
+#        state: '{{ item.state|default(omit) }}'
+#        validate_certs: '{{ item.validate_certs|default(omit) }}'
+#      loop: '{{ fci_authorized_key }}'
+#      tags: fci_authkeys
+
+# TODO:
+# 1) authorized keys
+# 2) install: pkg, sudo, gettext-runtime, indexinfo, gtar
+# 3) config: sudo
+
+# EOF
+...
