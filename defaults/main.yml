@@ -1,9 +1,9 @@
 ---
 # default vars for ansible
 
-ma_debug: False
-ma_install: True
-ma_backup_conf: no
+ma_debug: false
+ma_install: true
+ma_backup_conf: false
 
 # Install packages
 freebsd_install_method: "ports"

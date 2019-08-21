@@ -30,7 +30,7 @@
     regexp: "^{{ item.1.key }}"
     line: "{{ item.1.key }}={{ item.1.value }}"
     insertafter: "\\[{{ item.1.section }}\\]"
-    create: yes
+    create: true
     backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
   when:
@@ -47,7 +47,7 @@
     section: "{{ item.1.section }}"
     option: "{{ item.1.key }}"
     value: "{{ item.1.key }}={{ item.1.value }}"
-    create: yes
+    create: true
     backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
   when:

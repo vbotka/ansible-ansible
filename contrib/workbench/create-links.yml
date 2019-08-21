@@ -16,7 +16,7 @@
 
 - hosts: localhost
   debugger: on_failed
-  gather_facts: no
+  gather_facts: false
 
   vars:
     my_version: "0.1.4-CURRENT"
