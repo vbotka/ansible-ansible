@@ -31,7 +31,7 @@
       set_fact:
         ma_plugins_inikeys: "{{ ma_plugins|json_query('[].plugins[].ini_key')|list|unique }}"
     - name: "plugins: Debug ma_plugins_inikeys"
-      when: ma_debug
+      when: ma_debug|bool
       debug:
         var: ma_plugins_inikeys
     - name: "plugins: Create list of plugins ma_plugins_list"
@@ -41,21 +41,21 @@
                                                                   enable: enable}')
                                                                   |list }}"
     - name: "plugins: Debug ma_plugins_list"
-      when: ma_debug
+      when: ma_debug|bool
       debug:
         var: ma_plugins_list
     - name: "plugins: Group plugins by ini_key to ma_plugins_grouped"
       set_fact:
         ma_plugins_grouped: "{{ ma_plugins_list|groupby('ini_key') }}"
     - name: "plugins: Debug ma_plugins_grouped"
-      when: ma_debug
+      when: ma_debug|bool
       debug:
         var: ma_plugins_grouped
     - name: "plugins: Create list of ini_key ma_plugins_inikeys_list"
       set_fact:
         ma_plugins_inikeys_list: "{{ ma_plugins_sections.keys() }}"
     - name: "plugins: Debug ma_plugins_inikeys_list"
-      when: ma_debug
+      when: ma_debug|bool
       debug:
         var: ma_plugins_inikeys_list
     - name: "plugins: Create lists of paths ma_plugins_paths_list"
@@ -64,7 +64,7 @@
                                    [ {item.0: {'paths': item.1|json_query('[?enable].path')} } ] }}"
       loop: "{{ ma_plugins_grouped }}"
     - name: "plugins: Debug ma_plugins_paths_list"
-      when: ma_debug
+      when: ma_debug|bool
       debug:
         msg: "{{ item }}"
       loop: "{{ ma_plugins_paths_list }}"

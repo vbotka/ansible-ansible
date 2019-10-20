@@ -5,7 +5,7 @@
     - name: "configure: Create directories for Ansible configuration"
       file:
         dest: "{{ item.path | dirname }}"
-        state: directory
+        state: "directory"
       loop: "{{ ma_config }}"
     - name: "configure: Ansible configuration from template"
       template:

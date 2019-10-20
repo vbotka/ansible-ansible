@@ -1,8 +1,8 @@
 ---
 # default vars for ansible
 
-ma_debug: false
 ma_install: true
+ma_debug: false
 ma_backup_conf: false
 
 # Install packages

@@ -5,11 +5,11 @@
   tags: [ma_vars, always]
 
 - import_tasks: debug.yml
-  when: ma_debug
+  when: ma_debug|bool
   tags: [ma_debug, always]
 
 - import_tasks: packages.yml
-  when: ma_install
+  when: ma_install|bool
   tags: ma_packages
 
 - import_tasks: plugins.yml
