@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# (c) 2019, Vladimir Botka <vbotka@gmail.com>
-# Simplified BSD License (opensource.org/licenses/BSD-2-Clause)
+# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version="0.1.4-CURRENT"
+version="0.1.5-CURRENT"
 
 usage="ansible-workbench ver $version
 Usage:
@@ -102,12 +102,15 @@ repos_clone_update_link() {
     if [ ! -e "${repos_dir}" ]; then
 	mkdir -p ${repos_dir}
     fi
-    ansible_params="my_repos_file=${misc_dir}/vars/repos.yml \
-                    my_repos_path=${repos_dir} \
-                    my_git_user=${git_user} \
+    ansible_params="my_git_user=${git_user} \
+                    my_user=${owner} \
+                    my_group=${owner_group} \
                     my_mode=${mode} \
+                    my_repos_path=${repos_dir} \
+                    my_repos_file=${misc_dir}/vars/repos.yml \
                     debug=${playbook_debug}"
-    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} install-repos-from-git.yml)
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
+		       ${playbook_dryrun} install-repos-from-git.yml)
     chown -R ${owner}:${owner_group} ${repos_dir}
 }
 
@@ -116,12 +119,15 @@ roles_clone_update_link() {
     if [ ! -e "${roles_dir}" ]; then
 	mkdir -p ${roles_dir}
     fi
-    ansible_params="my_repos_file=${misc_dir}/vars/roles.yml \
-                    my_repos_path=${roles_dir} \
-                    my_git_user=${git_user} \
+    ansible_params="my_git_user=${git_user} \
+                    my_user=${owner} \
+                    my_group=${owner_group} \
                     my_mode=${mode} \
+                    my_repos_path=${repos_dir} \
+                    my_repos_file=${misc_dir}/vars/roles.yml \
                     debug=${playbook_debug}"
-    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} install-repos-from-git.yml)
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
+                       ${playbook_dryrun} install-repos-from-git.yml)
     chown -R ${owner}:${owner_group} ${roles_dir}
 }
 
@@ -130,12 +136,15 @@ projects_clone_update_link() {
     if [ ! -e "${projects_dir}" ]; then
 	mkdir -p ${projects_dir}
     fi
-    ansible_params="my_repos_file=${misc_dir}/vars/projects.yml \
-                    my_repos_path=${projects_dir} \
-                    my_git_user=${git_user} \
+    ansible_params="my_git_user=${git_user} \
+                    my_user=${owner} \
+                    my_group=${owner_group} \
                     my_mode=${mode} \
+                    my_repos_path=${roles_dir} \
+                    my_repos_file=${misc_dir}/vars/projects.yml \
                     debug=${playbook_debug}"
-    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} install-repos-from-git.yml)
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
+	               ${playbook_dryrun} install-repos-from-git.yml)
     chown -R ${owner}:${owner_group} ${projects_dir}
 }
 
@@ -144,7 +153,8 @@ create_links() {
     ansible_params="my_base_path=${base_dir} \
                     my_mode=${mode} \
                     debug=${playbook_debug}"
-    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} create-links.yml)
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
+                       ${playbook_dryrun} create-links.yml)
 }
 
 # Create ansible-runner private data
@@ -158,7 +168,8 @@ runner_create_private() {
                     my_git_user=${git_user} \
                     my_mode=${mode} \
                     debug=${playbook_debug}"
-    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" ${playbook_dryrun} create-runner-private.yml)
+    (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
+                       ${playbook_dryrun} create-runner-private.yml)
     chown -R ${owner}:${owner_group} ${runner_dir}
 }
 

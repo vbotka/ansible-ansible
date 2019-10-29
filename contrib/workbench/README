@@ -12,9 +12,7 @@ Installation
  5) Create link to ansible-misc
     $ cd $HOME/.ansible && ln -s ansible-misc misc
  6) Copy sample configuration. Review and fit the configuration to your needs.
-    $ cp .ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
- 6) Copy sample configuration. Review and fit the configuration to your needs.
-    $ cp .ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
+    $ cp $HOME/.ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
  7) Copy sample configuration. Review and fit the configuration to your needs.
     $ cp $HOME/.ansible/ansible-misc/ansible.cfg.sample.freebsd $HOME/.ansible/ansible-misc/ansible.cfg
  8) Copy sample hosts. Review and fit the hosts to your needs.

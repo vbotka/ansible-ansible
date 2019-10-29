@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# ------------------------------------------------------------------------------
 # Clone a github repo to the current directory. Pull if exists. Read
 # the repos from the file requirements.yml.github
 #

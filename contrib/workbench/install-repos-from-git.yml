@@ -1,10 +1,10 @@
 ---
 
-# (c) 2019, Vladimir Botka <vbotka@gmail.com>
-# Simplified BSD License (opensource.org/licenses/BSD-2-Clause)
+# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # ------------------------------------------------------------------------------
-# Install git repositories.
+# Install git repositories
 #
 # Parameters:
 #   my_repos_file ............. file with the list of the repos
@@ -20,39 +20,44 @@
 # ------------------------------------------------------------------------------
 
 - hosts: localhost
+  connection: local
   debugger: on_failed
   gather_facts: false
 
   vars:
-    my_version: "0.1.4-CURRENT"
+
+    my_version: "0.1.5-CURRENT"
     git_module: false
-    my_git_user: admin
+
+    my_git_user: "admin"
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
     my_mode: "u=+rwX,g=+rX-w,o=-rwx"
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
-    my_repos_file: vars/repos.yml
+    my_repos_file: "vars/repos.yml"
 
   tasks:
+
+    - name: "Include list of repos from {{ my_repos_file }}"
+      include_vars: "{{ my_repos_file }}"
 
     - name: "Debug"
       debug:
         msg: "{{ msg.split('\n') }}"
       vars:
         msg: |
-          my_version [ {{ my_version }} ]
-          git_module [ {{ git_module }} ]
-          my_git_user [ {{ my_git_user }} ]
-          my_user [ {{ my_user }} ]
-          my_group [ {{ my_group }} ]
-          my_mode [ {{ my_mode }} ]
-          my_repos_path [ {{ my_repos_path }} ]
-          my_repos_file [ {{ my_repos_file }} ]
-          ansible_check_mode [ {{ ansible_check_mode }} ]
+          my_version [{{ my_version }}]
+          git_module [{{ git_module }}]
+          my_git_user [{{ my_git_user }}]
+          my_user [{{ my_user }}]
+          my_group [{{ my_group }}]
+          my_mode [{{ my_mode }}]
+          my_repos_path [{{ my_repos_path }}]
+          my_repos_file [{{ my_repos_file }}]
+          ansible_check_mode [{{ ansible_check_mode }}]
+          requirements
+          {{ requirements|to_nice_yaml }}
       when: debug|default(false)|bool
-
-    - name: "Include list of repos from {{ my_repos_file }}"
-      include_vars: "{{ my_repos_file }}"
 
     - name: "Debug"
       debug:
@@ -87,7 +92,7 @@
     - name: "Chown and chmod repos"
       file:
         state: directory
-        recurse: true
+        recurse: yes
         dest: "{{ my_repos_path }}/{{ item.name }}"
         owner: "{{ my_user }}"
         group: "{{ my_group }}"
