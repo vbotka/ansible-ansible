@@ -30,6 +30,9 @@
 
   tasks:
 
+    - name: "Include list of private directories from {{ my_runner_file }}"
+      include_vars: "{{ my_runner_file }}"
+
     - name: "Debug"
       debug:
         msg: "{{ msg.split('\n') }}"
@@ -38,15 +41,9 @@
           my_version [{{ my_version }}]
           my_base_path [{{ my_base_path }}]
           my_runner_file [{{ my_runner_file }}]
-      when: debug|default(false)|bool
-
-    - name: "Include list of private directories from {{ my_runner_file }}"
-      include_vars: "{{ my_runner_file }}"
-
-    - name: "Debug requirements"
-      debug:
-        msg: "path [{{ item.path }}] link [{{ item.project }}]"
-      loop: "{{ requirements }}"
+          ansible_check_mode [{{ ansible_check_mode }}]
+          requirements
+          {{ requirements|to_nice_yaml }}
       when: debug|default(false)|bool
 
     - name: "Debug directories for private data"

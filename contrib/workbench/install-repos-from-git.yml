@@ -28,7 +28,6 @@
 
     my_version: "0.1.5-CURRENT"
     git_module: false
-
     my_git_user: "admin"
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
@@ -59,12 +58,6 @@
           {{ requirements|to_nice_yaml }}
       when: debug|default(false)|bool
 
-    - name: "Debug"
-      debug:
-        msg: "repo: {{ item.src }} dest: {{ my_repos_path }}/{{ item.name }}"
-      loop: "{{ requirements }}"
-      when: debug|default(false)|bool
-
     - name: "Git install repos"
       git:
         repo: "{{ item.src }}"
@@ -72,8 +65,8 @@
         version: "{{ item.version|default('HEAD') }}"
       loop: "{{ requirements }}"
       when:
-        - git_module
         - item.install|default(true)
+        - git_module|bool
 
     - name: "Command install repos"
       command: "/bin/sh -c 'cd {{ my_repos_path }};
@@ -86,13 +79,13 @@
         chdir: "{{ my_repos_path }}"
       loop: "{{ requirements }}"
       when:
-        - not git_module
         - item.install|default(true)
+        - not git_module|bool
 
     - name: "Chown and chmod repos"
       file:
-        state: directory
-        recurse: yes
+        state: "directory"
+        recurse: true
         dest: "{{ my_repos_path }}/{{ item.name }}"
         owner: "{{ my_user }}"
         group: "{{ my_group }}"
@@ -104,7 +97,7 @@
 
     - name: "Link repos"
       file:
-        state: link
+        state: "link"
         src: "{{ my_repos_path }}/{{ item.name }}"
         dest: "{{ my_repos_path }}/{{ item.link }}"
         owner: "{{ my_user }}"

@@ -38,11 +38,17 @@ Installation
 Update all (skipping steps 10-17)
 =================================
  1) Update all
-    $ ansible-misc/ansible-workbench.sh all
+    ansible-misc/ansible-workbench.sh all
  2) Dry-run synchronize ansible-misc
-    $ rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
+    rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
  3) Synchronize ansible-misc
-    $ rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
+    rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
 
+Misc
+====
+ 1) Print diff
+    while read l; do echo $l; diff $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l; done < FILES
+ 2) Copy FILES to roles/vbotka.ansible/contrib/workbench
+    while read l; do cp $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l; done < FILES    
 
 # EOF

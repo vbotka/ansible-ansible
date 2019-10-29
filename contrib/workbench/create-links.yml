@@ -27,6 +27,9 @@
 
   tasks:
 
+    - name: "Include list of links from {{ my_links_file }}"
+      include_vars: "{{ my_links_file }}"
+
     - name: "Debug"
       debug:
         msg: "{{ msg.split('\n') }}"
@@ -35,14 +38,14 @@
           my_version [{{ my_version }}]
           my_base_path [{{ my_base_path }}]
           my_links_file [{{ my_links_file }}]
+          ansible_check_mode [{{ ansible_check_mode }}]
+          requirements
+          {{ requirements|to_nice_yaml }}
       when: debug|default(false)|bool
-
-    - name: "Include list of links from {{ my_links_file }}"
-      include_vars: "{{ my_links_file }}"
 
     - name: "Debug"
       debug:
-        msg: "path {{ item.path }} link {{ item.link }} 0 {{ item.path.0 }}"
+        msg: "path {{ item.path }} link {{ item.link }}"
       loop: "{{ requirements }}"
       when: debug|default(false)|bool
 

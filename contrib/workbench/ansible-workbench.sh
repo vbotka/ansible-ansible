@@ -23,16 +23,17 @@ if [ "$#" -lt "$expected_args" ]; then
     exit 0
 fi
 
-git_user=admin
-owner=admin
-owner_group=admin
+git_user="admin"
+git_module="false"
+owner="admin"
+owner_group="admin"
 mode="u=+rwX,g=+rX-w,o=-rwx"
-base_dir=/home/${owner}/.ansible
-repos_dir=${base_dir}
-roles_dir=${base_dir}/roles
-projects_dir=${base_dir}/projects
-runner_dir=${base_dir}/runner
-misc_dir=${base_dir}/ansible-misc
+base_dir="/home/${owner}/.ansible"
+repos_dir="${base_dir}"
+roles_dir="${base_dir}/roles"
+projects_dir="${base_dir}/projects"
+runner_dir="${base_dir}/runner"
+misc_dir="${base_dir}/ansible-misc"
 
 # Configuration file
 if [ -e $HOME/.ansible-workbench.conf ]; then
@@ -102,7 +103,8 @@ repos_clone_update_link() {
     if [ ! -e "${repos_dir}" ]; then
 	mkdir -p ${repos_dir}
     fi
-    ansible_params="my_git_user=${git_user} \
+    ansible_params="git_module=${git_module} \
+                    my_git_user=${git_user} \
                     my_user=${owner} \
                     my_group=${owner_group} \
                     my_mode=${mode} \
@@ -119,11 +121,12 @@ roles_clone_update_link() {
     if [ ! -e "${roles_dir}" ]; then
 	mkdir -p ${roles_dir}
     fi
-    ansible_params="my_git_user=${git_user} \
+    ansible_params="git_module=${git_module} \
+                    my_git_user=${git_user} \
                     my_user=${owner} \
                     my_group=${owner_group} \
                     my_mode=${mode} \
-                    my_repos_path=${repos_dir} \
+                    my_repos_path=${roles_dir} \
                     my_repos_file=${misc_dir}/vars/roles.yml \
                     debug=${playbook_debug}"
     (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
@@ -136,11 +139,12 @@ projects_clone_update_link() {
     if [ ! -e "${projects_dir}" ]; then
 	mkdir -p ${projects_dir}
     fi
-    ansible_params="my_git_user=${git_user} \
+    ansible_params="git_module=${git_module} \
+                    my_git_user=${git_user} \
                     my_user=${owner} \
                     my_group=${owner_group} \
                     my_mode=${mode} \
-                    my_repos_path=${roles_dir} \
+                    my_repos_path=${projects_dir} \
                     my_repos_file=${misc_dir}/vars/projects.yml \
                     debug=${playbook_debug}"
     (cd ${misc_dir} && ansible-playbook -e "${ansible_params}" \
