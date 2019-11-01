@@ -1,7 +1,7 @@
 # All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version_lib="0.2.0-CURRENT"
+version_lib="0.2.1-CURRENT"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"
@@ -122,6 +122,7 @@ ansible_role() {
 config_files() {
     create_ansible_cfg
     create_ansible_workbench_cfg
+    create_hosts
 }
 
 create_ansible_workbench_cfg() {
@@ -147,6 +148,14 @@ create_ansible_cfg() {
 	fi
     fi
 }
+
+create_hosts() {
+    if [ -e "${my_ansible_hosts}" ]; then
+        printf "[OK]  ${my_ansible_hosts} exists\n"
+    else
+	printf "[ERR] ${my_ansible_hosts} does not exist."
+    fi
+} # TODO: automagic detection?
 
 # dirs: Create directories if not exist -----------------------------------
 create_dirs() {
@@ -280,6 +289,8 @@ install_path_test() {
 
 # debug -------------------------------------------------------------------
 print_debug() {
+    printf "version: ${version}\n"
+    printf "version_lib: ${version_lib}\n"
     printf "configuration file: ${my_config_file}\n"
     printf "git_module: ${git_module}\n"
     printf "git_user: ${git_user}\n"
