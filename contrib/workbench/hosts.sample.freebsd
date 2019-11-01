@@ -4,5 +4,5 @@
 [localhost:vars]
 ansible_become=no
 ansible_connection=local
-ansible_python_interpreter=/usr/local/bin/python2.7
+ansible_python_interpreter=/usr/local/bin/python3.6
 ansible_perl_interpreter=/usr/local/bin/perl

@@ -119,7 +119,6 @@
               - {key: 'ssid', value: '"MY-AP2"'}
               - {key: 'psk', value: '"MY-AP2-PASSWORD"'}
               - {key: 'disabled', value: '0'}
-
     # authorized keys
     # fci_authkeys: true
     # fci_authorized_key:

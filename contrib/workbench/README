@@ -2,53 +2,69 @@ Installation
 ============
 
  1) Create base directory
-    $ mkdir $HOME/.ansible
+     $ mkdir $HOME/.ansible
  2) Create directory .ansible/roles
     $ mkdir $HOME/.ansible/roles
  3) Clone role vbotka.ansible
     $ git clone https://github.com/vbotka/ansible-ansible $HOME/.ansible/roles/vbotka.ansible
- 4) Copy contrib/workbench to ansible-misc
-    $ cp -r $HOME/.ansible/roles/vbotka.ansible/contrib/workbench $HOME/.ansible/ansible-misc
- 5) Create link to ansible-misc
-    $ cd $HOME/.ansible && ln -s ansible-misc misc
+ 4) Copy contrib/workbench to ansible-workbench
+    $ cp -r $HOME/.ansible/roles/vbotka.ansible/contrib/workbench
+            $HOME/.ansible/ansible-workbench
+ 5) Create link to ansible-workbench
+    $ cd $HOME/.ansible && ln -s ansible-workbench workbench
  6) Copy sample configuration. Review and fit the configuration to your needs.
-    $ cp $HOME/.ansible/ansible-misc/ansible-workbench.conf.sample.freebsd $HOME/.ansible-workbench.conf
+    $ cp $HOME/.ansible/ansible-workbench/ansible-workbench.cfg.sample
+         $HOME/.ansible-workbench.cfg
  7) Copy sample configuration. Review and fit the configuration to your needs.
-    $ cp $HOME/.ansible/ansible-misc/ansible.cfg.sample.freebsd $HOME/.ansible/ansible-misc/ansible.cfg
+    $ cp $HOME/.ansible/ansible-workbench/ansible.cfg.sample
+         $HOME/.ansible/ansible-workbench/ansible.cfg
  8) Copy sample hosts. Review and fit the hosts to your needs.
-    $ cp $HOME/.ansible/ansible-misc/hosts.sample.freebsd $HOME/.ansible/ansible-misc/hosts
- 9) Create lists in $HOME/.ansible/ansible-misc/vars
-10) Dry-run installation of repos with debug
-    $ ansible-misc/ansible-workbench.sh -d -n repos
-11) Install repos
-    $ ansible-misc/ansible-workbench.sh repos
-12) Dry-run installation of roles with debug
-    $ ansible-misc/ansible-workbench.sh -d -n roles
-13) Install roles
-    $ ansible-misc/ansible-workbench.sh roles
-14) Dry-run installation of projects with debug
-    $ ansible-misc/ansible-workbench.sh -d -n projects
-15) Install projects
-    $ ansible-misc/ansible-workbench.sh projects
-16) Dry-run create links with debug
-    $ ansible-misc/ansible-workbench.sh -d -n links
-17) Create links
-    $ ansible-misc/ansible-workbench.sh links
+    $ cp $HOME/.ansible/ansible-workbench/hosts.sample.ubuntu
+         $HOME/.ansible/ansible-workbench/hosts
+ 9) Create lists in $HOME/.ansible/ansible-workbench/vars
 
-Update all (skipping steps 10-17)
+10) Dry-run installation of repos with debug
+    $ ansible-workbench/ansible-workbench.sh -d -n repos
+11) Install repos
+    $ ansible-workbench/ansible-workbench.sh repos
+12) Dry-run installation of roles with debug
+    $ ansible-workbench/ansible-workbench.sh -d -n roles
+13) Install roles
+    $ ansible-workbench/ansible-workbench.sh roles
+14) Dry-run installation of projects with debug
+    $ ansible-workbench/ansible-workbench.sh -d -n projects
+15) Install projects
+    $ ansible-workbench/ansible-workbench.sh projects
+16) Dry-run create links with debug
+    $ ansible-workbench/ansible-workbench.sh -d -n links
+17) Create links
+    $ ansible-workbench/ansible-workbench.sh links
+18) Dry-run installation of runner projects with debug
+    $ ansible-workbench/ansible-workbench.sh -d -n runner
+19) Install runner
+    $ ansible-workbench/ansible-workbench.sh runner
+
+Update all (skipping steps 10-19)
 =================================
  1) Update all
-    ansible-misc/ansible-workbench.sh all
- 2) Dry-run synchronize ansible-misc
-    rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
- 3) Synchronize ansible-misc
-    rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/ $HOME/.ansible/ansible-misc
+    ansible-workbench/ansible-workbench.sh all
+ 2) Dry-run synchronize ansible-workbench
+    rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/
+                $HOME/.ansible/ansible-workbench
+ 3) Synchronize ansible-workbench
+    rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/
+               $HOME/.ansible/ansible-workbench
 
-Misc
-====
+Workbench
+=========
  1) Print diff
-    while read l; do echo $l; diff $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l; done < FILES
+    while read l; do
+      echo $l
+      diff $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+    done < FILES
  2) Copy FILES to roles/vbotka.ansible/contrib/workbench
-    while read l; do cp $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l; done < FILES    
+    while read l; do
+      cp $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+    done < FILES    
 
 # EOF

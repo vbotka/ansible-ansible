@@ -12,6 +12,7 @@
 #
 # Notes:
 #   * Used by ansible-workbench.sh
+#   * vars are defaults. Will be overriden by --extra-vars
 # ------------------------------------------------------------------------------
 
 - hosts: localhost
@@ -21,7 +22,7 @@
 
   vars:
 
-    my_version: "0.1.5-CURRENT"
+    my_version: "0.2.0-CURRENT"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_links_file: "vars/links.yml"
 

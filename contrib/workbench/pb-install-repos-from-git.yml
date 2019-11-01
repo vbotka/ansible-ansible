@@ -4,6 +4,7 @@
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # ------------------------------------------------------------------------------
+# Ansible playbook
 # Install git repositories
 #
 # Parameters:
@@ -17,6 +18,7 @@
 #
 # Notes:
 #   * Used by ansible-workbench.sh
+#   * vars are defaults. Will be overriden by --extra-vars
 # ------------------------------------------------------------------------------
 
 - hosts: localhost
@@ -26,7 +28,7 @@
 
   vars:
 
-    my_version: "0.1.5-CURRENT"
+    my_version: "0.2.0-CURRENT"
     git_module: false
     my_git_user: "admin"
     my_user: "{{ lookup('env','USER') }}"
@@ -89,7 +91,7 @@
         dest: "{{ my_repos_path }}/{{ item.name }}"
         owner: "{{ my_user }}"
         group: "{{ my_group }}"
-        mode: "{{ my_mode }}"
+        # mode: "{{ my_mode }}"
       loop: "{{ requirements }}"
       when:
         - item.install|default(true)

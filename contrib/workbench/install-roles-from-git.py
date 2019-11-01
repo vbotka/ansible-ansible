@@ -3,7 +3,7 @@
 # All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Clone a github repo to the current directory. Pull if exists. Read
 # the repos from the file requirements.yml.github
 #
@@ -11,7 +11,8 @@
 # - src: https://github.com/vbotka/ansible-ansible.git
 #   name: vbotka.ansible
 #
-# http://docs.ansible.com/ansible/latest/reference_appendices/galaxy.html#installing-multiple-roles-from-a-file
+# http://docs.ansible.com/ansible/latest/reference_appendices/
+# galaxy.html#installing-multiple-roles-from-a-file
 # https://git-scm.com/docs/git-clone
 # Try: ansible-galaxy install -r requirements.yml -p ROLE_PATH
 
@@ -32,7 +33,7 @@ for repo in data[:]:
         command = command_pull
     else:
         command = command_clone
-    print("%s\n" % command)
+        print("%s\n" % command)
     try:
         output = subprocess.check_output([command], shell=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as exception:

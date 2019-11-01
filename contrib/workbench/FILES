@@ -1,0 +1,17 @@
+FILES
+README
+ansible.cfg.sample
+ansible-workbench.cfg.sample
+ansible-workbench-lib.sh
+ansible-workbench.sh
+hosts.sample.freebsd
+hosts.sample.debian
+install-roles-from-git.py
+pb-create-links.yml
+pb-create-runner-private.yml
+pb-install-repos-from-git.yml
+vars/links.yml.sample
+vars/projects.yml.sample
+vars/repos.yml.sample
+vars/roles.yml.sample
+vars/runner.yml.sample

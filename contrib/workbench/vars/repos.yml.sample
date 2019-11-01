@@ -40,11 +40,6 @@ requirements:
     link: jails
     install: true
   
-  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-misc"
-    name: ansible-misc
-    link: misc
-    install: false
-      
   - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-servers"
     name: ansible-servers
     link: servers
@@ -54,3 +49,8 @@ requirements:
     name: ansible-vault
     link: vault
     install: true
+
+  - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-workbench"
+    name: ansible-workbench
+    link: workbench
+    install: false
