@@ -1,7 +1,7 @@
 # All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version_lib="0.2.1-CURRENT"
+version_lib="0.2.2-CURRENT"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"
@@ -40,31 +40,31 @@ ${workbench_dir}/vars/runner.yml"
 
 repo_clone_update() {
     if [ -e "${dir}" ]; then
-        echo "[OK]  ${dir} exists"
+        printf "[OK]  ${dir} exists\n"
         if message=$(cd ${dir}; git pull); then
-            echo "[OK]  ${dir} updated: $message"
+            printf "[OK]  ${dir} updated: $message\n"
         else
-            echo "[ERR] Can not update ${dir}: ${message}"
+            printf "[ERR] Can not update ${dir}: ${message} rc:${?}\n"
         fi
     else
-        echo "[OK]  ${dir} does not exist"
+        printf "[OK]  ${dir} does not exist\n"
         if message=$(git clone ${repo} ${dir}); then
-            echo "[OK]  ${dir} clonned: ${message}"
+            printf "[OK]  ${dir} clonned: ${message}\n"
         else
-            echo "[ERR] Can not clone ${dir}: ${message}"
+            printf "[ERR] Can not clone ${dir}: ${message} rc:${?}\n"
         fi
     fi
 }
 
 repo_link() {
     if [ -e "${link}" ]; then
-        echo "[OK]  Link ${link} exists"
+        printf "[OK]  Link ${link} exists\n"
     else
-        echo "[OK]  Link ${link} does not exist"
+        printf "[OK]  Link ${link} does not exist\n"
         if message=$(ln -s ${dir} ${link}); then
-            echo "[OK]  Linked ${dir} to ${link}: ${message}"
+            printf "[OK]  Linked ${dir} to ${link}: ${message}\n"
         else
-            echo "[ERR] Can not link ${dir} to ${link}: ${message}"
+            printf "[ERR] Can not link ${dir} to ${link}: ${message} rc:${?}\n"
         fi
     fi
 }
@@ -83,12 +83,12 @@ repo_link() {
 # TODO
 link_ansible_lint_rules() {
     if [ -e "ansible-lint-rules" ]; then
-        echo "[OK]  ansible-lint-rules exists"
+        printf "[OK]  ansible-lint-rules exists\n"
     else
         if ln -s ${lint_dir} ansible-lint-rules; then
-            echo "[OK]  ansible-lint-rules created"
+            printf "[OK]  ansible-lint-rules created\n"
         else
-            echo "[ERR] Can not create ansible-lint-rules"
+            printf "[ERR] Can not create ansible-lint-rules rc:${?}\n"
         fi
     fi
 }
@@ -99,21 +99,22 @@ ansible_role() {
     repo="https://github.com/vbotka/ansible-ansible"
     repo_clone_update
     if [ -e "${workbench_dir}" ]; then
-        echo "[OK]  ${workbench_dir} exists"
+        printf "[OK]  ${workbench_dir} exists\n"
     else
-        if cp -r ${roles_dir}/vbotka.ansible/contrib/workbench ${workbench_dir}; then
-            echo "[OK]  ${workbench_dir} created"
+        if cp -r ${roles_dir}/vbotka.ansible/contrib/workbench \
+	      ${workbench_dir}; then
+            printf "[OK]  ${workbench_dir} created\n"
         else
-            echo "[ERR] Can not create ${workbench_dir}"
+            printf "[ERR] Can not create ${workbench_dir} rc:${?}\n"
         fi
     fi
     if [ -e "${base_dir}/workbench" ]; then
-        echo "[OK]  ${base_dir}/workbench exists"
+        printf "[OK]  ${base_dir}/workbench exists\n"
     else
         if cd ${base_dir} && ln -s ${workbench_dir} workbench; then
-            echo "[OK]  link ${base_dir}/workbench created"
+            printf "[OK]  link ${base_dir}/workbench created\n"
         else
-            echo "[ERR] Can not create link ${base_dir}/workbench"
+            printf "[ERR] Can not create link ${base_dir}/workbench rc:${?}\n"
         fi
     fi
 }
@@ -129,8 +130,9 @@ create_ansible_workbench_cfg() {
     if [ -e "${my_ansible_workbench_cfg}" ]; then
         printf "[OK]  ${my_ansible_workbench_cfg} exists\n"
     else
-	if cp ${workbench_dir}/ansible-workbench.cfg.sample ${my_ansible_workbench_cfg}; then
-	    printf "[OK]  ${my_ansible_workbench_cfg} created\n"
+	if cp ${workbench_dir}/ansible-workbench.cfg.sample \
+	      ${my_ansible_workbench_cfg}; then
+	    printf "[OK]  ${my_ansible_workbench_cfg} created from sample\n"
 	else
 	    printf "[ERR] ${my_ansible_workbench_cfg} can not create rc:${?}"
 	fi
@@ -142,7 +144,7 @@ create_ansible_cfg() {
         printf "[OK]  ${my_ansible_cfg} exists\n"
     else
 	if cp ${workbench_dir}/ansible.cfg.sample ${my_ansible_cfg}/; then
-	    printf "[OK]  ${my_ansible_cfg} created\n"
+	    printf "[OK]  ${my_ansible_cfg} created from sample\n"
 	else
 	    printf "[ERR] ${my_ansible_cfg} can not create rc:${?}"
 	fi
@@ -166,7 +168,7 @@ create_dirs() {
 	    if mkdir ${dir}; then
 		printf "[OK]  ${dir} created\n"
 	    else
-		printf "[ERR]  ${dir} can not create rc:${?}"
+		printf "[ERR] ${dir} can not create rc:${?}"
 	    fi
 	fi
     done
@@ -174,6 +176,7 @@ create_dirs() {
 
 # repos: Clone repositories if exist update -------------------------------
 repos_clone_update_link() {
+    printf "[OK]  repos_clone_update_link: started\n"
     if [ ! -e "${repos_dir}" ]; then
 	mkdir -p ${repos_dir}
     fi
@@ -185,14 +188,19 @@ repos_clone_update_link() {
                     my_repos_path=${repos_dir} \
                     my_repos_file=${workbench_dir}/vars/repos.yml \
                     debug=${playbook_debug}"
-    (cd ${workbench_dir} && \
-	 ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			  pb-install-repos-from-git.yml)
+    if (cd ${workbench_dir} && \
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb-install-repos-from-git.yml); then
+        printf "[OK]  pb-install-repos-from-git.yml: repos passed\n"
+    else
+        printf "[ERR] pb-install-repos-from-git.yml: repos rc:${?}\n"
+    fi
     chown -R ${owner}:${owner_group} ${repos_dir}
 }
 
 # roles: Clone roles if exist update --------------------------------------
 roles_clone_update_link() {
+    printf "[OK]  roles_clone_update_link: started\n"
     if [ ! -e "${roles_dir}" ]; then
 	mkdir -p ${roles_dir}
     fi
@@ -204,14 +212,19 @@ roles_clone_update_link() {
                     my_repos_path=${roles_dir} \
                     my_repos_file=${workbench_dir}/vars/roles.yml \
                     debug=${playbook_debug}"
-    (cd ${workbench_dir} && \
-	 ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			  pb-install-repos-from-git.yml)
+    if (cd ${workbench_dir} && \
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb-install-repos-from-git.yml); then
+        printf "[OK]  pb-install-repos-from-git.yml: roles passed\n"
+    else
+        printf "[ERR] pb-install-repos-from-git.yml: roles rc:${?}\n"
+    fi
     chown -R ${owner}:${owner_group} ${roles_dir}
 }
 
 # projects: Clone projects if exist update --------------------------------
 projects_clone_update_link() {
+    printf "[OK]  projects_clone_update_link: started\n"
     if [ ! -e "${projects_dir}" ]; then
 	mkdir -p ${projects_dir}
     fi
@@ -223,25 +236,34 @@ projects_clone_update_link() {
                     my_repos_path=${projects_dir} \
                     my_repos_file=${workbench_dir}/vars/projects.yml \
                     debug=${playbook_debug}"
-    (cd ${workbench_dir} && \
-	 ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			  pb-install-repos-from-git.yml)
+    if (cd ${workbench_dir} && \
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb-install-repos-from-git.yml); then
+        printf "[OK]  pb-install-repos-from-git.yml: projects passed\n"
+    else
+        printf "[ERR] pb-install-repos-from-git.yml: projects rc:${?}\n"
+    fi
     chown -R ${owner}:${owner_group} ${projects_dir}
 }
 
 # links: Create links -----------------------------------------------------
 create_links() {
+    printf "[OK]  create_links: started\n"
     ansible_params="my_base_path=${base_dir} \
                     my_mode=${mode} \
                     debug=${playbook_debug}"
-    (cd ${workbench_dir} && \
-	 ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			  pb-create-links.yml)
+    if (cd ${workbench_dir} && \
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb-create-links.yml); then
+        printf "[OK]  pb-create-links.yml: passed\n"
+    else
+        printf "[ERR] pb-create-links.yml: rc:${?}\n"
+    fi
 }
 
 # runner: Create ansible-runner projects ----------------------------------
 runner_create_private() {
-    printf "runner_dir: ${runner_dir}\n"
+    printf "[OK]  runner_create_private: started\n"
     if [ ! -e "${runner_dir}" ]; then
 	mkdir -p ${runner_dir}
     fi
@@ -250,9 +272,13 @@ runner_create_private() {
                     my_git_user=${git_user} \
                     my_mode=${mode} \
                     debug=${playbook_debug}"
-    (cd ${workbench_dir} &&
-	 ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			  pb-create-runner-private.yml)
+    if (cd ${workbench_dir} &&
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb-create-runner-private.yml); then
+        printf "[OK]  pb-create-runner-private.yml: passed\n"
+    else
+        printf "[ERR] pb-create-runner-private.yml: rc:${?}\n"
+    fi
     chown -R ${owner}:${owner_group} ${runner_dir}
 }
 
