@@ -1,7 +1,7 @@
 # All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version_lib="0.2.2-CURRENT"
+version_lib="0.2.3-CURRENT"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"
@@ -80,7 +80,7 @@ repo_link() {
 #     done
 # }
 
-# TODO
+# TODO: configure lint?
 link_ansible_lint_rules() {
     if [ -e "ansible-lint-rules" ]; then
         printf "[OK]  ansible-lint-rules exists\n"
@@ -115,6 +115,26 @@ ansible_role() {
             printf "[OK]  link ${base_dir}/workbench created\n"
         else
             printf "[ERR] Can not create link ${base_dir}/workbench rc:${?}\n"
+        fi
+    fi
+}
+
+# update: Update ansible-workbench from contrib/workbench .................
+ansible_update_workbench() {
+    if [ "${dryrun}" = "true" ]; then
+	if rsync -avrn ${roles_dir}/vbotka.ansible/contrib/workbench/ \
+		 ${workbench_dir}; then
+            printf "[OK]  ${workbench_dir} rsync dryrun\n"
+	else
+            printf "[ERR] Can not rsync dryrun ${workbench_dir} rc:${?}\n"
+	fi
+    else
+        printf "[OK]  ${workbench_dir} rsync\n"
+	if rsync -avr ${roles_dir}/vbotka.ansible/contrib/workbench/ \
+		 ${workbench_dir}; then
+            printf "[OK]  ${workbench_dir} rsync\n"
+	else
+            printf "[ERR] Can not rsync ${workbench_dir} rc:${?}\n"
         fi
     fi
 }
@@ -157,7 +177,7 @@ create_hosts() {
     else
 	printf "[ERR] ${my_ansible_hosts} does not exist."
     fi
-} # TODO: automagic detection?
+} # TODO: automagic OS detection?
 
 # dirs: Create directories if not exist -----------------------------------
 create_dirs() {

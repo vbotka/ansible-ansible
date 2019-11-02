@@ -55,16 +55,16 @@ Update all (skipping steps 10-19)
     rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/
                $HOME/.ansible/ansible-workbench
 
-Workbench
-=========
+Devel workbench. Print diff and update source.
+==============================================
  1) Print diff
     while read l; do
       echo $l
-      diff $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+      diff $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l
     done < FILES
  2) Copy FILES to roles/vbotka.ansible/contrib/workbench
     while read l; do
-      cp $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+      cp $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l
     done < FILES    
 
 # EOF

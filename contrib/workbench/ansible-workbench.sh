@@ -3,12 +3,12 @@
 # All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version="0.2.0-CURRENT"
+version="0.2.1-CURRENT"
 
 usage="ansible-workbench ver ${version}
 Usage:
       ansible-workbench [-h|--help] [-V|--version]
-                        [-v1|--actionable] [-v2|--minimal] 
+                        [-v1|--actionable] [-v2|--minimal] [-v3|--minimal]
                         [-d|--debug] [-n|--dry-run] command
                         -- Install and configure Ansible workbench
 Where:
@@ -17,11 +17,11 @@ Where:
       -v1 --actionable  Use Ansible actionable callback plugin
       -v2 --minimal ... Use Ansible minimal callback plugin
       -v3 --yaml ...... Use Ansible yaml callback plugin
-      -d --debug ...... Run the playbooks with debug=true
-      -n --dry-run .... Run the playbooks with --check
+      -d --debug ...... Print debug and set playbook_debug=true
+      -n --dry-run .... Set dryrun=true and playbook_dryrun=--check
       command ......... ansible, config, dirs,
                         repos, roles, projects, links, runner,
-                        all, none, test
+                        all, none, test, update
 Commands:
       ansible ......... Clone vbotka.ansible and copy contrib/workbench
                         to ansible-workbench if not exist
@@ -34,7 +34,8 @@ Commands:
       runner .......... Create ansible-runner projects
       all ............. Create all
       none ............ Create none. For testing
-      test ............ Test all"
+      test ............ Test all
+      update .......... Update ansible-workbench from contrib/workbench"
 
 expected_args=1
 if [ "$#" -lt "${expected_args}" ]; then
@@ -91,6 +92,10 @@ for i in "$@"; do
 	    ansible_role
 	    exit 0
 	    ;;
+	update)
+	    ansible_update_workbench
+	    exit 0
+	    ;;
 	config)
 	    config_files
 	    exit 0
@@ -126,15 +131,15 @@ for i in "$@"; do
         none)
             exit 0
             ;;
-        all)
-	    create_dirs
-	    ansible_role
-	    config_files
-            repos_clone_update_link
-            roles_clone_update_link
-            projects_clone_update_link
-            create_links
-	    runner_create_private
+        all)  # .............................COMMANDS
+	    create_dirs                    # dirs
+	    ansible_role                   # ansible
+	    config_files                   # config
+            repos_clone_update_link        # repos
+            roles_clone_update_link        # roles
+            projects_clone_update_link     # projects
+            create_links                   # links
+	    runner_create_private          # runner
             exit 0
             ;;
         *)
