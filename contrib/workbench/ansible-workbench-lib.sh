@@ -122,19 +122,22 @@ ansible_role() {
 # update: Update ansible-workbench from contrib/workbench .................
 ansible_update_workbench() {
     if [ "${dryrun}" = "true" ]; then
-	if rsync -avrn ${roles_dir}/vbotka.ansible/contrib/workbench/ \
+	if rsync -avrnc ${roles_dir}/vbotka.ansible/contrib/workbench/ \
 		 ${workbench_dir}; then
-            printf "[OK]  ${workbench_dir} rsync dryrun\n"
+            printf "[OK]  rsync dryrun \
+${roles_dir}/vbotka.ansible/contrib/workbench/ to ${workbench_dir}\n"
 	else
-            printf "[ERR] Can not rsync dryrun ${workbench_dir} rc:${?}\n"
+            printf "[ERR] Can not rsync dryrun \
+${roles_dir}/vbotka.ansible/contrib/workbench/ to ${workbench_dir} rc:${?}\n"
 	fi
     else
-        printf "[OK]  ${workbench_dir} rsync\n"
 	if rsync -avr ${roles_dir}/vbotka.ansible/contrib/workbench/ \
 		 ${workbench_dir}; then
-            printf "[OK]  ${workbench_dir} rsync\n"
+            printf "[OK]  rsync \
+${roles_dir}/vbotka.ansible/contrib/workbench/ to ${workbench_dir}\n"
 	else
-            printf "[ERR] Can not rsync ${workbench_dir} rc:${?}\n"
+            printf "[ERR] Can not rsync \
+${roles_dir}/vbotka.ansible/contrib/workbench/ to ${workbench_dir} rc:${?}\n"
         fi
     fi
 }

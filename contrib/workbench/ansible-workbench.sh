@@ -152,34 +152,20 @@ done
 
 exit 0
 
-# Update all
-# ==========
-#
-# 1) Update all
-#    ansible-workbench/ansible-workbench.sh all
-#
-# 2) Dry-run synchronize ansible-workbench
-#    rsync -avrn $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/
-#                $HOME/.ansible/ansible-workbench
-#
-# 3) Synchronize ansible-workbench
-#    rsync -avr $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/
-#               $HOME/.ansible/ansible-workbench
-
-# Update source code
-# ==================
+# Devel. Diff and update source code
+# ==================================
 #
 # 1) Print diff
 #    #!/bin/sh
 #    while read l; do
 #      echo $l
-#      diff $l /home/admin/.ansible/roles/vbotka.ansible/contrib/workbench/$l
-#    done <FILES
+#      diff $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+#    done < FILES
 #
 # 2) Copy FILES to roles/vbotka.ansible/contrib/workbench
 #    #!/bin/sh
 #    while read l; do
-#      cp $l /home/vlado/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+#      cp $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l
 #    done < FILES    
 
 # EOF
