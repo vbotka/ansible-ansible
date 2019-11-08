@@ -1,0 +1,22 @@
+---
+
+- name: 'rm copy-common-files: Include vars'
+  include_vars: "{{ rm_roles_meta_file }}"
+- name: 'rm copy-common-files: Debug'
+  debug:
+    var: rm_roles_meta
+  when: rm_debug|bool
+# - debug:
+#     msg: "{{ item.key }}/meta/main-test.yml - {{ item.value.galaxy_info.role_name }}"
+#   loop: "{{ rm_roles_meta|dict2items }}"
+- name: 'rm copy-common-diles: Copy common files to {{ item.key }}'
+  copy:
+    src: "files/"
+    dest: "{{ item.key }}"
+    owner: "{{ rm_owner }}"
+    group: "{{ rm_group }}"
+    backup: "{{ rm_backup_conf }}"
+  loop: "{{ rm_roles_meta|dict2items }}"
+
+# EOF
+...

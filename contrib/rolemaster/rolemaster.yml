@@ -1,31 +1,6 @@
 ---
-#
-# Copyright 2019 Vladimir Botka <vbotka@gmail.com>
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the above copyright
-# notice, this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright
-# notice, this list of conditions and the following disclaimer in the
-# documentation and/or other materials provided with the distribution.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
+# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # RoleMaster. Management of roles' meta-data and licenses.
 #
@@ -51,6 +26,10 @@
 #    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license
 #    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license -e 'rm_debug=true'
 #
+# 6) Copy common files
+#    $ ansible-playbook rolemaster.yml -t rm-copy-common-files
+#    $ ansible-playbook rolemaster.yml -t rm-copy-common-files -e 'rm_debug=true'
+
 # Notes:
 # 1) Create LICENSE-test and see the diff.
 #    $ for i in `find roles -name "MY-PROJECT*"`; do
@@ -63,17 +42,17 @@
 
   vars:
 
-    rm_version: 1.0.0
+    rm_version: 1.1.0
 
     # >>> CHANGE THIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    rm_owner: admin
-    rm_group: admin
-    rm_roles_pattern: my_roles.*
-    rm_roles_license_holder: 'License.Holder<lh@example.com>'
+    rm_owner: vlado
+    rm_group: vlado
+    rm_roles_pattern: vbotka.*
+    rm_roles_license_holder: 'Vladimir Botka <vbotka@gmail.com>'
     rm_roles_license_year_to: 2019
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CHANGE THIS <<<
 
-    rm_debug: false
+    rm_debug: true
     rm_backup_conf: false
     rm_roles_path: ''  # Get roles_path from ansible.cfg
     # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
@@ -89,22 +68,22 @@
   tasks:
 
     - block:
-        - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
-          when: rm_roles_path|length == 0
-          set_fact:
-            roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
-        - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
-          when: rm_roles_path|length > 0
-          set_fact:
-            roles_path: "{{ rm_roles_path }}"
-        - name: 'rm: list-roles-path: Debug {{ roles_path }}'
-          when: rm_debug
-          debug:
-            var: roles_path
-        - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-          when: roles_path is undefined
-          fail:
-            msg: '[ERROR] roles_path is undefined. End of play.'
+      - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+        when: rm_roles_path|length == 0
+        set_fact:
+          roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+      - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+        when: rm_roles_path|length > 0
+        set_fact:
+          roles_path: "{{ rm_roles_path }}"
+      - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+        when: rm_debug|bool
+        debug:
+          var: roles_path
+      - name: 'rm: list-roles-path: Fail when roles_path is undefined'
+        when: roles_path is undefined
+        fail:
+          msg: '[ERROR] roles_path is undefined. End of play.'
       tags: always
 
     - name: 'rm: Create list of roles paths rm-roles-path'
@@ -126,6 +105,10 @@
     - name: 'rm: Restore roles license from rm_roles_license_file'
       import_tasks: tasks/restore-roles-license.yml
       tags: rm-restore-roles-license
+
+    - name: 'rm: Copy common files'
+      import_tasks: tasks/copy-common-files.yml
+      tags: rm-copy-common-files
 
 # EOF
 ...
