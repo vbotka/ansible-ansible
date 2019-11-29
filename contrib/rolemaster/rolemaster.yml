@@ -42,7 +42,7 @@
 
   vars:
 
-    rm_version: 1.1.0
+    rm_version: 1.1.1
 
     # >>> CHANGE THIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     rm_owner: vlado
@@ -68,22 +68,22 @@
   tasks:
 
     - block:
-      - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
-        when: rm_roles_path|length == 0
-        set_fact:
-          roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
-      - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
-        when: rm_roles_path|length > 0
-        set_fact:
-          roles_path: "{{ rm_roles_path }}"
-      - name: 'rm: list-roles-path: Debug {{ roles_path }}'
-        when: rm_debug|bool
-        debug:
-          var: roles_path
-      - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-        when: roles_path is undefined
-        fail:
-          msg: '[ERROR] roles_path is undefined. End of play.'
+        - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+          when: rm_roles_path|length == 0
+          set_fact:
+            roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+        - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+          when: rm_roles_path|length > 0
+          set_fact:
+            roles_path: "{{ rm_roles_path }}"
+        - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+          when: rm_debug|bool
+          debug:
+            var: roles_path
+        - name: 'rm: list-roles-path: Fail when roles_path is undefined'
+          when: roles_path is undefined
+          fail:
+            msg: '[ERROR] roles_path is undefined. End of play.'
       tags: always
 
     - name: 'rm: Create list of roles paths rm-roles-path'
