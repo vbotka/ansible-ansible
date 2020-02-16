@@ -25,6 +25,17 @@
   loop: "{{ ma_plugins }}"
   tags: ma_plugins_extract
 
+- name: "plugins: Create links"
+  file:
+    state: link
+    src: "{{ ma_plugins_path }}/{{ item.dest }}"
+    dest: "{{ ma_plugins_path }}/{{ item.link }}"
+  loop: "{{ ma_plugins }}"
+  when:
+    - item.link is defined
+    - item.dest is defined
+  tags: ma_plugins_link
+
 - name: "plugins: Create lists"
   block:
     - name: "plugins: Create list of used ini_keys ma_plugins_inikeys"

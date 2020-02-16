@@ -6,6 +6,8 @@
 #   - archive: mitogen-0.2.6.tar.gz
 #     archive_url: https://networkgenomics.com/try/mitogen-0.2.6.tar.gz
 #     checksum: "sha256:b7644f9d890149ae335b5ecf18fa7cf56901f38a56dcc96e28028fed7c81c323"
+#     dest: mitogen-0.2.6
+#     link: mitogen
 #     plugins:
 #       - path: mitogen-0.2.6/ansible_mitogen/plugins/strategy
 #         ini_key: strategy_plugins
@@ -13,6 +15,8 @@
 #   - archive: ansible-plugins-0.1.0.tar.gz
 #     archive_url: https://github.com/vbotka/ansible-plugins/archive/0.1.0.tar.gz
 #     checksum: "sha256:ed37024eca2215939fb725a21258ac347f2ae4e25f7a59a7ddab93815e5dc9de"
+#     dest: ansible-plugins-0.1.0
+#     link: ansible-plugins
 #     plugins:
 #       - path: ansible-plugins-0.1.0/sort_versions
 #         ini_key: filter_plugins
