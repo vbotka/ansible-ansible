@@ -15,6 +15,8 @@
     dest: "{{ ma_src_path }}"
     checksum: "{{ item.checksum }}"
   loop: "{{ ma_plugins }}"
+  loop_control:
+    label: "{{ item.archive }}"
   tags: ma_plugins_download
 
 - name: "plugins: Extract archives"
@@ -23,6 +25,8 @@
     src: "{{ ma_src_path }}/{{ item.archive }}"
     dest: "{{ ma_plugins_path }}"
   loop: "{{ ma_plugins }}"
+  loop_control:
+    label: "{{ item.archive }}"
   tags: ma_plugins_extract
 
 - name: "plugins: Create links"
@@ -31,9 +35,12 @@
     src: "{{ ma_plugins_path }}/{{ item.dest }}"
     dest: "{{ ma_plugins_path }}/{{ item.link }}"
   loop: "{{ ma_plugins }}"
+  loop_control:
+    label: "{{ item.dest }}"
   when:
     - item.link is defined
     - item.dest is defined
+    - not ansible_check_mode
   tags: ma_plugins_link
 
 - name: "plugins: Create lists"
@@ -74,11 +81,15 @@
         ma_plugins_paths_list: "{{ ma_plugins_paths_list +
                                    [ {item.0: {'paths': item.1|json_query('[?enable].path')} } ] }}"
       loop: "{{ ma_plugins_grouped }}"
+      loop_control:
+        label: "{{ item.0 }}"
     - name: "plugins: Debug ma_plugins_paths_list"
       when: ma_debug|bool
       debug:
         msg: "{{ item }}"
       loop: "{{ ma_plugins_paths_list }}"
+      loop_control:
+        label: "{{ item.keys()|list|first }}"
   tags: ma_plugins_lists
 
 - name: "plugins: Test used ini_keys"

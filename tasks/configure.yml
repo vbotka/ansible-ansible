@@ -7,6 +7,8 @@
         dest: "{{ item.path | dirname }}"
         state: "directory"
       loop: "{{ ma_config }}"
+      loop_control:
+        label: "{{ item.path }}"
     - name: "configure: Ansible configuration from template"
       template:
         src: "{{ item.template|default(ma_config_template_default) }}"
@@ -16,6 +18,8 @@
         mode: "{{ item.mode }}"
         backup: "{{ ma_backup_conf }}"
       loop: "{{ ma_config }}"
+      loop_control:
+        label: "{{ item.path }}"
   when:
     - ma_config_type|lower == "template"
     - ma_config|length > 0
@@ -33,6 +37,8 @@
     create: true
     backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
+  loop_control:
+    label: "{{ item.0.path }}"
   when:
     - ma_config_type|lower == "lineinfile"
     - ma_config|length > 0
@@ -50,6 +56,8 @@
     create: true
     backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
+  loop_control:
+    label: "{{ item.0.path }}"
   when:
     - ma_config_type|lower == "ini_file"
     - ma_config|length > 0
