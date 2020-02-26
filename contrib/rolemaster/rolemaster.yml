@@ -1,40 +1,6 @@
 ---
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
-
-# RoleMaster. Management of roles' meta-data and licenses.
-#
-# Examples
-#
-# 1) Create list of roles' paths rm-roles-path
-#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path
-#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path -e 'rm_debug=true'
-#
-# 2) Write roles' meta-data to rm_roles_meta_file
-#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
-#    $ ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta -e 'rm_debug=true'
-#
-# 3) Read roles' meta-data from rm_roles_meta_file
-#    $ ansible-playbook rolemaster.yml -t rm-read-roles-meta
-#    $ ansible-playbook rolemaster.yml -t rm-read-roles-meta -e 'rm_debug=true'
-#
-# 4) Restore meta-data
-#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta
-#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-meta -e 'rm_debug=true'
-#
-# 5) Restore licenses
-#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license
-#    $ ansible-playbook rolemaster.yml -t rm-restore-roles-license -e 'rm_debug=true'
-#
-# 6) Copy common files
-#    $ ansible-playbook rolemaster.yml -t rm-copy-common-files
-#    $ ansible-playbook rolemaster.yml -t rm-copy-common-files -e 'rm_debug=true'
-
-# Notes:
-# 1) Create LICENSE-test and see the diff.
-#    $ for i in `find roles -name "MY-PROJECT*"`; do
-#      (echo $i; cd $i; diff LICENSE LICENSE-test); done
-
 
 - hosts: localhost
   gather_facts: false
@@ -42,17 +8,48 @@
 
   vars:
 
-    rm_version: 1.1.1
+    rm_version: '1.2.0'
 
     # >>> CHANGE THIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    rm_owner: vlado
-    rm_group: vlado
-    rm_roles_pattern: vbotka.*
-    rm_roles_license_holder: 'Vladimir Botka <vbotka@gmail.com>'
-    rm_roles_license_year_to: 2019
+    rm_owner: admin
+    rm_group: admin
+    rm_roles_pattern: github-user.*
+    rm_roles_license_holder: '<github-user@example.com>'
+    rm_roles_license_year_to: 2020
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CHANGE THIS <<<
 
-    rm_debug: true
+    rm_help_text: |
+      version {{ rm_version }}
+      RoleMaster. Management of roles' meta-data and licenses.
+
+      USAGE
+
+      Create list of roles' paths rm-roles-path
+      shell> ansible-playbook rolemaster.yml -t rm-list-roles-path
+
+      Write roles' meta-data to rm_roles_meta_file
+      shell> ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+
+      Read roles' meta-data from rm_roles_meta_file
+      shell> ansible-playbook rolemaster.yml -t rm-read-roles-meta
+
+      Restore meta-data
+      shell> ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+
+      Restore licenses
+      shell> ansible-playbook rolemaster.yml -t rm-restore-roles-license
+
+      Copy common files
+      shell> ansible-playbook rolemaster.yml -t rm-copy-common-files
+
+      Notes:
+      1) Append --check --diff to dry-run and display predicted changes
+      2) Append --extra-vars 'rm_debug=true' to display debug messages
+      3) Create LICENSE-test and see the diff.
+         shell> for i in `find roles -name "MY-PROJECT*"`; do
+                (echo $i; cd $i; diff LICENSE LICENSE-test); done
+
+    rm_debug: false
     rm_backup_conf: false
     rm_roles_path: ''  # Get roles_path from ansible.cfg
     # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
@@ -64,26 +61,59 @@
     rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
+    rm_known_tags:
+      - 'rm-list-roles-path'
+      - 'rm-write-roles-meta'
+      - 'rm-read-roles-meta'
+      - 'rm-restore-roles-meta'
+      - 'rm-restore-roles-license'
+      - 'rm-copy-common-files'
 
   tasks:
 
-    - block:
-        - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
-          when: rm_roles_path|length == 0
-          set_fact:
-            roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
-        - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
-          when: rm_roles_path|length > 0
-          set_fact:
-            roles_path: "{{ rm_roles_path }}"
-        - name: 'rm: list-roles-path: Debug {{ roles_path }}'
-          when: rm_debug|bool
-          debug:
-            var: roles_path
-        - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-          when: roles_path is undefined
-          fail:
-            msg: '[ERROR] roles_path is undefined. End of play.'
+#    - name: 'rm: Help variables'
+#      block:
+#        - set_fact:
+#            my_tags: "{{ ansible_run_tags|difference(['all']) }}"
+#        - debug:
+#            var: my_tags
+#        - debug:
+#            msg: "known tags: {{ my_tags|intersect(rm_known_tags) }}"
+#      tags: always
+
+    - name: 'rm: Help'
+      block:
+        - debug:
+            msg: "{{ rm_help_text.split('\n') }}"
+        - meta: end_play
+      vars:
+        my_tags: "{{ ansible_run_tags|difference(['all']) }}"
+      when: (my_tags|length == 0) or
+            (my_tags|intersect(rm_known_tags)|length == 0)
+      tags: always
+
+#    - debug:
+#        msg: Continue play
+#    - meta: end_play
+
+    - name: 'rm: Set roles_path'
+      block:
+      - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+        when: rm_roles_path|length == 0
+        set_fact:
+          roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+      - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+        when: rm_roles_path|length > 0
+        set_fact:
+          roles_path: "{{ rm_roles_path }}"
+      - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+        when: rm_debug|bool
+        debug:
+          var: roles_path
+      - name: 'rm: list-roles-path: Fail when roles_path is undefined'
+        when: roles_path is undefined
+        fail:
+          msg: '[ERROR] roles_path is undefined. End of play.'
       tags: always
 
     - name: 'rm: Create list of roles paths rm-roles-path'
