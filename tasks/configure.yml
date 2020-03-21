@@ -5,7 +5,7 @@
     - name: "configure: Create directories for Ansible configuration"
       file:
         dest: "{{ item.path | dirname }}"
-        state: "directory"
+        state: directory
       loop: "{{ ma_config }}"
       loop_control:
         label: "{{ item.path }}"
@@ -21,7 +21,7 @@
       loop_control:
         label: "{{ item.path }}"
   when:
-    - ma_config_type|lower == "template"
+    - ma_config_type|lower == template
     - ma_config|length > 0
 
 # lineinfile flagged:preview/core (tested OK)
@@ -40,7 +40,7 @@
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == "lineinfile"
+    - ma_config_type|lower == lineinfile
     - ma_config|length > 0
 
 # ini_file flagged:preview/community (buggy)
@@ -59,7 +59,7 @@
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == "ini_file"
+    - ma_config_type|lower == ini_file
     - ma_config|length > 0
 
 # EOF

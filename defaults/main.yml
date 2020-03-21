@@ -5,9 +5,10 @@ ma_install: true
 ma_debug: false
 ma_backup_conf: false
 
-# Install packages
-freebsd_install_method: "ports"
-freebsd_use_packages: "yes"
+# Packages
+freebsd_install_method: packages
+# freebsd_install_method: ports
+freebsd_use_packages: true
 freebsd_install_retries: 10
 freebsd_install_delay: 5
 linux_install_retries: 10
@@ -17,15 +18,15 @@ linux_install_delay: 5
 # template   flagged:stableinterface/core
 # lineinfile flagged:preview/core (tested OK)
 # ini_file   flagged:preview/community (buggy)
-ma_config_type: "template"
-ma_config_template_default: "ansible-default.cfg.j2"
+ma_config_type: template
+ma_config_template_default: ansible-default.cfg.j2
 ma_config: []
 
-ma_src_path: "/usr/local/ansible/src"
+ma_src_path: /usr/local/ansible/src
 
 # Plugins
 ma_plugins_paths_list: []
-ma_plugins_path: "/usr/local/ansible/plugins"
+ma_plugins_path: /usr/local/ansible/plugins
 ma_plugins: []
 ma_plugins_sections:
   action_plugins: defaults

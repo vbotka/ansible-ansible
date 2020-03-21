@@ -4,6 +4,8 @@
 
 [Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure *Ansible*.
 
+Please feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues).
+
 
 ## Requirements
 
@@ -22,40 +24,38 @@ None.
 
 ## Plugins
 
-No plugins are isntalled by default. Variable default is *ma_plugins:
-[ ]*. Examples how to configure plugins can be found in vars/main.yml .
+No plugins are isntalled by default. Variable default is *ma_plugins: [ ]*. Examples how to configure plugins can be found in vars/main.yml .
 
-To activate installed plugins use template *ansible-plugins.cfg.j2*
-and configure *_plugins in *ansible.cfg* .
+To activate installed plugins use template *ansible-plugins.cfg.j2* and configure *_plugins in *ansible.cfg* .
 
 ```
 ma_config_type: "template"
 ma_config_template_default: "ansible-plugins.cfg.j2"
 ```
 
+
 ## Check mode
 
 Check mode will fail if the directories *ma_plugins_path* and *ma_src_path* are missing. To avoid the failure create the directories first
 
 ```
-ansible-playbook ansible.yml -t ma_plugins_dirs
+shell> ansible-playbook ansible.yml -t ma_plugins_dirs
 ```
 
 Check mode will fail for the first time when there are plugins configured in *ma_plugins* and the archives haven't been downloaded yet. To avoid the failure download the archives first
 
 ```
-ansible-playbook ansible.yml -t ma_plugins_download
+shell> ansible-playbook ansible.yml -t ma_plugins_download
 ```
 
 Then check the playbook and the roles
 
 ```
-ansible-playbook ansible.yml -C
+shell> ansible-playbook ansible.yml -C
 ```
 
 
-References
-----------
+## References
 
 - [Ansible](http://docs.ansible.com/)
 - [Ansible Configuration Settings](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings)
@@ -64,13 +64,11 @@ References
 - [Mitogen Release Notes](https://mitogen.networkgenomics.com/changelog.html)
 
 
-License
--------
+## License
 
 [![license](https://img.shields.io/badge/license-BSD-red.svg)](https://www.freebsd.org/doc/en/articles/bsdl-gpl/article.html)
 
 
-Author Information
-------------------
+## Author Information
 
 [Vladimir Botka](https://botka.link)
