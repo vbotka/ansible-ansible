@@ -16,13 +16,9 @@ galaxy_info:
       versions:
         - bionic
         - focal
-    - name: EL
-      versions:
-        - 7
   galaxy_tags:
     - freebsd
     - ubuntu
-    - centos
     - ansible
     - mitogen
 dependencies: []
