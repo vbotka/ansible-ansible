@@ -8,46 +8,54 @@
 
   vars:
 
-    rm_version: '1.2.0'
+    rm_version: 1.3.0
 
-    # >>> CHANGE THIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # - - CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
     rm_group: admin
     rm_roles_pattern: github-user.*
     rm_roles_license_holder: '<github-user@example.com>'
     rm_roles_license_year_to: 2020
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CHANGE THIS <<<
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS - -
 
     rm_help_text: |
-      version {{ rm_version }}
-      RoleMaster. Management of roles' meta-data and licenses.
+      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      RoleMaster version {{ rm_version }}
+      Management of Ansible roles' meta-data and licenses
 
       USAGE
 
-      Create list of roles' paths rm-roles-path
-      shell> ansible-playbook rolemaster.yml -t rm-list-roles-path
+      Create list of roles' paths rm_roles_path
+      shell> ansible-playbook rolemaster.yml -t rm-list-roles
 
-      Write roles' meta-data to rm_roles_meta_file
-      shell> ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+      Write roles' objects to files
+      shell> ansible-playbook rolemaster.yml -t rm-list-roles,rm-write-objects
 
-      Read roles' meta-data from rm_roles_meta_file
-      shell> ansible-playbook rolemaster.yml -t rm-read-roles-meta
+      Read roles' objects from files
+      shell> ansible-playbook rolemaster.yml -t rm-read-objects
 
       Restore meta-data
-      shell> ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+      shell> ansible-playbook rolemaster.yml -t rm-restore-meta
 
       Restore licenses
-      shell> ansible-playbook rolemaster.yml -t rm-restore-roles-license
+      shell> ansible-playbook rolemaster.yml -t rm-restore-license
+
+      Restore travis
+      shell> ansible-playbook rolemaster.yml -t rm-restore-travis
 
       Copy common files
       shell> ansible-playbook rolemaster.yml -t rm-copy-common-files
 
-      Notes:
+      NOTES
+
       1) Append --check --diff to dry-run and display predicted changes
       2) Append --extra-vars 'rm_debug=true' to display debug messages
       3) Create LICENSE-test and see the diff.
          shell> for i in `find roles -name "MY-PROJECT*"`; do
                 (echo $i; cd $i; diff LICENSE LICENSE-test); done
+
+      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      https://github.com/vbotka/ansible-ansible/tree/master/contrib/rolemaster
 
     rm_debug: false
     rm_backup_conf: false
@@ -57,16 +65,21 @@
     rm_roles_meta_file_write: true
     rm_roles_meta_file: '/home/{{ rm_owner }}/.ansible/db/roles_meta.yml'
     rm_roles_meta_dir: '/home/{{ rm_owner }}/.ansible/db/meta'
+    rm_roles_travis_file_write: true
+    rm_roles_travis_file: '/home/{{ rm_owner }}/.ansible/db/roles_travis.yml'
+    rm_roles_travis_dir: '/home/{{ rm_owner }}/.ansible/db/travis'
+    rm_roles_license_file_write: false
     rm_roles_license_file: '/home/{{ rm_owner }}/.ansible/db/roles_license.yml'
     rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
     rm_known_tags:
-      - 'rm-list-roles-path'
-      - 'rm-write-roles-meta'
-      - 'rm-read-roles-meta'
-      - 'rm-restore-roles-meta'
-      - 'rm-restore-roles-license'
+      - 'rm-list-roles'
+      - 'rm-write-objects'
+      - 'rm-read-objects'
+      - 'rm-restore-meta'
+      - 'rm-restore-license'
+      - 'rm-restore-travis'
       - 'rm-copy-common-files'
 
   tasks:
@@ -98,43 +111,47 @@
 
     - name: 'rm: Set roles_path'
       block:
-      - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
-        when: rm_roles_path|length == 0
-        set_fact:
-          roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
-      - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
-        when: rm_roles_path|length > 0
-        set_fact:
-          roles_path: "{{ rm_roles_path }}"
-      - name: 'rm: list-roles-path: Debug {{ roles_path }}'
-        when: rm_debug|bool
-        debug:
-          var: roles_path
-      - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-        when: roles_path is undefined
-        fail:
-          msg: '[ERROR] roles_path is undefined. End of play.'
+        - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+          when: rm_roles_path|length == 0
+          set_fact:
+            roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+        - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+          when: rm_roles_path|length > 0
+          set_fact:
+            roles_path: "{{ rm_roles_path }}"
+        - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+          when: rm_debug|bool
+          debug:
+            var: roles_path
+        - name: 'rm: list-roles-path: Fail when roles_path is undefined'
+          when: roles_path is undefined
+          fail:
+            msg: '[ERROR] roles_path is undefined. End of play.'
       tags: always
 
-    - name: 'rm: Create list of roles paths rm-roles-path'
-      import_tasks: tasks/list-roles-path.yml
-      tags: rm-list-roles-path
+    - name: 'rm: Create list of roles paths rm_roles_path'
+      import_tasks: tasks/list-roles.yml
+      tags: rm-list-roles
 
-    - name: 'rm: Write roles meta-data to rm_roles_meta_file'
-      import_tasks: tasks/write-roles-meta.yml
-      tags: rm-write-roles-meta
+    - name: 'rm: Write roles objects to files'
+      import_tasks: tasks/write-objects.yml
+      tags: rm-write-objects
 
-    - name: 'rm: Read roles meta-data from rm_roles_meta_file'
-      import_tasks: tasks/read-roles-meta.yml
-      tags: rm-read-roles-meta
+    - name: 'rm: Read roles objects from files'
+      import_tasks: tasks/read-objects.yml
+      tags: rm-read-objects
 
     - name: 'rm: Restore roles meta-data from rm_roles_meta_file'
-      import_tasks: tasks/restore-roles-meta.yml
-      tags: rm-restore-roles-meta
+      import_tasks: tasks/restore-meta.yml
+      tags: rm-restore-meta
 
     - name: 'rm: Restore roles license from rm_roles_license_file'
-      import_tasks: tasks/restore-roles-license.yml
-      tags: rm-restore-roles-license
+      import_tasks: tasks/restore-license.yml
+      tags: rm-restore-license
+
+    - name: 'rm: Restore roles travis from rm_roles_travis_file'
+      import_tasks: tasks/restore-travis.yml
+      tags: rm-restore-travis
 
     - name: 'rm: Copy common files'
       import_tasks: tasks/copy-common-files.yml

@@ -1,22 +1,22 @@
 ---
 
-- name: 'rm: list-roles-path: Find roles in {{ roles_path }}'
+- name: 'rm: list-roles: Find roles in {{ roles_path }}'
   find:
     paths: "{{ roles_path }}"
     patterns: "{{ rm_roles_pattern }}"
     file_type: directory
   register: results
-- name: 'rm: list-roles-path: Collect roles paths'
+- name: 'rm: list-roles: Collect roles paths'
   set_fact:
     rm_roles_path: "{{ results.files|json_query('[].path') }}"
-- name: 'rm: list-roles-path: Debug number of roles {{ rm_roles_path|length }}'
+- name: 'rm: list-roles: Debug number of roles {{ rm_roles_path|length }}'
   debug:
     msg: "Number of roles: {{ rm_roles_path|length }}"
-  when: rm_debug
-- name: 'rm: list-roles-path: Debug list roles paths'
+  when: rm_debug|bool
+- name: 'rm: list-roles: Debug list roles paths'
   debug:
     var: rm_roles_path|sort
-  when: rm_debug
+  when: rm_debug|bool
 
 # EOF
 ...

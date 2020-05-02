@@ -1,0 +1,24 @@
+---
+
+- name: 'rm restore-travis: Include vars'
+  include_vars: "{{ rm_roles_travis_file }}"
+
+- name: 'rm restore-travis: Debug'
+  when: rm_debug|bool
+  debug:
+    var: rm_roles_travis
+
+- name: 'rm restore-travis: Create travis files'
+  template:
+    src: templates/travis.yml.j2
+    dest: "{{ item.key }}/.travis.yml"
+    owner: "{{ rm_owner }}"
+    group: "{{ rm_group }}"
+    backup: "{{ rm_backup_conf }}"
+#   validate: "{{ rm_ansible_lint }} %s"
+  loop: "{{ rm_roles_travis|dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+# EOF
+...

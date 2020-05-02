@@ -1,12 +1,14 @@
 ---
 
-- name: 'rm: retore-roles-license: Include vars'
+- name: 'rm: retore-license: Include vars'
   include_vars: "{{ rm_roles_license_file }}"
-- name: 'rm: retore-roles-license: Debug'
-  when: rm_debug
+
+- name: 'rm: retore-license: Debug'
+  when: rm_debug|bool
   debug:
     var: rm_roles_license
-- name: 'rm: restore-roles-license: Create roles license files'
+
+- name: 'rm: restore-license: Create roles license files'
   template:
     src: "templates/{{ item.value.template }}"
     dest: "{{ roles_path }}/{{ item.key }}/LICENSE"
@@ -14,7 +16,10 @@
     group: "{{ rm_group }}"
     mode: "{{ rm_roles_file_mode }}"
     backup: "{{ rm_backup_conf }}"
+#   validate: "{{ rm_ansible_lint }} %s"
   loop: "{{ rm_roles_license|dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
 
 # EOF
 ...

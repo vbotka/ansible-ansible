@@ -1,0 +1,19 @@
+---
+language: {{ item.value.language }}
+python: "{{ item.value.python }}"
+
+# Use the new container infrastructure
+sudo: {{ item.value.sudo }}
+
+# Install ansible
+addons:
+{{ item.value.addons|to_yaml(indent=2)|indent(2, true) }}
+
+install:
+{{ item.value.install|to_nice_yaml(indent=2)|indent(2, true) }}
+
+script:
+{{ item.value.script|to_nice_yaml(indent=2)|indent(2, true) }}
+
+notifications:
+{{ item.value.notifications|to_nice_yaml(indent=2)|indent(2, true) }}

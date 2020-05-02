@@ -1,0 +1,43 @@
+---
+galaxy_info:
+  role_name: {{ item.value.galaxy_info.role_name }}
+  author: {{ item.value.galaxy_info.author }}
+{% if item.value.galaxy_info.description|length < 70 %}
+  description: {{ item.value.galaxy_info.description }}
+{% else %}
+  description: |
+{{ item.value.galaxy_info.description|indent(4,true) }}
+{% endif %}
+  company: {{ item.value.galaxy_info.company }}
+  github_branch: {{ item.value.galaxy_info.github_branch }}
+  license: {{ item.value.galaxy_info.license }}
+  min_ansible_version: {{ item.value.galaxy_info.min_ansible_version }}
+{% if item.value.galaxy_info.platforms|length == 0 %}
+  platforms: []
+{% else %}
+  platforms:
+{% for platform in item.value.galaxy_info.platforms %}
+    - name: {{ platform.name }}
+      versions:
+{% for version in platform.versions %}
+        - {{ version }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if item.value.galaxy_info.galaxy_tags|length == 0 %}
+  galaxy_tags: []
+{% else %}
+  galaxy_tags:
+{% for tag in item.value.galaxy_info.galaxy_tags %}
+    - {{ tag }}
+{% endfor %}
+{% endif %}
+{% if item.value.dependencies|length == 0 %}
+dependencies: []
+{% else %}
+dependencies:
+{% for dependency in item.value.dependencies %}
+  - {{ dependency }}
+{% endfor %}
+{% endif %}
+...
