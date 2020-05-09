@@ -2,24 +2,54 @@
 # vars for ansible
 
 # Plugins
+# map_mitogen_ver: 0.2.9
+# map_mitogen_sha256: "sha256:76cb9afef92596818a4639afb2a0bb0384ce7b6699b353af55662057b08b1e57"
+#
+# map_vbotka_ver: 1.7.0
+# map_vbotka_sha256: "sha256:c794517999ae83eea615cb65e337e8c7b9ce2636b34d75c625641f8b804bcc03"
+#
 # ma_plugins:
-#   - archive: mitogen-0.2.6.tar.gz
-#     archive_url: https://networkgenomics.com/try/mitogen-0.2.6.tar.gz
-#     checksum: "sha256:b7644f9d890149ae335b5ecf18fa7cf56901f38a56dcc96e28028fed7c81c323"
-#     dest: mitogen-0.2.6
+#   - archive: mitogen-{{ map_mitogen_ver }}.tar.gz
+#     archive_url: https://networkgenomics.com/try/mitogen-{{ map_mitogen_ver }}.tar.gz
+#     checksum: "{{ map_mitogen_sha256 }}"
+#     dest: mitogen-{{ map_mitogen_ver }}
 #     link: mitogen
 #     plugins:
-#       - path: mitogen-0.2.6/ansible_mitogen/plugins/strategy
+#       - path: mitogen/ansible_mitogen/plugins/strategy
 #         ini_key: strategy_plugins
 #         enable: true
-#   - archive: ansible-plugins-0.1.0.tar.gz
-#     archive_url: https://github.com/vbotka/ansible-plugins/archive/0.1.0.tar.gz
-#     checksum: "sha256:ed37024eca2215939fb725a21258ac347f2ae4e25f7a59a7ddab93815e5dc9de"
-#     dest: ansible-plugins-0.1.0
+#   - archive: ansible-plugins-{{ map_vbotka_ver }}.tar.gz
+#     archive_url: https://github.com/vbotka/ansible-plugins/archive/{{ map_vbotka_ver }}.tar.gz
+#     checksum: "{{ map_vbotka_sha256 }}"
+#     dest: ansible-plugins-{{ map_vbotka_ver }}
 #     link: ansible-plugins
 #     plugins:
-#       - path: ansible-plugins-0.1.0/sort_versions
+#       - path: ansible-plugins/filter_plugins/bool_filters
 #         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/datetime_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/dict_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/file_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/hash_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/list_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/version_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/filter_plugins/string_filters
+#         ini_key: filter_plugins
+#         enable: true
+#       - path: ansible-plugins/inventory_plugins/ip_based_groups
+#         ini_key: inventory_plugins
 #         enable: true
 
 # EOF
