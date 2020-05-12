@@ -4,7 +4,7 @@ parseable: True
 use_default_rules: True
 rulesdir:
   - $HOME/.ansible/ansible-lint-rules
-# skip_list:
-#   - '306'
+skip_list:
+   - '103'
 
 # EOF
