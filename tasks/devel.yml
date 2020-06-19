@@ -1,0 +1,39 @@
+---
+
+- name: "devel: Checkout repository"
+  block:
+    - name: "devel: Create directory {{ ma_repo_dir }}"
+      file:
+        state: directory
+        path: "{{ ma_repo_dir }}"
+        owner: "{{ ma_devel_owner }}"
+        group: "{{ ma_devel_group|default(omit) }}"
+    - name: "devel: Checkout {{ ma_repo_version }}"
+      become: "{{ ma_devel_owner }}"
+      git:
+        repo: "{{ ma_repo_url }}"
+        version: "{{ ma_repo_version }}"
+        dest: "{{ ma_repo_dir }}"
+  when: ma_repo|bool
+
+- name: "devel: Get release notes"
+  block:
+    - name: "devel: Create directory {{ ma_rnotes_dir }}"
+      file:
+        state: directory
+        path: "{{ ma_rnotes_dir }}"
+        owner: "{{ ma_devel_owner }}"
+        group: "{{ ma_devel_group|default(omit) }}"
+    - name: "devel: Get release notes {{ ma_rnotes_list }}"
+      get_url:
+        url: "{{ ma_rnotes_url ~ item ~
+                 '/changelogs/CHANGELOG-v' ~ item ~ '.rst' }}"
+        dest: "{{ ma_rnotes_dir }}"
+        owner: "{{ ma_devel_owner }}"
+        group: "{{ ma_devel_group }}"
+      loop: "{{ ma_rnotes_list }}"
+      vars:
+  when: ma_rnotes|bool
+
+# EOF
+...

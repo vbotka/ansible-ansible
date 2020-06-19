@@ -30,8 +30,20 @@
       ma_config_template_default [{{ ma_config_template_default }}]
       ma_config
       {{ ma_config|to_yaml }}
+      ma_devel [{{ ma_devel }}]
+      ma_devel_owner [{{ ma_devel_owner }}]
+      ma_devel_group [{{ ma_devel_group|default('UNDEFINED') }}]
+      ma_repo [{{ ma_repo }}]
+      ma_repo_url [{{ ma_repo_url }}]
+      ma_repo_version [{{ ma_repo_version }}]
+      ma_repo_dir [{{ ma_repo_dir }}]
+      ma_rnotes [{{ ma_rnotes }}]
+      ma_rnotes_list {{ ma_rnotes_list }}
+      ma_rnotes_url [{{ ma_rnotes_url }}]
+      ma_rnotes_dir [{{ ma_rnotes_dir }}]
+      ma_rnotes_list [{{ ma_rnotes_list }}]
   debug:
-    msg: "{{ msg.split('\n') }}"
+    msg: "{{ msg.split('\n')[:-1] }}"
 
 # EOF
 ...

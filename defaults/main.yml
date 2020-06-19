@@ -43,5 +43,16 @@ ma_plugins_sections:
   test_plugins: defaults
   vars_plugins: defaults
 
+# Devel
+ma_devel: false
+ma_devel_owner: root
+ma_repo_version: devel
+ma_repo_url: https://github.com/ansible/ansible
+ma_repo_dir: /scratch/ansible-git
+ma_rnotes: false
+ma_rnotes_url: 'https://raw.githubusercontent.com/ansible/ansible/stable-'
+ma_rnotes_dir: /scratch/ansible-release-notes
+ma_rnotes_list: [ '2.5', '2.6', '2.7', '2.8', '2.9', '2.10']
+
 # EOF
 ...

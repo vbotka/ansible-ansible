@@ -20,5 +20,9 @@
   when: ma_config|length > 0
   tags: ma_config
 
+- import_tasks: devel.yml
+  when: ma_devel|bool
+  tags: ma_devel
+
 # EOF
 ...
