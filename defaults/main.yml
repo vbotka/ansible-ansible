@@ -46,6 +46,7 @@ ma_plugins_sections:
 # Devel
 ma_devel: false
 ma_devel_owner: root
+ma_repo: false
 ma_repo_version: devel
 ma_repo_url: https://github.com/ansible/ansible
 ma_repo_dir: /scratch/ansible-git
