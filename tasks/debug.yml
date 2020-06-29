@@ -41,7 +41,7 @@
       ma_rnotes_list {{ ma_rnotes_list }}
       ma_rnotes_url [{{ ma_rnotes_url }}]
       ma_rnotes_dir [{{ ma_rnotes_dir }}]
-      ma_rnotes_list [{{ ma_rnotes_list }}]
+      ma_rnotes_list {{ ma_rnotes_list }}
   debug:
     msg: "{{ msg.split('\n')[:-1] }}"
 
