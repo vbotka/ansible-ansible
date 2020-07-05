@@ -119,7 +119,7 @@ configuration
 .. code-block:: console
    :emphasize-lines: 1
 
-   shell> ansible-playbook ansible.yml -e 'lp_debug=true'
+   shell> ansible-playbook ansible.yml -e 'ma_debug=true'
 
 .. note:: The debug output of this role is optimized for the **yaml**
    callback plugin. Set this plugin for example in the environment
@@ -141,26 +141,26 @@ role with the command
 .. include:: tags-list.rst
 
 For example, display the list of the variables and their values with
-the tag ``lp_debug`` (when the debug is enabled ``lp_debug: true``)
+the tag ``ma_debug`` (when the debug is enabled ``ma_debug: true``)
 
 .. code-block:: console
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t lp_debug
+    shell> ansible-playbook ansible.yml -t ma_debug
 
 See what packages will be installed
 
 .. code-block:: console
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t lp_packages --check
+    shell> ansible-playbook ansible.yml -t ma_packages --check
 
 Install packages and exit the play
 
 .. code-block:: console
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t lp_packages
+    shell> ansible-playbook ansible.yml -t ma_packages
 
 
 .. _ug_tasks:
@@ -201,7 +201,7 @@ make sure the playbook and the configuration is idempotent
 .. code-block:: console
    :emphasize-lines: 1
 
-   shell> ansible-playbook ansible -t <tag>
+   shell> ansible-playbook ansible.yml -t <tag>
 
 .. _ug_task_configure:
 .. include:: task-configure.rst
