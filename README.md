@@ -7,6 +7,21 @@
 Please feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues). Contributions are welcome.
 
 
+[Documentation at readthedocs.io](https://ansible-ansible.readthedocs.io) [[PDF 176k](https://github.com/vbotka/ansible-ansible/blob/master/ansible-role-ansible.pdf)]
+
+Feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues). Contributions are welcome.
+
+
+## Supported platforms
+
+This role has been developed and tested with
+* [Ubuntu Supported Releases](http://releases.ubuntu.com/)
+* [FreeBSD Supported Production Releases](https://www.freebsd.org/releases/)
+
+This may be different from the platforms in Ansible Galaxy which does not offer all
+released versions in time and would report an error. For example:
+`IMPORTER101: Invalid platform: "FreeBSD-11.3", skipping.`
+
 ## Requirements
 
 None.
