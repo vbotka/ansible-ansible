@@ -1,6 +1,7 @@
 # ansible
 
-[![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)
+[![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
+
 
 [Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://www.ansible.com/).
 
