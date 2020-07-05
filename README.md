@@ -2,11 +2,7 @@
 
 [![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
 
-
-[Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://www.ansible.com/).
-
-Please feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues). Contributions are welcome.
-
+[Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://github.com/ansible/ansible).
 
 [Documentation at readthedocs.io](https://ansible-ansible.readthedocs.io) [[PDF 176k](https://github.com/vbotka/ansible-ansible/blob/master/ansible-role-ansible.pdf)]
 
