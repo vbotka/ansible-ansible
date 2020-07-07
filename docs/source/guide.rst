@@ -112,7 +112,7 @@ configuration
 .. code-block:: yaml
    :emphasize-lines: 1
 
-   lp_debug: true
+   ma_debug: true
 
 , or set the extra variable in the command
 
