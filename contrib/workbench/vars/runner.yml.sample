@@ -1,5 +1,15 @@
+---
+
 requirements:
 
   - path: srv
     project: srv.example.com
+    env: "{{ my_env }}"
     force: yes
+
+my_env:
+  - cmdline:
+      - "--vault-password-file $HOME/.vault_pass.txt"
+
+# EOF
+...

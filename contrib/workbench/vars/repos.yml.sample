@@ -1,3 +1,5 @@
+---
+
 requirements:
 
   - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-awx"
@@ -54,3 +56,6 @@ requirements:
     name: ansible-workbench
     link: workbench
     install: false
+
+# EOF
+...

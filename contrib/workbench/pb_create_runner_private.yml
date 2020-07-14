@@ -1,9 +1,9 @@
 ---
 
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Create ansible-runner private data
 #
 # Parameters:
@@ -13,7 +13,7 @@
 # Notes:
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 - hosts: localhost
   connection: local
@@ -22,7 +22,8 @@
 
   vars:
 
-    my_version: "0.2.0-CURRENT"
+#   my_version: "0.2.4-CURRENT"
+    my_version: "0.2.3"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_runner_file: "vars/runner.yml"
     my_runner_directories:
@@ -33,10 +34,9 @@
 
     - name: "Include list of private directories from {{ my_runner_file }}"
       include_vars: "{{ my_runner_file }}"
+      tags: always
 
-    - name: "Debug"
-      debug:
-        msg: "{{ msg.split('\n') }}"
+    - name: Debug
       vars:
         msg: |
           my_version [{{ my_version }}]
@@ -45,35 +45,52 @@
           ansible_check_mode [{{ ansible_check_mode }}]
           requirements
           {{ requirements|to_nice_yaml }}
+      debug:
+        msg: "{{ msg.split('\n')[:-1] }}"
       when: debug|default(false)|bool
+      tags: debug, always
 
-    - name: "Debug directories for private data"
+    - name: Debug directories for private data
       debug:
         msg: "dir [{{ my_base_path }}/runner/{{ item.0.path }}/{{ item.1 }}]"
       loop: "{{ requirements|product(my_runner_directories)|list }}"
       when: debug|default(false)|bool
+      tags: debug, always
 
-    - name: "Create directories for private data"
+    - name: Create directories for private data
       file:
-        state: "directory"
+        state: directory
         path: "{{ my_base_path }}/runner/{{ item.0.path }}/{{ item.1 }}"
       loop: "{{ requirements|product(my_runner_directories)|list }}"
+      tags: dirs
 
-    - name: "Create links to projects"
+    - name: Create private env data
+      template:
+        src: "{{ my_key }}.j2"
+        dest: "{{ my_base_path }}/runner/{{ item.0.path }}/env/{{ my_key }}"
+      loop: "{{ query('subelements', requirements, 'env', {'skip_missing': True}) }}"
+      vars:
+        my_key: "{{ item.1.keys()|list|first }}"
+        my_val: "{{ item.1.values()|list|flatten }}"
+      tags: env
+
+    - name: Create links to projects
       file:
-        state: "link"
+        state: link
         src: "{{ my_base_path }}/projects/{{ item.project}}"
         dest: "{{ my_base_path }}/runner/{{ item.path }}/project"
         force: "{{ item.force|default(false) }}"
       loop: "{{ requirements }}"
+      tags: links_project
 
-    - name: "Create links to project hosts"
+    - name: Create links to project hosts
       file:
-        state: "link"
+        state: link
         src: "{{ my_base_path }}/runner/{{ item.path }}/project/hosts"
         dest: "{{ my_base_path }}/runner/{{ item.path }}/inventory/hosts"
         force: "{{ item.force|default(false) }}"
       loop: "{{ requirements }}"
+      tags: links_hosts
 
 # EOF
 ...

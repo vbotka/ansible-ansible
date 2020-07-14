@@ -1,3 +1,5 @@
+---
+
 requirements:
 
   - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-projects/srv1.example.com"
@@ -5,3 +7,6 @@ requirements:
 
   - src: "{{ my_git_user }}@gitserver.mydomain.com:/export/gitrepo/ansible-projects/srv2.example.com"
     name: srv2
+
+# EOF
+...

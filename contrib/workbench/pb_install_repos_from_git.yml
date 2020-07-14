@@ -1,9 +1,9 @@
 ---
 
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Ansible playbook
 # Install git repositories
 #
@@ -19,7 +19,7 @@
 # Notes:
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 - hosts: localhost
   connection: local
@@ -28,7 +28,8 @@
 
   vars:
 
-    my_version: "0.2.0-CURRENT"
+#   my_version: "0.2.4-CURRENT"
+    my_version: "0.2.3"
     git_module: false
     my_git_user: "admin"
     my_user: "{{ lookup('env','USER') }}"
@@ -86,7 +87,7 @@
 
     - name: "Chown and chmod repos"
       file:
-        state: "directory"
+        state: directory
         recurse: true
         dest: "{{ my_repos_path }}/{{ item.name }}"
         owner: "{{ my_user }}"
@@ -99,7 +100,7 @@
 
     - name: "Link repos"
       file:
-        state: "link"
+        state: link
         src: "{{ my_repos_path }}/{{ item.name }}"
         dest: "{{ my_repos_path }}/{{ item.link }}"
         owner: "{{ my_user }}"

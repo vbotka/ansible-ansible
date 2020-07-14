@@ -1,9 +1,9 @@
 ---
 
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Create links
 #
 # Parameters:
@@ -13,7 +13,7 @@
 # Notes:
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 - hosts: localhost
   connection: local
@@ -22,7 +22,8 @@
 
   vars:
 
-    my_version: "0.2.0-CURRENT"
+#   my_version: "0.2.4-CURRENT"
+    my_version: "0.2.3"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_links_file: "vars/links.yml"
 
@@ -31,7 +32,7 @@
     - name: "Include list of links from {{ my_links_file }}"
       include_vars: "{{ my_links_file }}"
 
-    - name: "Debug"
+    - name: Debug
       debug:
         msg: "{{ msg.split('\n') }}"
       vars:
@@ -44,23 +45,23 @@
           {{ requirements|to_nice_yaml }}
       when: debug|default(false)|bool
 
-    - name: "Debug"
+    - name: Debug
       debug:
         msg: "path {{ item.path }} link {{ item.link }}"
       loop: "{{ requirements }}"
       when: debug|default(false)|bool
 
-    - name: "Create links to absolute paths"
+    - name: Create links to absolute paths
       file:
-        state: "link"
+        state: link
         src: "{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"
       loop: "{{ requirements }}"
       when: item.path.0 == '/'
 
-    - name: "Create links to relative paths"
+    - name: Create links to relative paths
       file:
-        state: "link"
+        state: link
         src: "{{ my_base_path }}/{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"
       loop: "{{ requirements }}"

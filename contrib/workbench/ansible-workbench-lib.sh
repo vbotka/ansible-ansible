@@ -1,7 +1,8 @@
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version_lib="0.2.3-CURRENT"
+# version_lib="0.2.4-CURRENT"
+version_lib="0.2.3"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"
@@ -38,6 +39,7 @@ ${workbench_dir}/vars/repos.yml
 ${workbench_dir}/vars/roles.yml
 ${workbench_dir}/vars/runner.yml"
 
+# Git clone repo if not exist else udpate repo - - - - - - - - - - - - - - - - -
 repo_clone_update() {
     if [ -e "${dir}" ]; then
         printf "[OK]  ${dir} exists\n"
@@ -56,6 +58,7 @@ repo_clone_update() {
     fi
 }
 
+# Create link - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 repo_link() {
     if [ -e "${link}" ]; then
         printf "[OK]  Link ${link} exists\n"
@@ -93,7 +96,7 @@ link_ansible_lint_rules() {
     fi
 }
 
-# ansible: Clone role vbotka.ansible and copy contrib/workbench -----------
+# ansible: Clone role vbotka.ansible and copy contrib/workbench - - - - - - - -
 ansible_role() {
     dir=${roles_dir}/vbotka.ansible
     repo="https://github.com/vbotka/ansible-ansible"
@@ -119,7 +122,7 @@ ansible_role() {
     fi
 }
 
-# update: Update ansible-workbench from contrib/workbench .................
+# update: Update ansible-workbench from contrib/workbench - - - - - - - - - - -
 ansible_update_workbench() {
     if [ "${dryrun}" = "true" ]; then
 	if rsync -avrnc ${roles_dir}/vbotka.ansible/contrib/workbench/ \
@@ -142,7 +145,7 @@ ${roles_dir}/vbotka.ansible/contrib/workbench/ to ${workbench_dir} rc:${?}\n"
     fi
 }
 
-# config: Copy sample configuration files if not exist --------------------
+# config: Copy sample configuration files if not exist - - - - - - - - - - - - -
 config_files() {
     create_ansible_cfg
     create_ansible_workbench_cfg
@@ -182,7 +185,7 @@ create_hosts() {
     fi
 } # TODO: automagic OS detection?
 
-# dirs: Create directories if not exist -----------------------------------
+# dirs: Create directories if not exist - - - - - - - - - - - - - - - - - - - -
 create_dirs() {
     for dir in ${my_dirs}; do
 	if [ -e "${dir}" ]; then
@@ -197,7 +200,7 @@ create_dirs() {
     done
 }
 
-# repos: Clone repositories if exist update -------------------------------
+# repos: Clone repositories if exist update - - - - - - - - - - - - - - - - - -
 repos_clone_update_link() {
     printf "[OK]  repos_clone_update_link: started\n"
     if [ ! -e "${repos_dir}" ]; then
@@ -213,15 +216,15 @@ repos_clone_update_link() {
                     debug=${playbook_debug}"
     if (cd ${workbench_dir} && \
 	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			     pb-install-repos-from-git.yml); then
-        printf "[OK]  pb-install-repos-from-git.yml: repos passed\n"
+			     pb_install_repos_from_git.yml); then
+        printf "[OK]  pb_install_repos_from_git.yml: repos passed\n"
     else
-        printf "[ERR] pb-install-repos-from-git.yml: repos rc:${?}\n"
+        printf "[ERR] pb_install_repos_from_git.yml: repos rc:${?}\n"
     fi
     chown -R ${owner}:${owner_group} ${repos_dir}
 }
 
-# roles: Clone roles if exist update --------------------------------------
+# roles: Clone roles if exist update - - - - - - - - - - - - - - - - - - - - - -
 roles_clone_update_link() {
     printf "[OK]  roles_clone_update_link: started\n"
     if [ ! -e "${roles_dir}" ]; then
@@ -237,15 +240,15 @@ roles_clone_update_link() {
                     debug=${playbook_debug}"
     if (cd ${workbench_dir} && \
 	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			     pb-install-repos-from-git.yml); then
-        printf "[OK]  pb-install-repos-from-git.yml: roles passed\n"
+			     pb_install_repos_from_git.yml); then
+        printf "[OK]  pb_install_repos_from_git.yml: roles passed\n"
     else
-        printf "[ERR] pb-install-repos-from-git.yml: roles rc:${?}\n"
+        printf "[ERR] pb_install_repos_from_git.yml: roles rc:${?}\n"
     fi
     chown -R ${owner}:${owner_group} ${roles_dir}
 }
 
-# projects: Clone projects if exist update --------------------------------
+# projects: Clone projects if exist update - - - - - - - - - - - - - - - - - - -
 projects_clone_update_link() {
     printf "[OK]  projects_clone_update_link: started\n"
     if [ ! -e "${projects_dir}" ]; then
@@ -261,15 +264,15 @@ projects_clone_update_link() {
                     debug=${playbook_debug}"
     if (cd ${workbench_dir} && \
 	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			     pb-install-repos-from-git.yml); then
-        printf "[OK]  pb-install-repos-from-git.yml: projects passed\n"
+			     pb_install_repos_from_git.yml); then
+        printf "[OK]  pb_install_repos_from_git.yml: projects passed\n"
     else
-        printf "[ERR] pb-install-repos-from-git.yml: projects rc:${?}\n"
+        printf "[ERR] pb_install_repos_from_git.yml: projects rc:${?}\n"
     fi
     chown -R ${owner}:${owner_group} ${projects_dir}
 }
 
-# links: Create links -----------------------------------------------------
+# links: Create links - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 create_links() {
     printf "[OK]  create_links: started\n"
     ansible_params="my_base_path=${base_dir} \
@@ -277,14 +280,14 @@ create_links() {
                     debug=${playbook_debug}"
     if (cd ${workbench_dir} && \
 	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			     pb-create-links.yml); then
-        printf "[OK]  pb-create-links.yml: passed\n"
+			     pb_create_links.yml); then
+        printf "[OK]  pb_create_links.yml: passed\n"
     else
-        printf "[ERR] pb-create-links.yml: rc:${?}\n"
+        printf "[ERR] pb_create_links.yml: rc:${?}\n"
     fi
 }
 
-# runner: Create ansible-runner projects ----------------------------------
+# runner: Create ansible-runner projects - - - - - - - - - - - - - - - - - - - -
 runner_create_private() {
     printf "[OK]  runner_create_private: started\n"
     if [ ! -e "${runner_dir}" ]; then
@@ -297,15 +300,15 @@ runner_create_private() {
                     debug=${playbook_debug}"
     if (cd ${workbench_dir} &&
 	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
-			     pb-create-runner-private.yml); then
-        printf "[OK]  pb-create-runner-private.yml: passed\n"
+			     pb_create_runner_private.yml); then
+        printf "[OK]  pb_create_runner_private.yml: passed\n"
     else
-        printf "[ERR] pb-create-runner-private.yml: rc:${?}\n"
+        printf "[ERR] pb_create_runner_private.yml: rc:${?}\n"
     fi
     chown -R ${owner}:${owner_group} ${runner_dir}
 }
 
-# test: Test all ----------------------------------------------------------
+# test: Test all - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 install_test() {
     install_paths_test
     install_objects_test
@@ -336,7 +339,14 @@ install_path_test() {
     fi
 }
 
-# debug -------------------------------------------------------------------
+devel_diff() {
+    while read l; do
+	echo $l
+	diff $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l
+    done < FILES
+}
+
+# debug - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 print_debug() {
     printf "version: ${version}\n"
     printf "version_lib: ${version_lib}\n"

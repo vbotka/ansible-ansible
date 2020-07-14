@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# -------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Clone a github repo to the current directory. Pull if exists. Read
 # the repos from the file requirements.yml.github
 #
@@ -15,6 +15,7 @@
 # galaxy.html#installing-multiple-roles-from-a-file
 # https://git-scm.com/docs/git-clone
 # Try: ansible-galaxy install -r requirements.yml -p ROLE_PATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 import yaml
 import subprocess

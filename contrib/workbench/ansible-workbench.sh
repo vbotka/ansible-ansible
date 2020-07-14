@@ -1,9 +1,10 @@
 #!/bin/sh
 
-# All rights reserved (c) 2019, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version="0.2.1-CURRENT"
+# version="0.2.4-CURRENT"
+version="0.2.3"
 
 usage="ansible-workbench ver ${version}
 Usage:
@@ -17,11 +18,11 @@ Where:
       -v1 --actionable  Use Ansible actionable callback plugin
       -v2 --minimal ... Use Ansible minimal callback plugin
       -v3 --yaml ...... Use Ansible yaml callback plugin
-      -d --debug ...... Print debug and set playbook_debug=true
+      -d --debug ...... Display debug and set playbook_debug=true
       -n --dry-run .... Set dryrun=true and playbook_dryrun=--check
       command ......... ansible, config, dirs,
                         repos, roles, projects, links, runner,
-                        all, none, test, update
+                        all, none, test, update, diff
 Commands:
       ansible ......... Clone vbotka.ansible and copy contrib/workbench
                         to ansible-workbench if not exist
@@ -35,7 +36,16 @@ Commands:
       all ............. Create all
       none ............ Create none. For testing
       test ............ Test all
-      update .......... Update ansible-workbench from contrib/workbench"
+      update .......... Update ansible-workbench from contrib/workbench
+      diff ............ Diff ansible-workbench to contrib/workbench
+
+Examples:
+      Dry-run all commands. Display debug output
+      shell> ./ansible-workbench.sh -d -n all
+      Run all commands. Use Ansible yaml callback plugin
+      shell> ./ansible-workbench.sh -v3 all
+      Run all tests. Use Ansible actionable callback plugin
+      shell> ./ansible-workbench.sh -v1 test"
 
 expected_args=1
 if [ "$#" -lt "${expected_args}" ]; then
@@ -45,13 +55,13 @@ fi
 
 # Configuration
 my_config_file=""
-if [ -e ${PWD}/.ansible-workbench.cfg ]; then
-    my_config_file="${PWD}/.ansible-workbench.cfg"
-    . ${PWD}/.ansible-workbench.cfg
-fi
 if [ -e ${HOME}/.ansible-workbench.cfg ]; then
     my_config_file="${HOME}/.ansible-workbench.cfg"
     . ${HOME}/.ansible-workbench.cfg
+fi
+if [ -e ${PWD}/.ansible-workbench.cfg ]; then
+    my_config_file="${PWD}/.ansible-workbench.cfg"
+    . ${PWD}/.ansible-workbench.cfg
 fi
 
 # Functions
@@ -80,13 +90,13 @@ for i in "$@"; do
         -v3|--yaml)
             export ANSIBLE_STDOUT_CALLBACK=yaml
             ;;
-        -d|--debug)
-            playbook_debug="true"
-	    print_debug
-            ;;
         -n|--dry-run)
             playbook_dryrun="--check"
 	    dryrun="true"
+            ;;
+        -d|--debug)
+            playbook_debug="true"
+	    print_debug
             ;;
 	ansible)
 	    ansible_role
@@ -98,6 +108,10 @@ for i in "$@"; do
 	    ;;
 	config)
 	    config_files
+	    exit 0
+	    ;;
+	diff)
+	    devel_diff
 	    exit 0
 	    ;;
 	dirs)
