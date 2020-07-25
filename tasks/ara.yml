@@ -1,6 +1,7 @@
 ---
 
 - name: "ara: Debug"
+  debug:
     msg: Not implemented yet.
 
 # [TODO]
