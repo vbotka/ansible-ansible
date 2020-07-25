@@ -1,12 +1,15 @@
 ---
 
+- name: "ara: Debug"
+    msg: Not implemented yet.
+
 # [TODO]
+#
 # ARA Records Ansible playbooks
 # https://ara.recordsansible.org/
+#
 # Welcome to the ARA documentation!
 # https://ara.readthedocs.io/en/latest/index.html
-#
-# - name: "ara: Install ARA"
 
 # EOF
 ...
