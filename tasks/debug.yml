@@ -12,6 +12,7 @@
       ansible_python_version [{{ ansible_python_version }}]
 
       ma_install [{{ ma_install }}]
+      ma_ara [{{ ma_ara }}]
       ma_backup_conf [{{ ma_backup_conf }}]
       freebsd_install_method [{{ freebsd_install_method }}]
       freebsd_use_packages [{{ freebsd_use_packages }}]

@@ -12,6 +12,10 @@
   when: ma_install|bool
   tags: ma_packages
 
+- import_tasks: ara.yml
+  when: ma_ara|bool
+  tags: ma_ara
+
 - import_tasks: plugins.yml
   when: ma_plugins|length > 0
   tags: ma_plugins
