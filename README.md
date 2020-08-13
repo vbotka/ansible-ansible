@@ -4,7 +4,7 @@
 
 [Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://github.com/ansible/ansible).
 
-[Documentation at readthedocs.io](https://ansible-ansible.readthedocs.io) [[PDF 176k](https://github.com/vbotka/ansible-ansible/blob/master/ansible-role-ansible.pdf)]
+[Documentation at readthedocs.io](https://ansible-ansible.readthedocs.io)
 
 Feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues). Contributions are welcome.
 
