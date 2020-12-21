@@ -1,0 +1,12 @@
+---
+
+requirements:
+
+  - src: https://github.com/ansible-collections/community.general
+    name: ansible_collections/community/general
+
+  - src: https://github.com/ansible-collections/community.crypto
+    name: ansible_collections/community/crypto
+
+# EOF
+...

@@ -1,8 +1,8 @@
 # All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# version_lib="0.2.4-CURRENT"
-version_lib="0.2.3"
+version_lib="0.2.4-CURRENT"
+# version_lib="0.2.3"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"
@@ -14,11 +14,13 @@ my_ansible_hosts="${workbench_dir}/hosts"
 my_dirs="${base_dir}
 ${repos_dir}
 ${roles_dir}
+${collections_dir}
 ${projects_dir}
 ${runner_dir}"
 
 my_objects="repos
 roles
+collections
 projects
 links
 runner"
@@ -26,6 +28,7 @@ runner"
 my_paths="${base_dir}
 ${repos_dir}
 ${roles_dir}
+${collections_dir}
 ${projects_dir}
 ${runner_dir}
 ${workbench_dir}
@@ -246,6 +249,30 @@ roles_clone_update_link() {
         printf "[ERR] pb_install_repos_from_git.yml: roles rc:${?}\n"
     fi
     chown -R ${owner}:${owner_group} ${roles_dir}
+}
+
+# collections: Clone collections if exist update - - - - - - - - - - - - - - - - - - - - - -
+collections_clone_update_link() {
+    printf "[OK]  collections_clone_update_link: started\n"
+    if [ ! -e "${collections_dir}" ]; then
+	mkdir -p ${collections_dir}
+    fi
+    ansible_params="git_module=${git_module} \
+                    my_git_user=${git_user} \
+                    my_user=${owner} \
+                    my_group=${owner_group} \
+                    my_mode=${mode} \
+                    my_repos_path=${collections_dir} \
+                    my_repos_file=${workbench_dir}/vars/collections.yml \
+                    debug=${playbook_debug}"
+    if (cd ${workbench_dir} && \
+	    ansible-playbook -e "${ansible_params}" ${playbook_dryrun} \
+			     pb_install_repos_from_git.yml); then
+        printf "[OK]  pb_install_repos_from_git.yml: collections passed\n"
+    else
+        printf "[ERR] pb_install_repos_from_git.yml: collections rc:${?}\n"
+    fi
+    chown -R ${owner}:${owner_group} ${collections_dir}
 }
 
 # projects: Clone projects if exist update - - - - - - - - - - - - - - - - - - -

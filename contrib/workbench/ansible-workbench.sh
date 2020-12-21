@@ -3,8 +3,8 @@
 # All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# version="0.2.4-CURRENT"
-version="0.2.3"
+# version="0.2.5-CURRENT"
+version="0.2.4"
 
 usage="ansible-workbench ver ${version}
 Usage:
@@ -29,6 +29,7 @@ Commands:
       config .......... Copy sample configuration files if not exist
       dirs ............ Create directories if not exist
       repos ........... Clone repositories if exist update
+      collections ..... Clone collections if exist update
       roles ........... Clone roles if exist update
       projects ........ Clone projects if exist update
       links ........... Create links
@@ -122,6 +123,10 @@ for i in "$@"; do
             repos_clone_update_link
             exit 0
             ;;
+        collections)
+            collections_clone_update_link
+            exit 0
+            ;;
         roles)
             roles_clone_update_link
             exit 0
@@ -150,6 +155,7 @@ for i in "$@"; do
 	    ansible_role                   # ansible
 	    config_files                   # config
             repos_clone_update_link        # repos
+            collections_clone_update_link  # collections
             roles_clone_update_link        # roles
             projects_clone_update_link     # projects
             create_links                   # links
