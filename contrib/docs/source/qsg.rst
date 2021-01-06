@@ -7,27 +7,27 @@ For the users who want to try the role quickly, this guide provides
 an example of how to ...
 
 
-* Install the role ``__GITHUB_USERNAME__.__PROJECT__`` ::
+* Install the role ``__GITHUB_USERNAME__.__GALAXY_PROJECT__`` ::
 
-    shell> ansible-galaxy install __GITHUB_USERNAME__.__PROJECT__
+    shell> ansible-galaxy install __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 
-* Create the playbook ``__PROJECT__.yml`` for single host srv.example.com (2)
+* Create the playbook ``playbook.yml`` for single host srv.example.com (2)
 
 .. code-block:: bash
    :emphasize-lines: 2
    :linenos:
 
-   shell> cat linux-postinstall.yml
+   shell> cat playbook.yml
    - hosts: srv.example.com
      gather_facts: true
      connection: ssh
      remote_user: admin
-     become: yes
+     become: true
      become_user: root
      become_method: sudo
      roles:
-       - __GITHUB_USERNAME__.__PROJECT__
+       - __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 
 * Create ``host_vars`` with customized variables
@@ -51,32 +51,30 @@ an example of how to ...
    XY_backup_conf: false
    XY_flavors_enable: false
 
-   ...
-
 
 * Test syntax ::
 
-    shell> ansible-playbook __PROJECT__.yml --syntax-check
+    shell> ansible-playbook playbook.yml --syntax-check
 
 
 * See what variables will be included ::
 
-    shell> ansible-playbook __PROJECT__.yml -t lp_debug -e lp_debug=True
+    shell> ansible-playbook playbook.yml -t XY_debug -e XY_debug=true
 
 
 * Install packages ::
 
-    shell> ansible-playbook __PROJECT__.yml -t lp_packages
+    shell> ansible-playbook playbook.yml -t XY_packages
 
 
 * Dry-run, display differences and display variables ::
 
-    shell> ansible-playbook __PROJECT__.yml -e lp_debug=True --check --diff
+    shell> ansible-playbook playbook.yml -e XY_debug=true --check --diff
 
 
 * Run the playbook ::
 
-    shell> ansible-playbook __PROJECT__.yml
+    shell> ansible-playbook playbook.yml
 
 
 .. warning:: The host has not been secured by this playbook and should

@@ -1,7 +1,7 @@
-Ansible role __PROJECT__
-====================
+Ansible role ansible-_PROJECT__
+===============================
 
-This `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__PROJECT__/>`_ and the
+This `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_ and the
 documentation is work in progess. Feel free to `share your feedback
 and report issues
 <https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/issues>`_. Contributions

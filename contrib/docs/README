@@ -5,9 +5,14 @@ Documentation of an Ansible project
 
 * Replace __AUTHOR_FULL_NAME__ by the full name of the author
 
+* Replace __COPYRIGHT_HOLDER__ by the copyright holder
+
 * Replace __GITHUB_USERNAME__ by the GitHub username
 
-* Replace __PROJECT__ by the name of the project
+* Replace __GALAXY_PROJECT__ by the name of the Ansible Galaxy project
+  https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__
+
+* Replace __PROJECT__ by the name of the GitHub project
   https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__
 
 * Update version

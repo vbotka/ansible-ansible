@@ -18,13 +18,13 @@ between them is the method how the files are included.
 In addition, also files ``defaults.yml`` and/or ``default.yml`` can be
 included.
 
-The method is determined by the variable ``lp_vars_distro`` *(default:
+The method is determined by the variable ``XY_vars_distro`` *(default:
 firstfound)*
 
 .. code-block:: yaml
    :emphasize-lines: 1
 
-   lp_vars_distro: firstfound
+   XY_vars_distro: firstfound
 
 .. warning::
    * Don’t change these file. The changes will be overwritten by the

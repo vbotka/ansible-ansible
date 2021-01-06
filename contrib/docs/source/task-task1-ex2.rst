@@ -6,11 +6,11 @@ Create a playbook
 .. code-block:: yaml
    :emphasize-lines: 1
 
-   shell> cat __PROJECT__.yml
+   shell> cat playbook.yml
    - hosts: test_01
      become: true
      roles:
-       - __GITHUB_USERNAME__.__PROJECT__
+       - __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 Create *host_vars/test_01/XY-task1.yml*
 
@@ -31,9 +31,9 @@ Configure ...
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t XY_task1
+   shell> ansible-playbook playbook.yml -t XY_task1
 
-   TASK [__GITHUB_USERNAME__.__PROJECT__ : task1: Configure ...] **
+   TASK [__GITHUB_USERNAME__.__GALAXY_PROJECT__ : task1: Configure ...] **
    ok: [test_01] => (...)
 
 The command is idempotent
@@ -41,7 +41,7 @@ The command is idempotent
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t XY_task1
+   shell> ansible-playbook playbook.yml -t XY_task1
    ...
    PLAY RECAP ******************************************************************
    test_01: ok=6 changed=0 unreachable=0 failed=0 skipped=4 rescued=0 ignored=0

@@ -13,9 +13,9 @@ User's guide
 Introduction
 ************
 
-* Ansible role: `__PROJECT__ <https://galaxy.ansible.com/__GITHUB_USERNAME__/__PROJECT__/>`_
-* Supported systems: `Ubuntu <http://releases.ubuntu.com/>`_
-* Requirements: `ansible_lib <https://galaxy.ansible.com/__GITHUB_USERNAME__/ansible_lib>`_
+* Ansible role: `__GALAXY_PROJECT__ <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_
+* Supported systems: `FreeBSD <https://www.freebsd.org/releases/>`_, `Ubuntu <http://releases.ubuntu.com/>`_
+* Requirements: `__REQUIREMENTS__ <https://galaxy.ansible.com/__GITHUB_USERNAME__/__REQUIREMENTS__>`_
 
 
 .. _ug_installation:
@@ -33,21 +33,21 @@ current status of the role
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-galaxy info __GITHUB_USERNAME__.__PROJECT__
+   shell> ansible-galaxy info __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 and install it
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-galaxy install __GITHUB_USERNAME__.__PROJECT__
+    shell> ansible-galaxy install __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
-Install the library of tasks
+Install the requirements
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-galaxy install __GITHUB_USERNAME__.ansible_lib
+    shell> ansible-galaxy install __GITHUB_USERNAME__.__REQUIREMENTS__
 
 .. seealso::
    * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_.
@@ -67,16 +67,16 @@ srv.example.com (2)
    :emphasize-lines: 1
    :linenos:
 
-   shell> cat linux-postinstall.yml
+   shell> cat playbook.yml
    - hosts: srv.example.com
      gather_facts: true
      connection: ssh
      remote_user: admin
-     become: yes
+     become: true
      become_user: root
      become_method: sudo
      roles:
-       - __GITHUB_USERNAME__.__PROJECT__
+       - __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 .. note:: ``gather_facts: true`` (3) must be set to gather facts
    needed to evaluate :index:`OS-specific options` of the role. For example, to
@@ -108,7 +108,7 @@ configuration
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -e lp_debug=true
+   shell> ansible-playbook playbook.yml -e XY_debug=true
 
 .. note:: The debug output of this role is optimized for the **yaml**
    callback plugin. Set this plugin for example in the environment
@@ -139,21 +139,21 @@ Examples
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook __PROJECT__.yml -t lp_debug
+    shell> ansible-playbook playbook.yml -t XY_debug
 
 * See what packages will be installed
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook __PROJECT__.yml -t lp_packages --check
+    shell> ansible-playbook playbook.yml -t XY_packages --check
 
 * Install packages and exit the play
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook __PROJECT__.yml -t lp_packages
+    shell> ansible-playbook playbook.yml -t XY_packages
 
 
 .. _ug_tasks:
@@ -176,18 +176,18 @@ tasks at single remote host *test_01*, create a playbook
 .. code-block:: yaml
    :emphasize-lines: 1
 
-   shell> cat linux-postinstall.yml
+   shell> cat playbook.yml
    - hosts: test_01
      become: true
      roles:
-       - __GITHUB_USERNAME__.__PROJECT__
+       - __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
 Customize configuration in ``host_vars/test_01/XY-*.yml`` and :index:`check the syntax`
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml --syntax-check
+   shell> ansible-playbook playbook.yml --syntax-check
 
 Then :index:`dry-run` the selected task and see what will be
 changed. Replace <tag> with valid tag or with a comma-separated list
@@ -196,7 +196,7 @@ of tags
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t <tag> --check --diff
+   shell> ansible-playbook playbook.yml -t <tag> --check --diff
 
 When all seems to be ready run the command. Run the command twice and
 make sure the playbook and the configuration is :index:`idempotent`
@@ -204,13 +204,7 @@ make sure the playbook and the configuration is :index:`idempotent`
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t <tag>
-
-.. seealso::
-   * Periodically run playbooks from cron by *ansible-runner*
-     `ansible-cron-audit.bash <https://github.com/__GITHUB_USERNAME__/ansible-runner/blob/master/contrib/ansible-cron-audit.bash>`_
-   * *ansible-runner* wrapper
-     `arwrapper.bash <https://github.com/__GITHUB_USERNAME__/ansible-runner/blob/master/contrib/arwrapper.bash>`_
+   shell> ansible-playbook playbook.yml -t <tag>
    
 
 .. _ug_task_task1:
@@ -253,6 +247,7 @@ Variables
 Best practice
 *************
 
+
 .. _ug_bp_firstboot:
 
 Recommended configuration after the installation of OS
@@ -263,49 +258,49 @@ Test syntax
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml --syntax-check
+   shell> ansible-playbook playbook.yml --syntax-check
 
 See what variables will be included
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t XY_debug -e XY_debug=True
+   shell> ansible-playbook playbook.yml -t XY_debug -e XY_debug=true
 
 :index:`Dry-run`, display differences and display variables
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -e XY_debug=True --check --diff
+   shell> ansible-playbook playbook.yml -e XY_debug=true --check --diff
 
 Configure hostname, users, sudoers, network and reboot
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t XY_task1
+   shell> ansible-playbook playbook.yml -t XY_task1
 
 Test the installation of packages
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t lp_packages -e lp_package_install_dryrun=True
+   shell> ansible-playbook playbook.yml -t XY_packages -e XY_package_install_dryrun=true
 
 Install packages
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml -t lp_packages
+   shell> ansible-playbook playbook.yml -t XY_packages
 
 Run the playbook
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook __PROJECT__.yml
+   shell> ansible-playbook playbook.yml
 
 Test the :index:`idem-potency`. The role and the configuration data shall be
 idempotent. Once the installation and configuration have passed there
@@ -316,7 +311,8 @@ playbook and run the playbook again.
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook __PROJECT__.yml
+    shell> ansible-playbook playbook.yml
+
 
 .. _ug_bp_flavors:
 
