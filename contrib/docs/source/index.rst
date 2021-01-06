@@ -1,4 +1,4 @@
-Ansible role ansible-_PROJECT__
+Ansible role __GALAXY_PROJECT__
 ===============================
 
 This `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_ and the
