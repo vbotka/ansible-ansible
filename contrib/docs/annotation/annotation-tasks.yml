@@ -1,0 +1,15 @@
+---
+mytasks:
+  - file: main.yml
+    link: main.yml
+    path: tasks/main.yml
+    synopsis: |
+      Main task.
+    description: |
+      Import tasks if enabled.
+    lines: 1,2
+    seealso: []
+    note: []
+    warning: []
+
+...
