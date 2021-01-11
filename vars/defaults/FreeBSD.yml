@@ -4,6 +4,7 @@
 ma_packages:
   - sysutils/ansible
   - sysutils/py-ansible-lint
+# - devel/py-epdb
 
 # ma_config:
 #  - path: "/usr/local/etc/ansible/ansible.cfg"
