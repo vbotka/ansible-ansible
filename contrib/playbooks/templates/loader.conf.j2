@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+# fci_loaderconf
+{% for item in fci_loaderconf_data %}
+{{ item }}
+{% endfor %}
+{% for item in fci_loaderconf_data_sysctl %}
+{{ item }}
+{% endfor %}
+
+# fci_loaderconf_modules
+{% for item in fci_loaderconf_modules %}
+{{ item }}_load="YES"
+{% endfor %}
+
+# EOF
