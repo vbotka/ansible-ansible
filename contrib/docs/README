@@ -4,8 +4,8 @@ README
 Documentation of an Ansible project
 
 
-Customize the templates to you needs
-------------------------------------
+Customize the templates in dir source
+-------------------------------------
 
 * Replace __AUTHOR_FULL_NAME__ by the full name of the author
   Example:
@@ -33,6 +33,19 @@ Customize the templates to you needs
 
   shell> grep "version =" source/conf.py 
   version = '0.1'
+
+
+Customize the templates in dir annotation
+-----------------------------------------
+
+* Replace __GITHUB_USERNAME__ by the GitHub username
+  Example:
+  find annotation -name '*.rst.j2' | xargs sed -i 's/__GITHUB_USERNAME__/vbotka/g'
+
+* Replace __PROJECT__ by the name of the GitHub project
+  Example:
+  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__
+  find annotation -name '*.rst.j2' | xargs sed -i 's/__PROJECT__/freebsd-custom-image/g'
 
 
 Create annotated source code

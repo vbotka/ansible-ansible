@@ -24,11 +24,10 @@ Introduction
 Installation
 ************
 
-The most convenient way how to install an Ansible role is to use
-:index:`Ansible Galaxy` CLI ``ansible-galaxy``. The utility comes with the
-standard Ansible package and provides the user with a simple interface
-to the Ansible Galaxy's services. For example, take a look at the
-current status of the role
+The most convenient way how to install an Ansible role is to use :index:`Ansible Galaxy` CLI
+``ansible-galaxy``. The utility comes with the standard Ansible package and provides the user with a
+simple interface to the Ansible Galaxy's services. For example, take a look at the current status of
+the role
 
 .. code-block:: sh
    :emphasize-lines: 1
@@ -50,7 +49,7 @@ Install the requirements
     shell> ansible-galaxy install __GITHUB_USERNAME__.__REQUIREMENTS__
 
 .. seealso::
-   * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_.
+   * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_
    * Take a look at other roles ``shell> ansible-galaxy search --author=__GITHUB_USERNAME__``
 
 
@@ -64,7 +63,7 @@ Below is a simple playbook that calls this role (10) at a single host
 srv.example.com (2)
 
 .. code-block:: bash
-   :emphasize-lines: 1
+   :emphasize-lines: 1,2,10
    :linenos:
 
    shell> cat playbook.yml
@@ -78,10 +77,9 @@ srv.example.com (2)
      roles:
        - __GITHUB_USERNAME__.__GALAXY_PROJECT__
 
-.. note:: ``gather_facts: true`` (3) must be set to gather facts
-   needed to evaluate :index:`OS-specific options` of the role. For example, to
-   install packages, the variable ``ansible_os_family`` is needed to
-   select the appropriate Ansible module.
+.. note:: ``gather_facts: true`` (3) must be set to gather facts needed to evaluate
+   :index:`OS-specific options` of the role. For example, to install packages, the variable
+   ``ansible_os_family`` is needed to select the appropriate Ansible module.
 
 .. seealso::
    * For details see `Connection Plugins <https://docs.ansible.com/ansible/latest/plugins/connection.html>`_ (4-5)
@@ -94,9 +92,8 @@ srv.example.com (2)
 Debug
 *****
 
-Many tasks will display additional information when the variable
-:index:`XY_debug` is enabled. Enable debug output either in the
-configuration
+Some tasks will display additional information when the variable :index:`XY_debug` is
+enabled. Enable debug output either in the configuration
 
 .. code-block:: yaml
    :emphasize-lines: 1
@@ -114,7 +111,10 @@ configuration
    callback plugin. Set this plugin for example in the environment
    ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``.
 
-.. seealso:: * `Playbook Debugger <https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html>`_
+.. seealso::
+   * `Playbook Debugger <https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html>`_
+   * `Debugging modules <https://docs.ansible.com/ansible/latest/dev_guide/debugging.html#debugging-modules>`_
+   * `Python Debugging With Pdb <https://realpython.com/python-debugging-pdb/>`_
 
 
 .. _ug_tags:
@@ -161,6 +161,10 @@ Examples
 *****
 Tasks
 *****
+
+The description of the tasks is not complete. The `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_ and the documentation is work in progess. Feel free to `share your feedback and report issues <https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/issues>`_.
+
+`Contributions are welcome <https://github.com/firstcontributions/first-contributions>`_.
 
 .. seealso::
    * Source code :ref:`as_main.yml`
