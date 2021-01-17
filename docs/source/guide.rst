@@ -14,7 +14,7 @@ Introduction
 ************
 
 Run this role to install and configure Ansible. Optionally install
-Ansible plugins, checkout repo with the source code and download the
+Ansible plugins, checkout repo with the source code, and download the
 Ansible release notes.
 
 * Ansible role: `ansible <https://galaxy.ansible.com/vbotka/ansible/>`_
@@ -62,7 +62,7 @@ Install the library of tasks (for future releases)
     shell> ansible-galaxy install vbotka.ansible_lib
 
 .. seealso::
-   * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_.
+   * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_
    * Take a look at other roles ``shell> ansible-galaxy search --author=vbotka``
 
 
@@ -72,11 +72,11 @@ Install the library of tasks (for future releases)
 Playbook
 ********
 
-Below is a simple playbook that calls this role at a single host
+Below is a simple playbook that calls this role (10) at a single host
 srv.example.com (2)
 
 .. code-block:: yaml
-   :emphasize-lines: 1
+   :emphasize-lines: 2,10
    :linenos:
 
    shell> cat ansible.yml
@@ -90,10 +90,9 @@ srv.example.com (2)
      roles:
        - vbotka.ansible
 
-.. note:: ``gather_facts: true`` (3) must be set to gather facts
-   needed to evaluate OS-specific options of the role. For example to
-   install packages the variable ``ansible_os_family`` is needed to
-   select the appropriate Ansible module.
+.. note:: ``gather_facts: true`` (3) must be set to gather facts needed to evaluate OS-specific
+   options of the role. For example, to install packages, the variable ``ansible_os_family`` is
+   needed to select the appropriate Ansible module.
 
 .. seealso::
    * For details see `Connection Plugins <https://docs.ansible.com/ansible/latest/plugins/connection.html>`_ (4-5)
@@ -121,9 +120,15 @@ configuration
 
    shell> ansible-playbook ansible.yml -e 'ma_debug=true'
 
-.. note:: The debug output of this role is optimized for the **yaml**
-   callback plugin. Set this plugin for example in the environment
-   ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``.
+.. note::
+
+   * The debug output of this role is optimized for the **yaml** callback plugin. Set this plugin
+     for example in the environment ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``
+
+   * See details about the yaml callback plugin ``shell> ansible-doc -t callback yaml``
+
+   * See list of other callback plugins ``shell> ansible-doc -t callback -l``
+
 
 .. seealso:: * `Playbook Debugger <https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html>`_
 
@@ -134,14 +139,13 @@ configuration
 Tags
 ****
 
-The tags provide the user with a very useful tool to run selected
-tasks of the role. To see what tags are available list the tags of the
-role with the command
+The tags provide the user with a very useful tool to run selected tasks of the role. To see what
+tags are available list the tags of the role with the command
 
 .. include:: tags-list.rst
 
-For example, display the list of the variables and their values with
-the tag ``ma_debug`` (when the debug is enabled ``ma_debug: true``)
+For example, display the list of the variables and their values with the tag ``ma_debug`` (when the
+debug is enabled ``ma_debug: true``)
 
 .. code-block:: console
    :emphasize-lines: 1
@@ -187,16 +191,15 @@ Customize configuration in ``host_vars/test_01/ma-*.yml`` and check the syntax
 
    shell> ansible-playbook ansible.yml --syntax-check
 
-Then dry-run the selected task and see what will be changed. Replace
-<tag> with valid tag.
+Then dry-run the selected task and see what will be changed. Replace <tag> with valid tag.
 
 .. code-block:: console
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t <tag> --check --diff
 
-When all seems to be ready run the command. Run the command twice and
-make sure the playbook and the configuration is idempotent
+When all seems to be ready run the command. Run the command twice and make sure the playbook and the
+configuration is idempotent
 
 .. code-block:: console
    :emphasize-lines: 1
@@ -263,15 +266,15 @@ Default variables
 Best practice
 *************
 
-Display the variables for debug if needed. Then disable this task
-``ma_debug: false`` to speedup the playbook
+Display the variables in debug, if needed. Then disable debug ``ma_debug: false`` to speedup the
+playbook
 
 .. code-block:: console
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t ma_debug
 
-Install packages Then disable this task ``ma_install: false`` to speedup the playbook
+Install packages. Then disable this task ``ma_install: false`` to speedup the playbook
 
 .. code-block:: console
    :emphasize-lines: 1-2
@@ -279,11 +282,9 @@ Install packages Then disable this task ``ma_install: false`` to speedup the pla
    shell> ansible-playbook ansible.yml -t ma_packages \
                                        -e 'ma_install=true'
 
-The role and the configuration data in the examples are
-idempotent. Once the installation and configuration have passed there
-should be no changes reported by *ansible-playbook* when running the
-playbook repeatedly. Disable debug, and install to speedup the
-playbook
+The role and the configuration data in the examples are idempotent. After the installation and
+configuration completed there should be no changes reported by *ansible-playbook* when running the
+playbook repeatedly. Disable both debug, and install to speedup the playbook
 
 .. code-block:: console
    :emphasize-lines: 1

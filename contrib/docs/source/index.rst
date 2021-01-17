@@ -1,15 +1,15 @@
 Ansible role __GALAXY_PROJECT__
 ===============================
 
-This `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_ and the documentation is work in progess.
-
-Feel free to `share your feedback and report issues <https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/issues>`_.
+This `role <https://galaxy.ansible.com/__GITHUB_USERNAME__/__GALAXY_PROJECT__/>`_ and the
+documentation is work in progess. Feel free to `share your feedback and report issues
+<https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/issues>`_.
 
 `Contributions are welcome <https://github.com/firstcontributions/first-contributions>`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Table of Contents:
+   :caption: Table of Contents
 
    qsg
    guide

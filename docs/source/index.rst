@@ -2,7 +2,7 @@ Ansible role Ansible
 ====================
 
 This `role <https://galaxy.ansible.com/vbotka/ansible/>`_ and the
-documentation is work in progess. Please feel free to `share your
+documentation is work in progess. Feel free to `share your
 feedback and report issues
 <https://github.com/vbotka/ansible-ansible/issues>`_.
 
@@ -10,7 +10,7 @@ feedback and report issues
 
 .. toctree::
    :maxdepth: 2
-   :caption: Table of Contents:
+   :caption: Table of Contents
 
    guide
    annotation
