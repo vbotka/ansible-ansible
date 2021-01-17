@@ -1,3 +1,5 @@
+.. _ug_task_ansible_devel_ex1:
+
 Example 1: Ansible checkout repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

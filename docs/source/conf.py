@@ -47,7 +47,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'ansible-role-ansible-doc'
+project = 'ansible-role-ansible'
 copyright = '2020-2021, Vladimir Botka'
 author = 'Vladimir Botka'
 

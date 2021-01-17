@@ -1,3 +1,5 @@
+.. _ug_task_ansible_plugins_ex1:
+
 Example 1: Install Ansible plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -39,7 +41,7 @@ Create *host_vars/test_01/ansible-plugins.yml*
 
 Install plugins
 
-.. code-block:: yaml
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t ma_plugins
@@ -59,7 +61,7 @@ Install plugins
 
 Show the installed plugins at the remote host
 
-.. code-block:: yaml
+.. code-block:: sh
    :emphasize-lines: 1
 
    test_01> tree /usr/local/ansible/plugins/ansible-plugins/filter_plugins/

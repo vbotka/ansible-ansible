@@ -1,3 +1,5 @@
+.. _ug_task_ansible_plugins_ex2:
+
 Example 2: Install Mitogen plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -33,7 +35,7 @@ Create *host_vars/test_01/ansible-plugins.yml*
 
 Install plugins
 
-.. code-block:: yaml
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t ma_plugins
@@ -51,7 +53,7 @@ Install plugins
  
 Show the installed plugins at the remote host
 
-.. code-block:: yaml
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> tree /usr/local/ansible/plugins/mitogen/ansible_mitogen/plugins/

@@ -1,3 +1,5 @@
+.. _ug_task_ansible_devel_ex2:
+
 Example 2: Ansible get release notes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -208,30 +208,25 @@ make sure the playbook and the configuration is idempotent
 
 .. _ug_task_plugins:
 .. include:: task-plugins.rst
+
+Examples
+--------
 .. toctree::
    :name: ansible_plugins_toc
 
    task-ansible-plugins-ex1
    task-ansible-plugins-ex2
 
-.. _ug_task_ansible_plugins_ex1:
-.. include:: task-ansible-plugins-ex1.rst
-.. _ug_task_ansible_plugins_ex2:
-.. include:: task-ansible-plugins-ex2.rst
-
 .. _ug_task_devel:
 .. include:: task-devel.rst
 
+Examples
+--------
 .. toctree::
    :name: ansible_devel_toc
 
    task-ansible-devel-ex1
    task-ansible-devel-ex2
-
-.. _ug_task_ansible_devel_ex1:
-.. include:: task-ansible-devel-ex1.rst
-.. _ug_task_ansible_devel_ex2:
-.. include:: task-ansible-devel-ex2.rst
 
 .. _ug_vars:
 
@@ -247,9 +242,8 @@ directory **defaults**.
 
 .. _ug_defaults:
 
-*****************
 Default variables
-*****************
+=================
 
   <TBD>
 
