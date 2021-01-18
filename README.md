@@ -17,7 +17,7 @@ This role has been developed and tested with
 
 This may be different from the platforms in Ansible Galaxy which does not offer all
 released versions in time and would report an error. For example:
-`IMPORTER101: Invalid platform: "FreeBSD-11.3", skipping.`
+`IMPORTER101: Invalid platform: "FreeBSD-12.2", skipping.`
 
 ## Requirements
 
@@ -60,10 +60,10 @@ Check mode will fail for the first time when there are plugins configured in *ma
 shell> ansible-playbook ansible.yml -t ma_plugins_download
 ```
 
-Then check the playbook and the roles
+Then check the playbook and the roles, and see what will be changed
 
 ```
-shell> ansible-playbook ansible.yml -C
+shell> ansible-playbook ansible.yml -CD
 ```
 
 

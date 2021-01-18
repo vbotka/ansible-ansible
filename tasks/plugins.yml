@@ -12,7 +12,7 @@
 - name: "plugins: Download archives"
   get_url:
     url: "{{ item.archive_url }}"
-    dest: "{{ ma_src_path }}"
+    dest: "{{ ma_src_path }}/{{ item.archive }}"  # Note 1
     checksum: "{{ item.checksum }}"
   loop: "{{ ma_plugins }}"
   loop_control:
@@ -98,6 +98,12 @@
     msg: "[ERROR] wrong ini_key: {{ item }}. End of play."
   loop: "{{ ma_plugins_inikeys }}"
   tags: ma_plugins_test_inikeys
+
+# Notes
+#
+# Note 1: If dest is a dictionary get_url will always download the file
+# Fix docs get_url dest comment. Checksum does not prevent download. #73185
+# https://github.com/ansible/ansible/pull/73185
 
 # EOF
 ...
