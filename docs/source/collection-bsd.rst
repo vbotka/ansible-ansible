@@ -1,0 +1,1 @@
+../../../../ansible-global_docs/collection-bsd.rst

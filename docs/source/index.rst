@@ -1,5 +1,5 @@
-Ansible role Ansible
-====================
+Ansible
+=======
 
 This `role <https://galaxy.ansible.com/vbotka/ansible/>`_ and the
 documentation is work in progess. Feel free to `share your
@@ -14,6 +14,7 @@ feedback and report issues
 
    guide
    annotation
+   collection-bsd
    copyright
    legalnotice
 
