@@ -22,8 +22,10 @@
 - name: "plugins: Extract archives"
   when: not ansible_check_mode
   unarchive:
+    remote_src: true
     src: "{{ ma_src_path }}/{{ item.archive }}"
     dest: "{{ ma_plugins_path }}"
+    creates: "{{ item.creates|default(omit) }}"
   loop: "{{ ma_plugins }}"
   loop_control:
     label: "{{ item.archive }}"

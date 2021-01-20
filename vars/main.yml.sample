@@ -13,6 +13,7 @@
 #     archive_url: https://networkgenomics.com/try/mitogen-{{ map_mitogen_ver }}.tar.gz
 #     checksum: "{{ map_mitogen_sha256 }}"
 #     dest: mitogen-{{ map_mitogen_ver }}
+#     creates: "{{ ma_plugins_path }}/mitogen-{{ map_mitogen_ver }}"
 #     link: mitogen
 #     plugins:
 #       - path: mitogen/ansible_mitogen/plugins/strategy
@@ -22,6 +23,7 @@
 #     archive_url: https://github.com/vbotka/ansible-plugins/archive/{{ map_vbotka_ver }}.tar.gz
 #     checksum: "{{ map_vbotka_sha256 }}"
 #     dest: ansible-plugins-{{ map_vbotka_ver }}
+#     creates: "{{ ma_plugins_path }}/ansible-plugins-{{ map_vbotka_ver }}"
 #     link: ansible-plugins
 #     plugins:
 #       - path: ansible-plugins/filter_plugins/bool_filters
