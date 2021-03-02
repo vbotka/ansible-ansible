@@ -1,12 +1,14 @@
 # ansible
 
-[![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
+[![quality](https://img.shields.io/ansible/quality/27910)](https://galaxy.ansible.com/vbotka/config_light)[![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
 
 [Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://github.com/ansible/ansible).
 
 [Documentation at readthedocs.io](https://ansible-ansible.readthedocs.io)
 
-Feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues). Contributions are welcome.
+Feel free to [share your feedback and report issues](https://github.com/vbotka/ansible-ansible/issues).
+
+[Contributions are welcome](https://github.com/firstcontributions/first-contributions).
 
 
 ## Supported platforms
