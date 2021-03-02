@@ -9,6 +9,7 @@
     var: rm_roles_travis
 
 - name: 'rm restore-travis: Create travis files'
+  when: rm_roles_blacklist|intersect([item.key])|length == 0
   template:
     src: templates/travis.yml.j2
     dest: "{{ item.key }}/.travis.yml"

@@ -9,6 +9,7 @@
     var: rm_roles_license
 
 - name: 'rm: restore-license: Create roles license files'
+  when: rm_roles_blacklist|intersect([item.key])|length == 0
   template:
     src: "templates/{{ item.value.template }}"
     dest: "{{ roles_path }}/{{ item.key }}/LICENSE"

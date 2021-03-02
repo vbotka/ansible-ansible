@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2020, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2021, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 - hosts: localhost
@@ -8,20 +8,20 @@
 
   vars:
 
-    rm_version: 1.3.0
+    rm_version: 1.4.0
 
     # - - CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
     rm_group: admin
     rm_roles_pattern: github-user.*
     rm_roles_license_holder: '<github-user@example.com>'
-    rm_roles_license_year_to: 2020
+    rm_roles_license_year_to: 2021
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS - -
 
     rm_help_text: |
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       RoleMaster version {{ rm_version }}
-      Management of Ansible roles' meta-data and licenses
+      Management of Ansible roles' meta-data, travis, and licenses
 
       USAGE
 
@@ -61,7 +61,7 @@
     rm_backup_conf: false
     rm_roles_path: ''  # Get roles_path from ansible.cfg
     # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
-    rm_roles_file_mode: '0644'
+    rm_roles_file_mode: '0664'
     rm_roles_meta_file_write: true
     rm_roles_meta_file: '/home/{{ rm_owner }}/.ansible/db/roles_meta.yml'
     rm_roles_meta_dir: '/home/{{ rm_owner }}/.ansible/db/meta'
@@ -73,6 +73,7 @@
     rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
+    rm_roles_blacklist_file: '/home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml'
     rm_known_tags:
       - 'rm-list-roles'
       - 'rm-write-objects'
@@ -127,6 +128,21 @@
           when: roles_path is undefined
           fail:
             msg: '[ERROR] roles_path is undefined. End of play.'
+      tags: always
+
+    - name: 'rm: Set rm_roles_blacklist'
+      block:
+        - name: 'rm: roles-blacklist: Set empty list rm_roles_blaclist'
+          when: rm_roles_blacklist_file is not exists
+          set_fact:
+            rm_roles_blacklist: []
+        - name: 'rm: roles-blacklist: Include {{ rm_roles_blacklist_file }}'
+          when: rm_roles_blacklist_file is exists
+          include_vars: "{{ rm_roles_blacklist_file }}"
+        - name: 'rm: roles-blacklist: Debug roles_blacklist'
+          when: rm_debug|bool
+          debug:
+            var: rm_roles_blacklist
       tags: always
 
     - name: 'rm: Create list of roles paths rm_roles_path'

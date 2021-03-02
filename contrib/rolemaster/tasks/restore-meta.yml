@@ -9,6 +9,7 @@
     var: rm_roles_meta
 
 - name: 'rm restore-meta: Create meta files'
+  when: rm_roles_blacklist|intersect([item.key])|length == 0
   template:
     src: templates/main.yml.j2
     dest: "{{ item.key }}/meta/main.yml"
