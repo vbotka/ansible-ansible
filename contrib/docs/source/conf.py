@@ -98,7 +98,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ansible-role-__PROJECT__-doc'
+htmlhelp_basename = 'ansible-__PROJECT__-doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -125,7 +125,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ansible-role-__PROJECT__.tex', 'ansible-role-__PROJECT__ Documentation',
+    (master_doc, 'ansible-__PROJECT__.tex', 'ansible-__PROJECT__ Documentation',
      '__AUTHOR_FULL_NAME__', 'manual'),
 ]
 
@@ -135,7 +135,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ansible-role-__PROJECT__', 'ansible-role-__PROJECT__ Documentation',
+    (master_doc, 'ansible-__PROJECT__', 'ansible-__PROJECT__ Documentation',
      [author], 1)
 ]
 
@@ -146,7 +146,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ansible-role-__PROJECT__', 'ansible-role-__PROJECT__ Documentation',
-     author, 'ansible-role-__PROJECT__', 'One line description of project.',
+    (master_doc, 'ansible-__PROJECT__', 'ansible-__PROJECT__ Documentation',
+     author, 'ansible-__PROJECT__', 'One line description of project.',
      'Miscellaneous'),
 ]
