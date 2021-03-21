@@ -83,6 +83,7 @@ Below is a simple playbook that calls this role (10) at a single host srv.exampl
 .. seealso::
    * For details see `Connection Plugins <https://docs.ansible.com/ansible/latest/plugins/connection.html>`_ (4-5)
    * See also `Understanding Privilege Escalation <https://docs.ansible.com/ansible/latest/user_guide/become.html#understanding-privilege-escalation>`_ (6-8)
+   * `Working with playbooks <https://docs.ansible.com/ansible/latest/user_guide/playbooks.html>`_
 
 
 .. _ug_debug:
@@ -154,6 +155,23 @@ Install packages and exit the play
    :emphasize-lines: 1
 
     shell> ansible-playbook playbook.yml -t XY_packages
+
+
+.. _ug_vars:
+
+*********
+Variables
+*********
+
+.. seealso::
+
+   * `Using Variables <https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#using-variables>`_
+
+   * `Ansible variable precedence: Where should I put a variable?
+     <https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable>`_
+
+.. _ug_vars_defaults:
+.. include:: vars-defaults.rst
 
 
 .. _ug_tasks:
