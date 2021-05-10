@@ -9,7 +9,7 @@ Customize the templates in dir source
 
 * Replace __AUTHOR_FULL_NAME__ by the full name of the author
   Example:
-  find source -name '*.rst' -o -name '*.py' | xargs sed -i 's/__AUTHOR_FULL_NAME__/Vladimir Botka/g'
+  find source -name '*.rst' -o -name '*.py' | xargs -i 's/__AUTHOR_FULL_NAME__/Vladimir Botka/g'
 
 * Replace __COPYRIGHT_HOLDER__ by the copyright holder
   Example:
@@ -63,9 +63,7 @@ Create annotated source code
 Build documentation
 -------------------
 
-* Create html documents. There will be warnings about undefined labels
-  in task-* and vars-*. It will be fixed by the customization of the
-  templates.
+* Create html documents
   shell> make html
 
 * Create LaTex and PDF documents

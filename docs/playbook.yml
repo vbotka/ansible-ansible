@@ -1,23 +1,41 @@
 ---
 
-- hosts: localhost
+- name: Crreate source/annotation-[tasks,handlers,templates].rst
+  hosts: localhost
   gather_facts: false
+  debugger: on_failed
 
   tasks:
 
-    - name: Read data
-      include_vars: templates/annotation.yml
-    - name: Create source
-      template:
-        src: templates/annotation.rst.j2
-        dest: source/annotation.rst
+    - block:
+        - name: Include variables
+          include_vars:
+            file: annotation/annotation-tasks.yml
+        - name: Create rst file
+          template:
+            src: annotation/annotation-tasks.rst.j2
+            dest: source/annotation-tasks.rst
+      tags: tasks
 
-#    - name: Read data
-#      include_vars: templates/examples.yml
-#    - name: Create source
-#      template:
-#        src: templates/examples.rst.j2
-#        dest: source/examples.rst
+    - block:
+        - name: Include variables
+          include_vars:
+            file: annotation/annotation-handlers.yml
+        - name: Create rst file
+          template:
+            src: annotation/annotation-handlers.rst.j2
+            dest: source/annotation-handlers.rst
+      tags: handlers
+
+    - block:
+        - name: Include variables
+          include_vars:
+            file: annotation/annotation-templates.yml
+        - name: Create rst file
+          template:
+            src: annotation/annotation-templates.rst.j2
+            dest: source/annotation-templates.rst
+      tags: templates
 
 # EOF
 ...
