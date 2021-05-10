@@ -1,0 +1,106 @@
+---
+mytasks:
+  - file: main.yml
+    link: main.yml
+    path: tasks/main.yml
+    synopsis: |
+      Main task.
+    description: |
+      Import tasks if enabled.
+    lines: 1,2
+    seealso: []
+    note: []
+    warning: []
+
+  - file: ara.yml
+    link: ara.yml
+    path: tasks/ara.yml
+    synopsis: |
+      Configure ara.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: configure.yml
+    link: configure.yml
+    path: tasks/configure.yml
+    synopsis: |
+      Configure configure.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: debug.yml
+    link: debug.yml
+    path: tasks/debug.yml
+    synopsis: |
+      Configure debug.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: devel.yml
+    link: devel.yml
+    path: tasks/devel.yml
+    synopsis: |
+      Configure devel.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: packages.yml
+    link: packages.yml
+    path: tasks/packages.yml
+    synopsis: |
+      Configure packages.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: plugins.yml
+    link: plugins.yml
+    path: tasks/plugins.yml
+    synopsis: |
+      Configure plugins.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: vars.yml
+    link: vars.yml
+    path: tasks/vars.yml
+    synopsis: |
+      Configure vars.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+...

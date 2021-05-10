@@ -3,14 +3,14 @@
 # template flagged:stableinterface/core
 - block:
     - name: "configure: Create directories for Ansible configuration"
-      file:
-        dest: "{{ item.path | dirname }}"
+      ansible.builtin.file:
         state: directory
+        dest: "{{ item.path | dirname }}"
       loop: "{{ ma_config }}"
       loop_control:
         label: "{{ item.path }}"
     - name: "configure: Ansible configuration from template"
-      template:
+      ansible.builtin.template:
         src: "{{ item.template|default(ma_config_template_default) }}"
         dest: "{{ item.path }}"
         owner: "{{ item.owner }}"
@@ -26,7 +26,7 @@
 
 # lineinfile flagged:preview/core (tested OK)
 - name: "configure: Ansible configuration by lineinfile"
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
     group: "{{ item.0.group }}"
@@ -45,7 +45,7 @@
 
 # ini_file flagged:preview/community (buggy)
 - name: "configure: Ansible configuration by ini_file"
-  ini_file:
+  community.general.ini_file:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
     group: "{{ item.0.group }}"
