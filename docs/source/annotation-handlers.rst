@@ -12,7 +12,7 @@ Synopsis: Main task.
 Import handlers.
 
 
-[`handlers/main.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/handlers/main.yml>`_]
+[`handlers/main.yml <https://github.com/vbotka/ansible-ansible/blob/master/handlers/main.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
