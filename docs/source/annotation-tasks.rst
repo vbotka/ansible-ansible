@@ -12,7 +12,7 @@ Synopsis: Main task.
 Import tasks if enabled.
 
 
-[`tasks/main.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/main.yml>`_]
+[`tasks/main.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/main.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -36,7 +36,7 @@ Synopsis: Configure ara.
 Description of the task.
 
 
-[`tasks/ara.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/ara.yml>`_]
+[`tasks/ara.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/ara.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -60,7 +60,7 @@ Synopsis: Configure configure.
 Description of the task.
 
 
-[`tasks/configure.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/configure.yml>`_]
+[`tasks/configure.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/configure.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -84,7 +84,7 @@ Synopsis: Configure debug.
 Description of the task.
 
 
-[`tasks/debug.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/debug.yml>`_]
+[`tasks/debug.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/debug.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -108,7 +108,7 @@ Synopsis: Configure devel.
 Description of the task.
 
 
-[`tasks/devel.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/devel.yml>`_]
+[`tasks/devel.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/devel.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -132,7 +132,7 @@ Synopsis: Configure packages.
 Description of the task.
 
 
-[`tasks/packages.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/packages.yml>`_]
+[`tasks/packages.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/packages.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -156,7 +156,7 @@ Synopsis: Configure plugins.
 Description of the task.
 
 
-[`tasks/plugins.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/plugins.yml>`_]
+[`tasks/plugins.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/plugins.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -180,7 +180,7 @@ Synopsis: Configure vars.
 Description of the task.
 
 
-[`tasks/vars.yml <https://github.com/vbotka/ansible-freebsd-postinstall/blob/2.0-stable/tasks/vars.yml>`_]
+[`tasks/vars.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/vars.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
