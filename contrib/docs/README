@@ -38,14 +38,20 @@ Customize the templates in dir source
 Customize the templates in dir annotation
 -----------------------------------------
 
-* Replace __GITHUB_USERNAME__ by the GitHub username
+* Replace __GITHUB_USERNAME__ by the GitHub username, e.g. vbotka
   Example:
+  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
   find annotation -name '*.rst.j2' | xargs sed -i 's/__GITHUB_USERNAME__/vbotka/g'
 
-* Replace __PROJECT__ by the name of the GitHub project
+* Replace __PROJECT__ by the name of the GitHub project, e.g. freebsd-custom-image
   Example:
-  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__
+  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
   find annotation -name '*.rst.j2' | xargs sed -i 's/__PROJECT__/freebsd-custom-image/g'
+
+* Replace __BRANCH__ by the name of the GitHub branch, e.g. master
+  Example:
+  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
+  find annotation -name '*.rst.j2' | xargs sed -i 's/__BRANCH__/master/g'
 
 
 Create annotated source code
