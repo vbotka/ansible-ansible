@@ -24,7 +24,9 @@ released versions in time and would report an error. For example:
 
 ## Requirements
 
-None.
+### Collections
+
+* community.general
 
 
 ## Role Variables

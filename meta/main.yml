@@ -23,6 +23,5 @@ galaxy_info:
     - mitogen
 dependencies: []
 collections:
-  - ansible.builtin
   - community.general
 ...

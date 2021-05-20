@@ -40,26 +40,21 @@ The most convenient way how to install an Ansible role is to use
 Ansible Galaxy CLI ``ansible-galaxy``. The utility comes with the
 standard Ansible package and provides the user with a simple interface
 to the Ansible Galaxy's services. For example, take a look at the
-current status of the role
+current status of the role ::
 
-.. code-block:: console
-   :emphasize-lines: 1
+   shell> ansible-galaxy role info vbotka.ansible
 
-   shell> ansible-galaxy info vbotka.ansible
+and install it ::
 
-and install it
+    shell> ansible-galaxy role install vbotka.ansible
 
-.. code-block:: console
-   :emphasize-lines: 1
+Install the library of tasks (for future releases) ::
 
-    shell> ansible-galaxy install vbotka.ansible
+    shell> ansible-galaxy role install vbotka.ansible_lib
 
-Install the library of tasks (for future releases)
+Install the collection `community.general <https://docs.ansible.com/ansible/latest/collections/community/general/>`_ ::
 
-.. code-block:: console
-   :emphasize-lines: 1
-
-    shell> ansible-galaxy install vbotka.ansible_lib
+    shell> ansible-galaxy collection install community.general
 
 .. seealso::
    * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_
