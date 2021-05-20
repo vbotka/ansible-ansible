@@ -261,27 +261,24 @@ Default variables
 Best practice
 *************
 
-Display the variables in debug, if needed. Then disable debug ``ma_debug: false`` to speedup the
-playbook
+Display and review the variables. Then disable debug ``ma_debug: false`` to speedup the playbook. ::
 
-.. code-block:: console
-   :emphasize-lines: 1
+   shell> ansible-playbook ansible.yml -t ma_debug -e 'ma_debug=true'
 
-   shell> ansible-playbook ansible.yml -t ma_debug
+Install packages. Then disable the installation ``ma_install: false`` to speedup the playbook. ::
 
-Install packages. Then disable this task ``ma_install: false`` to speedup the playbook
+   shell> ansible-playbook ansible.yml -t ma_packages -e 'ma_install=true'
 
-.. code-block:: console
-   :emphasize-lines: 1-2
+Create directories. The following check would fail without the directories. ::
 
-   shell> ansible-playbook ansible.yml -t ma_packages \
-                                       -e 'ma_install=true'
+   shell> ansible-playbook ansible.yml -t ma_plugins_dirs
 
-The role and the configuration data in the examples are idempotent. After the installation and
-configuration completed there should be no changes reported by *ansible-playbook* when running the
-playbook repeatedly. Disable both debug, and install to speedup the playbook
+Run the playbook in the check mode and review the changes ::
 
-.. code-block:: console
-   :emphasize-lines: 1
+  shell> ansible-playbook ansible.yml --check --diff
+
+Run the playbook if all seems to be right. The role and the configuration data in the examples are
+idempotent. After the installation and configuration completed there should be no changes reported
+by *ansible-playbook* when running the playbook repeatedly ::
 
     shell> ansible-playbook ansible.yml
