@@ -14,11 +14,8 @@ freebsd_install_delay: 5
 linux_install_retries: 10
 linux_install_delay: 5
 
-# Module to configure Ansible:
-# template   flagged:stableinterface/core
-# lineinfile flagged:preview/core (tested OK)
-# ini_file   flagged:preview/community (tested OK)
-# https://github.com/ansible/ansible/issues?q=is%3Aissue+is%3Aopen+ini_file
+# ma_config_type options: template, lineinfile, ini_file
+# See tasks/configure.yml
 ma_config_type: template
 ma_config_template_default: ansible-default.cfg.j2
 ma_config: []
@@ -57,7 +54,7 @@ ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
 ma_rnotes_url: 'https://raw.githubusercontent.com/ansible/ansible/stable-'
 ma_rnotes_dir: /scratch/ansible-release-notes
-ma_rnotes_list: [ '2.5', '2.6', '2.7', '2.8', '2.9', '2.10', '2.11']
+ma_rnotes_list: ['2.9', '2.10', '2.11']
 
 # EOF
 ...
