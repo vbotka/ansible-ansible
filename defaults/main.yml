@@ -14,11 +14,8 @@ freebsd_install_delay: 5
 linux_install_retries: 10
 linux_install_delay: 5
 
-# Module to configure Ansible:
-# template   flagged:stableinterface/core
-# lineinfile flagged:preview/core (tested OK)
-# ini_file   flagged:preview/community (tested OK)
-# https://github.com/ansible/ansible/issues?q=is%3Aissue+is%3Aopen+ini_file
+# ma_config_type options: template, lineinfile, ini_file
+# See tasks/configure.yml
 ma_config_type: template
 ma_config_template_default: ansible-default.cfg.j2
 ma_config: []

@@ -1,13 +1,18 @@
 ---
 
-- name: "plugins: Create directories"
+- name: "plugins: Create directory {{ ma_plugins_path }}"
   ansible.builtin.file:
     state: directory
-    path: "{{ item }}"
-  loop:
-    - "{{ ma_plugins_path }}"
-    - "{{ ma_src_path }}"
-  tags: ma_plugins_dirs
+    path: "{{ ma_plugins_path }}"
+    mode: "{{ ma_plugins_path_mode|default(omit) }}"
+  tags: ma_plugins_path
+
+- name: "plugins: Create directory {{ ma_src_path }}"
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ma_src_path }}"
+    mode: "{{ ma_src_path_mode|default(omit) }}"
+  tags: ma_src_path
 
 - name: "plugins: Download archives"
   ansible.builtin.get_url:

@@ -1,30 +1,29 @@
 ---
 
-# template flagged:stableinterface/core
-- block:
-    - name: "configure: Create directories for Ansible configuration"
-      ansible.builtin.file:
-        state: directory
-        dest: "{{ item.path | dirname }}"
-      loop: "{{ ma_config }}"
-      loop_control:
-        label: "{{ item.path }}"
-    - name: "configure: Ansible configuration from template"
-      ansible.builtin.template:
-        src: "{{ item.template|default(ma_config_template_default) }}"
-        dest: "{{ item.path }}"
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "{{ item.mode }}"
-        backup: "{{ ma_backup_conf }}"
-      loop: "{{ ma_config }}"
-      loop_control:
-        label: "{{ item.path }}"
+- name: "configure: Create directories for Ansible configuration"
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ item.path|dirname }}"
+    mode: "{{ item.dmode|default('0755') }}"
+  loop: "{{ ma_config }}"
+  loop_control:
+    label: "{{ item.path|dirname }}"
+
+- name: "configure: Ansible configuration from template"
+  ansible.builtin.template:
+    src: "{{ item.template|default(ma_config_template_default) }}"
+    dest: "{{ item.path }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    backup: "{{ ma_backup_conf }}"
+  loop: "{{ ma_config }}"
+  loop_control:
+    label: "{{ item.path }}"
   when:
     - ma_config_type|lower == "template"
     - ma_config|length > 0
 
-# lineinfile flagged:preview/core (tested OK)
 - name: "configure: Ansible configuration by lineinfile"
   ansible.builtin.lineinfile:
     path: "{{ item.0.path }}"
@@ -43,7 +42,6 @@
     - ma_config_type|lower == "lineinfile"
     - ma_config|length > 0
 
-# ini_file flagged:preview/community (buggy)
 - name: "configure: Ansible configuration by ini_file"
   community.general.ini_file:
     path: "{{ item.0.path }}"
