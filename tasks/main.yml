@@ -1,30 +1,37 @@
 ---
 # tasks for ansible
 
-- import_tasks: vars.yml
+- name: Import vars.yml
+  ansible.builtin.import_tasks: vars.yml
   tags: [ma_vars, always]
 
-- import_tasks: debug.yml
+- name: Import debug.yml
+  ansible.builtin.import_tasks: debug.yml
   when: ma_debug|bool
   tags: [ma_debug, always]
 
-- import_tasks: packages.yml
+- name: Import packages.yml
+  ansible.builtin.import_tasks: packages.yml
   when: ma_install|bool
   tags: ma_packages
 
-- import_tasks: ara.yml
+- name: Import ara.yml
+  ansible.builtin.import_tasks: ara.yml
   when: ma_ara|bool
   tags: ma_ara
 
-- import_tasks: plugins.yml
+- name: Import plugins.yml
+  ansible.builtin.import_tasks: plugins.yml
   when: ma_plugins|length > 0
   tags: ma_plugins
 
-- import_tasks: configure.yml
+- name: Import configure.yml
+  ansible.builtin.import_tasks: configure.yml
   when: ma_config|length > 0
   tags: ma_config
 
-- import_tasks: devel.yml
+- name: Import devel.yml
+  ansible.builtin.import_tasks: devel.yml
   when: ma_devel|bool
   tags: ma_devel
 
