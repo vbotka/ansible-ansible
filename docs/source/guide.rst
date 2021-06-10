@@ -22,7 +22,11 @@ Ansible release notes.
   
   * `FreeBSD Supported Production Releases <https://www.freebsd.org/releases/>`_
   * `Ubuntu Supported Releases <http://releases.ubuntu.com/>`_
-* Requirements in future releases: `ansible_lib <https://galaxy.ansible.com/vbotka/ansible_lib>`_
+
+* Requirements:
+
+  * `ansible_lib <https://galaxy.ansible.com/vbotka/ansible_lib>`_
+  * `community.general <https://docs.ansible.com/ansible/latest/collections/community/general/>`_
 
 .. seealso::
    * `Ansible project documentation <https://docs.ansible.com/>`_
@@ -48,11 +52,11 @@ and install it ::
 
     shell> ansible-galaxy role install vbotka.ansible
 
-Install the library of tasks (for future releases) ::
+Install the library ::
 
     shell> ansible-galaxy role install vbotka.ansible_lib
 
-Install the collection `community.general <https://docs.ansible.com/ansible/latest/collections/community/general/>`_ ::
+Install the collection ::
 
     shell> ansible-galaxy collection install community.general
 

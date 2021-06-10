@@ -24,6 +24,10 @@ released versions in time and would report an error. For example:
 
 ## Requirements
 
+### Roles
+
+* vbotka.ansible_lib
+
 ### Collections
 
 * community.general
