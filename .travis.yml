@@ -26,5 +26,6 @@ notifications:
 
 
 branches:
-  only:
-    - master
+  only: [master]
+
+# EOF
