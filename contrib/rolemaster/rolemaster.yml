@@ -8,15 +8,15 @@
 
   vars:
 
-    rm_version: 1.4.0
+    rm_version: 2.0.0
 
-    # - - CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    rm_owner: admin
-    rm_group: admin
-    rm_roles_pattern: github-user.*
-    rm_roles_license_holder: '<github-user@example.com>'
+    # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    rm_owner: vlado
+    rm_group: vlado
+    rm_roles_pattern: vbotka.*
+    rm_roles_license_holder: 'Vladimir Botka <vbotka@gmail.com>'
     rm_roles_license_year_to: 2021
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS - -
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS < < <
 
     rm_help_text: |
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,90 +87,90 @@
 
 #    - name: 'rm: Help variables'
 #      block:
-#        - set_fact:
+#        - ansible.builtin.set_fact:
 #            my_tags: "{{ ansible_run_tags|difference(['all']) }}"
-#        - debug:
+#        - ansible.builtin.debug:
 #            var: my_tags
-#        - debug:
+#        - ansible.builtin.debug:
 #            msg: "known tags: {{ my_tags|intersect(rm_known_tags) }}"
 #      tags: always
 
     - name: 'rm: Help'
       block:
-        - debug:
+        - ansible.builtin.debug:
             msg: "{{ rm_help_text.split('\n') }}"
-        - meta: end_play
+        - ansible.builtin.meta: end_play
       vars:
         my_tags: "{{ ansible_run_tags|difference(['all']) }}"
       when: (my_tags|length == 0) or
             (my_tags|intersect(rm_known_tags)|length == 0)
       tags: always
 
-#    - debug:
+#    - ansible.builtin.debug:
 #        msg: Continue play
-#    - meta: end_play
+#    - ansible.builtin.meta: end_play
 
     - name: 'rm: Set roles_path'
       block:
         - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
-          when: rm_roles_path|length == 0
-          set_fact:
+          ansible.builtin.set_fact:
             roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+          when: rm_roles_path|length == 0
         - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
-          when: rm_roles_path|length > 0
-          set_fact:
+          ansible.builtin.set_fact:
             roles_path: "{{ rm_roles_path }}"
+          when: rm_roles_path|length > 0
         - name: 'rm: list-roles-path: Debug {{ roles_path }}'
-          when: rm_debug|bool
-          debug:
+          ansible.builtin.debug:
             var: roles_path
+          when: rm_debug|bool
         - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-          when: roles_path is undefined
-          fail:
+          ansible.builtin.fail:
             msg: '[ERROR] roles_path is undefined. End of play.'
+          when: roles_path is undefined
       tags: always
 
     - name: 'rm: Set rm_roles_blacklist'
       block:
         - name: 'rm: roles-blacklist: Set empty list rm_roles_blaclist'
-          when: rm_roles_blacklist_file is not exists
-          set_fact:
+          ansible.builtin.set_fact:
             rm_roles_blacklist: []
+          when: rm_roles_blacklist_file is not exists
         - name: 'rm: roles-blacklist: Include {{ rm_roles_blacklist_file }}'
+          ansible.builtin.include_vars: "{{ rm_roles_blacklist_file }}"
           when: rm_roles_blacklist_file is exists
-          include_vars: "{{ rm_roles_blacklist_file }}"
         - name: 'rm: roles-blacklist: Debug roles_blacklist'
-          when: rm_debug|bool
-          debug:
+          ansible.builtin.debug:
             var: rm_roles_blacklist
+          when: rm_debug|bool
       tags: always
 
     - name: 'rm: Create list of roles paths rm_roles_path'
-      import_tasks: tasks/list-roles.yml
+      ansible.builtin.import_tasks: tasks/list-roles.yml
       tags: rm-list-roles
 
     - name: 'rm: Write roles objects to files'
-      import_tasks: tasks/write-objects.yml
+      ansible.builtin.import_tasks: tasks/write-objects.yml
       tags: rm-write-objects
 
     - name: 'rm: Read roles objects from files'
-      import_tasks: tasks/read-objects.yml
+      ansible.builtin.import_tasks: tasks/read-objects.yml
       tags: rm-read-objects
 
     - name: 'rm: Restore roles meta-data from rm_roles_meta_file'
-      import_tasks: tasks/restore-meta.yml
+      ansible.builtin.import_tasks: tasks/restore-meta.yml
       tags: rm-restore-meta
 
     - name: 'rm: Restore roles license from rm_roles_license_file'
-      import_tasks: tasks/restore-license.yml
+      ansible.builtin.import_tasks: tasks/restore-license.yml
       tags: rm-restore-license
 
     - name: 'rm: Restore roles travis from rm_roles_travis_file'
-      import_tasks: tasks/restore-travis.yml
+      ansible.builtin.import_tasks: tasks/restore-travis.yml
       tags: rm-restore-travis
 
     - name: 'rm: Copy common files'
-      import_tasks: tasks/copy-common-files.yml
+      ansible.builtin.import_tasks: tasks/copy-common-files.yml
       tags: rm-copy-common-files
 
 # EOF
