@@ -108,7 +108,7 @@
 
 # Notes
 #
-# Note 1: If dest is a dictionary get_url will always download the file
+# Note 1: The file will be always downloaded. The module is idempotent. See:
 # Fix docs get_url dest comment. Checksum does not prevent download. #73185
 # https://github.com/ansible/ansible/pull/73185
 
