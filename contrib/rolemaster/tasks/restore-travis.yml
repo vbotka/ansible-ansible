@@ -1,16 +1,15 @@
 ---
 
 - name: 'rm restore-travis: Include vars'
-  include_vars: "{{ rm_roles_travis_file }}"
+  ansible.builtin.include_vars: "{{ rm_roles_travis_file }}"
 
 - name: 'rm restore-travis: Debug'
-  when: rm_debug|bool
-  debug:
+  ansible.builtin.debug:
     var: rm_roles_travis
+  when: rm_debug|bool
 
 - name: 'rm restore-travis: Create travis files'
-  when: rm_roles_blacklist|intersect([item.key])|length == 0
-  template:
+  ansible.builtin.template:
     src: templates/travis.yml.j2
     dest: "{{ item.key }}/.travis.yml"
     owner: "{{ rm_owner }}"
@@ -20,6 +19,8 @@
   loop: "{{ rm_roles_travis|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
+  when: item.key|basename not in rm_roles_blacklist
+
 
 # EOF
 ...

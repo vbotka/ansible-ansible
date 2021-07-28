@@ -17,3 +17,9 @@ script:
 
 notifications:
 {{ item.value.notifications|to_nice_yaml(indent=2)|indent(2, true) }}
+
+{% if item.value.branches|default([])|length > 0 %}
+branches:
+{{ item.value.branches|to_yaml(indent=2)|indent(2, true) }}{% endif %}
+
+# EOF
