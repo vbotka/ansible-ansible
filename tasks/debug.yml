@@ -1,6 +1,6 @@
 ---
 
-- name: "Debug"
+- name: Debug
   vars:
     msg: |-
       ansible_architecture [{{ ansible_architecture }}]
@@ -44,7 +44,7 @@
       ma_rnotes_dir [{{ ma_rnotes_dir }}]
       ma_rnotes_list {{ ma_rnotes_list }}
   ansible.builtin.debug:
-    msg: "{{ msg.split('\n') }}"
+    msg: "{{ '{}'.format(msg) }}"
 
 # EOF
 ...
