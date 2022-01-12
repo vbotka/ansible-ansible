@@ -21,6 +21,8 @@
 #
 # Ref: Use encrypt_string to create encrypted variables to embed in yaml
 # http://docs.ansible.com/ansible/latest/user_guide/vault.html#use-encrypt-string-to-create-encrypted-variables-to-embed-in-yaml
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-ansible/tree/master/contrib/avmgmt
 
 import subprocess
 import os

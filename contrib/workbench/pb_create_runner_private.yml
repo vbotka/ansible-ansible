@@ -1,6 +1,6 @@
 ---
 
-# All rights reserved (c) 2019-2020, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2022, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -14,6 +14,7 @@
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-ansible/tree/master/contrib/workbench
 
 - hosts: localhost
   connection: local

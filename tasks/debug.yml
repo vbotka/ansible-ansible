@@ -3,46 +3,46 @@
 - name: Debug
   vars:
     msg: |-
-      ansible_architecture [{{ ansible_architecture }}]
-      ansible_os_family [{{ ansible_os_family }}]
-      ansible_distribution [{{ ansible_distribution }}]
-      ansible_distribution_major_version [{{ ansible_distribution_major_version }}]
-      ansible_distribution_version [{{ ansible_distribution_version }}]
-      ansible_distribution_release [{{ ansible_distribution_release }}]
-      ansible_python_version [{{ ansible_python_version }}]
+      ansible_architecture: {{ ansible_architecture }}
+      ansible_os_family: {{ ansible_os_family }}
+      ansible_distribution: {{ ansible_distribution }}
+      ansible_distribution_major_version: {{ ansible_distribution_major_version }}
+      ansible_distribution_version: {{ ansible_distribution_version }}
+      ansible_distribution_release: {{ ansible_distribution_release }}
+      ansible_python_version: {{ ansible_python_version }}
 
-      ma_install [{{ ma_install }}]
-      ma_ara [{{ ma_ara }}]
-      ma_backup_conf [{{ ma_backup_conf }}]
-      freebsd_install_method [{{ freebsd_install_method }}]
-      freebsd_use_packages [{{ freebsd_use_packages }}]
-      freebsd_install_retries [{{ freebsd_install_retries }}]
-      freebsd_install_delay [{{ freebsd_install_delay }}]
-      linux_install_retries [{{ linux_install_retries }}]
-      linux_install_delay [{{ linux_install_delay }}]
-      ma_packages
-      {{ ma_packages|to_nice_yaml }}
-      ma_plugins_paths_list [{{ ma_plugins_paths_list }}]
-      ma_plugins_path [{{ ma_plugins_path }}]
-      ma_src_path [{{ ma_src_path }}]
-      ma_plugins
-      {{ ma_plugins|to_yaml }}
-      ma_config_type [{{ ma_config_type }}]
-      ma_config_template_default [{{ ma_config_template_default }}]
-      ma_config
-      {{ ma_config|to_yaml }}
-      ma_devel [{{ ma_devel }}]
-      ma_devel_owner [{{ ma_devel_owner }}]
-      ma_devel_group [{{ ma_devel_group|default('UNDEFINED') }}]
-      ma_repo [{{ ma_repo }}]
-      ma_repo_url [{{ ma_repo_url }}]
-      ma_repo_version [{{ ma_repo_version }}]
-      ma_repo_dir [{{ ma_repo_dir }}]
-      ma_rnotes [{{ ma_rnotes }}]
-      ma_rnotes_list {{ ma_rnotes_list }}
-      ma_rnotes_url [{{ ma_rnotes_url }}]
-      ma_rnotes_dir [{{ ma_rnotes_dir }}]
-      ma_rnotes_list {{ ma_rnotes_list }}
+      ma_install: {{ ma_install }}
+      ma_ara: {{ ma_ara }}
+      ma_backup_conf: {{ ma_backup_conf }}
+      freebsd_install_method: {{ freebsd_install_method }}
+      freebsd_use_packages: {{ freebsd_use_packages }}
+      freebsd_install_retries: {{ freebsd_install_retries }}
+      freebsd_install_delay: {{ freebsd_install_delay }}
+      linux_install_retries: {{ linux_install_retries }}
+      linux_install_delay: {{ linux_install_delay }}
+      ma_packages:
+        {{ ma_packages|to_nice_yaml|indent(2) }}
+      ma_plugins_paths_list: {{ ma_plugins_paths_list }}
+      ma_plugins_path: {{ ma_plugins_path }}
+      ma_src_path: {{ ma_src_path }}
+      ma_plugins:
+        {{ ma_plugins|to_yaml|indent(2) }}
+      ma_config_type: {{ ma_config_type }}
+      ma_config_template_default: {{ ma_config_template_default }}
+      ma_config:
+        {{ ma_config|to_yaml|indent(2) }}
+      ma_devel: {{ ma_devel }}
+      ma_devel_owner: {{ ma_devel_owner }}
+      ma_devel_group: {{ ma_devel_group|default('UNDEFINED') }}
+      ma_repo: {{ ma_repo }}
+      ma_repo_url: {{ ma_repo_url }}
+      ma_repo_version: {{ ma_repo_version }}
+      ma_repo_dir: {{ ma_repo_dir }}
+      ma_rnotes: {{ ma_rnotes }}
+      ma_rnotes_list: { ma_rnotes_list }
+      ma_rnotes_url: {{ ma_rnotes_url }}
+      ma_rnotes_dir: {{ ma_rnotes_dir }}
+      ma_rnotes_list: {{ ma_rnotes_list }}
   ansible.builtin.debug:
     msg: "{{ '{}'.format(msg) }}"
 
