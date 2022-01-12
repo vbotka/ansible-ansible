@@ -1,5 +1,3 @@
-.. _as_handlers:
-
 Handlers
 ========
 
