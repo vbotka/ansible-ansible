@@ -1,6 +1,6 @@
 # ansible
 
-[![quality](https://img.shields.io/ansible/quality/27910)](https://galaxy.ansible.com/vbotka/ansible)[![Build Status](https://travis-ci.org/vbotka/ansible-ansible.svg?branch=master)](https://travis-ci.org/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
+[![quality](https://img.shields.io/ansible/quality/27910)](https://galaxy.ansible.com/vbotka/ansible)[![Build Status](https://app.travis-ci.com/vbotka/ansible-ansible.svg?branch=master)](https://app.travis-ci.com/vbotka/ansible-ansible)[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://ansible-ansible.readthedocs.io/en/latest/)
 
 [Ansible role](https://galaxy.ansible.com/vbotka/ansible/). Install and configure [Ansible](https://github.com/ansible/ansible).
 
