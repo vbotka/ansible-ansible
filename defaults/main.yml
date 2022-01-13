@@ -54,7 +54,7 @@ ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
 ma_rnotes_url: 'https://raw.githubusercontent.com/ansible/ansible/stable-'
 ma_rnotes_dir: /scratch/ansible-release-notes
-ma_rnotes_list: ['2.9', '2.10', '2.11']
+ma_rnotes_list: ['2.10', '2.11', '2.12']
 
 # EOF
 ...

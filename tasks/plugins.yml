@@ -85,11 +85,12 @@
       when: ma_debug|bool
     - name: "plugins: Create lists of paths ma_plugins_paths_list"
       ansible.builtin.set_fact:
-        ma_plugins_paths_list: "{{ ma_plugins_paths_list +
-                                   [{item.0: {'paths': item.1|json_query('[?enable].path')}}] }}"
+        ma_plugins_paths_list: "{{ ma_plugins_paths_list + [{item.0: _value}] }}"
       loop: "{{ ma_plugins_grouped }}"
       loop_control:
         label: "{{ item.0 }}"
+      vars:
+        _value: "{{ {'paths': item.1|json_query('[?enable].path')} }}"
     - name: "plugins: Debug ma_plugins_paths_list"
       ansible.builtin.debug:
         msg: "{{ item }}"
