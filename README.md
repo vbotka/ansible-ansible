@@ -92,4 +92,4 @@ shell> ansible-playbook ansible.yml -CD
 
 ## Author Information
 
-[Vladimir Botka](https://botka.link)
+[Vladimir Botka](https://botka.info)
