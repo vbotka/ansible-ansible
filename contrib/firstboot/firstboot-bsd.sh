@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# All rights reserved (c) 2021, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2021-2022, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 VERSION="1.0.0"

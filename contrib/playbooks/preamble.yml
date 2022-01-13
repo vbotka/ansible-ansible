@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2020, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2022, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -15,6 +15,7 @@
 #   shell> ansible-playbook preamble.yml
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
 
 - hosts: localhost
   tasks:
@@ -26,7 +27,7 @@
         block: |2
             connection: ssh
             remote_user: admin
-            become: yes
+            become: true
             become_user: root
             become_method: sudo
         # validate: ansible-playbook %s --syntax-check

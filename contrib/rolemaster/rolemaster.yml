@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2020-2021, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2022, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 - hosts: localhost
@@ -8,7 +8,7 @@
 
   vars:
 
-    rm_version: 2.0.0
+    rm_version: 2.1.0
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: vlado
@@ -98,7 +98,7 @@
     - name: 'rm: Help'
       block:
         - ansible.builtin.debug:
-            msg: "{{ rm_help_text.split('\n') }}"
+            msg: "{{ '{}'.format(rm_help_text) }}"
         - ansible.builtin.meta: end_play
       vars:
         my_tags: "{{ ansible_run_tags|difference(['all']) }}"

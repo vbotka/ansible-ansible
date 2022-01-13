@@ -32,7 +32,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'ansible-role-__PROJECT__'
-copyright = '2021, __COPYRIGHT_HOLDER__'
+copyright = '2022, __COPYRIGHT_HOLDER__'
 author = '__AUTHOR_FULL_NAME__'
 
 # The version info for the project you're documenting, acts as replacement for

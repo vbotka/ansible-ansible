@@ -29,13 +29,11 @@
         mode: "{{ ma_devel_dmode|default(omit) }}"
     - name: "devel: Get release notes {{ ma_rnotes_list }}"
       ansible.builtin.get_url:
-        url: "{{ ma_rnotes_url ~ item ~
-                 '/changelogs/CHANGELOG-v' ~ item ~ '.rst' }}"
+        url: "{{ ma_rnotes_url ~ item ~ '/changelogs/CHANGELOG-v' ~ item ~ '.rst' }}"
         dest: "{{ ma_rnotes_dir }}"
         owner: "{{ ma_devel_owner }}"
         group: "{{ ma_devel_group }}"
       loop: "{{ ma_rnotes_list }}"
-      vars:
   when: ma_rnotes|bool
   tags: ma_devel_rnotes
 
