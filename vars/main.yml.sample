@@ -5,8 +5,8 @@
 # map_mitogen_ver: 0.2.9
 # map_mitogen_sha256: "sha256:76cb9afef92596818a4639afb2a0bb0384ce7b6699b353af55662057b08b1e57"
 #
-# map_vbotka_ver: 1.9.0
-# map_vbotka_sha256: "sha256:587abbebae453a6a4c70c3fbbe8ebecc107fade31c223416a2d8754870168a0d"
+# map_vbotka_ver: 1.11.1
+# map_vbotka_sha256: "sha256:85c25e6317eae61b54a2ca11b611c91f1c830dc43f35898be63cdaf2505b0f90"
 #
 # ma_plugins:
 #   - archive: mitogen-{{ map_mitogen_ver }}.tar.gz
