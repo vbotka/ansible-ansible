@@ -3,7 +3,7 @@ language: {{ item.value.language }}
 python: "{{ item.value.python }}"
 
 # Use the new container infrastructure
-sudo: {{ item.value.sudo }}
+sudo: {{ item.value.sudo|bool|lower }}
 
 # Install ansible
 addons:
