@@ -1,0 +1,9 @@
+Contributions
+=============
+
+* AVMGMT (Ansible vault management)
+* Documentation of an Ansible project templates
+* FreeBSD firstboot script
+* Playbook examples
+* RoleMaster. Management of Ansible roles' meta-data, travis, and licenses
+* Workbench. Playbooks and scripts to configure Ansible *workbench*.

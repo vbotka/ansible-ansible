@@ -5,7 +5,19 @@
 
 - name: 'rm restore-meta: Debug'
   ansible.builtin.debug:
-    var: rm_roles_meta
+    msg: |-
+      rm_roles_select_list:
+        {{ rm_roles_select_list|to_nice_yaml|indent(2) }}
+      {% if rm_roles_select_list|length == 0 %}
+      rm_roles_meta:
+        {{ rm_roles_meta|to_nice_yaml|indent(2) }}
+      {% else %}
+      rm_roles_meta: (selected)
+      {% for i in rm_roles_select_list %}
+        {{ roles_path }}/{{ i }}:
+          {{ rm_roles_meta[roles_path ~ '/' ~ i]|to_nice_yaml|indent(4) }}
+      {% endfor %}
+      {% endif %}
   when: rm_debug|bool
 
 - name: 'rm restore-meta: Create meta files'
@@ -19,7 +31,9 @@
   loop: "{{ rm_roles_meta|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
-  when: item.key|basename not in rm_roles_blacklist
+  when:
+    - item.key|basename in rm_roles_select_list or rm_roles_select_list|length == 0
+    - item.key|basename not in rm_roles_blacklist
 
 # EOF
 ...
