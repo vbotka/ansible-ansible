@@ -20,20 +20,30 @@
 
 - name: "devel: Get release notes"
   block:
-    - name: "devel: Create directory {{ ma_rnotes_dir }}"
+    - name: "devel: Create directories for release notes"
       ansible.builtin.file:
         state: directory
-        path: "{{ ma_rnotes_dir }}"
+        path: "{{ item }}"
         owner: "{{ ma_devel_owner }}"
         group: "{{ ma_devel_group|default(omit) }}"
         mode: "{{ ma_devel_dmode|default(omit) }}"
-    - name: "devel: Get release notes {{ ma_rnotes_list }}"
+      loop:
+        - "{{ ma_rnotes_core_dir }}"
+        - "{{ ma_rnotes_build_dir }}"
+    - name: "devel: Get core release notes {{ ma_rnotes_core_list }}"
       ansible.builtin.get_url:
-        url: "{{ ma_rnotes_url ~ item ~ '/changelogs/CHANGELOG-v' ~ item ~ '.rst' }}"
-        dest: "{{ ma_rnotes_dir }}"
+        url: "{{ ma_rnotes_core_url ~ item ~ '/changelogs/CHANGELOG-v' ~ item ~ '.rst' }}"
+        dest: "{{ ma_rnotes_core_dir }}"
         owner: "{{ ma_devel_owner }}"
         group: "{{ ma_devel_group }}"
-      loop: "{{ ma_rnotes_list }}"
+      loop: "{{ ma_rnotes_core_list }}"
+    - name: "devel: Get build release notes {{ ma_rnotes_build_list }}"
+      ansible.builtin.get_url:
+        url: "{{ ma_rnotes_build_url ~ item ~ '/CHANGELOG-v' ~ item ~ '.rst' }}"
+        dest: "{{ ma_rnotes_build_dir }}"
+        owner: "{{ ma_devel_owner }}"
+        group: "{{ ma_devel_group }}"
+      loop: "{{ ma_rnotes_build_list }}"
   when: ma_rnotes|bool
   tags: ma_devel_rnotes
 
