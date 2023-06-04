@@ -1,0 +1,82 @@
+---
+# All rights reserved (c) 2022, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# List modules and collections in a playbook
+#
+# Example:
+#
+# shell> ansible-playbook modules-in-playbook.yml -e my_playbook_path=modules-in-role.yml
+#
+# TASK [Display list of modules] ***********************************************
+# ok: [localhost] => 
+#   msg: |-
+#
+#     List of modules
+#     ===============
+#     - ansible.builtin.assert
+#     - ansible.builtin.debug
+#     - ansible.builtin.find
+#     - ansible.builtin.set_fact
+#
+# TASK [Display list of modules] ***********************************************
+# ok: [localhost] => 
+#   msg: |-
+#
+#     List of collections
+#     ===================
+#     - ansible.builtin
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
+
+- hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - keywords.yml
+
+  tasks:
+
+    - name: The variable my_playbook_path is mandatory
+      ansible.builtin.assert:
+        that: my_playbook_path|d('')|length > 0
+        fail_msg: The variable my_playbook_path is mandatory.
+
+    - name: Create list of tasks
+      ansible.builtin.set_fact:
+        lft: "{{ _playbook|map(attribute='tasks')|flatten }}"
+      vars:
+        _playbook: "{{ lookup('file', my_playbook_path)|from_yaml }}"
+
+    - name: Get list of keys
+      ansible.builtin.set_fact:
+        lfk: "{{ lfk|d([]) + item.keys()|list }}"
+      loop: "{{ lft }}"
+      loop_control:
+        label: "{{ item.keys()|list }}"
+
+    - name: Get list of keys from block/rescue/always
+      ansible.builtin.set_fact:
+        lfk: "{{ lfk|d([]) + item.keys()|list }}"
+      loop: "{{ lft|json_query('[].[block, rescue, always]')|flatten }}"
+      loop_control:
+        label: "{{ item.keys()|list }}"
+
+    - name: Display list of modules
+      ansible.builtin.debug:
+        msg: |-
+
+          List of modules
+          ===============
+          {{ lfk|unique|sort|difference(keywords)|to_nice_yaml }}
+
+    - name: Display list of collections
+      ansible.builtin.debug:
+        msg: |-
+
+          List of collections
+          ===================
+          {{ lfk|unique|sort|difference(keywords)|
+             map('splitext')|map('first')|unique|sort|to_nice_yaml }}

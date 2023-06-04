@@ -1,0 +1,117 @@
+---
+# All rights reserved (c) 2022, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# List modules and collections in a role
+#
+# Example:
+#
+# shell> ansible-playbook modules-in-role.yml -e my_role_path='../../roles/vbotka.freebsd_postinstall'
+#
+# TASK [Display list of modules] ***********************************************
+# ok: [localhost] => 
+#   msg: |-
+#
+#     List of modules
+#     ===============
+#     - ansible.builtin.assert
+#     - ansible.builtin.blockinfile
+#     - ansible.builtin.command
+#     - ansible.builtin.copy
+#     - ansible.builtin.cron
+#     - ansible.builtin.debug
+#     - ansible.builtin.fail
+#     - ansible.builtin.file
+#     - ansible.builtin.getent
+#     - ansible.builtin.group
+#     - ansible.builtin.import_tasks
+#     - ansible.builtin.include_role
+#     - ansible.builtin.include_tasks
+#     - ansible.builtin.lineinfile
+#     - ansible.builtin.meta
+#     - ansible.builtin.replace
+#     - ansible.builtin.set_fact
+#     - ansible.builtin.shell
+#     - ansible.builtin.stat
+#     - ansible.builtin.template
+#     - ansible.builtin.unarchive
+#     - ansible.builtin.user
+#     - ansible.posix.authorized_key
+#     - ansible.posix.mount
+#     - ansible.posix.synchronize
+#     - ansible.posix.sysctl
+#     - community.general.cronvar
+#     - community.general.ini_file
+#     - community.general.pkgng
+#     - community.general.portinstall
+#     - community.general.timezone
+#
+# TASK [Display list of collections] *******************************************
+# ok: [localhost] => 
+#   msg: |-
+#
+#     List of collections
+#     ===================
+#     - ansible.builtin
+#     - ansible.posix
+#     - community.general
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
+
+- hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - keywords.yml
+
+  tasks:
+
+    - name: The variable my_role_path is mandatory
+      ansible.builtin.assert:
+        that: my_role_path|d('')|length > 0
+        fail_msg: The variable my_role_path is mandatory.
+
+    - name: Find tasks files
+      ansible.builtin.find:
+        path: "{{ my_role_path }}/tasks"
+        patterns: '*.yml,*.yaml'
+        recurse: true
+      register: result
+
+    - name: Create list of tasks
+      ansible.builtin.set_fact:
+        lft: "{{ lft|d([]) + lookup('file', item)|from_yaml }}"
+      loop: "{{ result.files|map(attribute='path')|list }}"
+
+    - name: Get list of keys
+      ansible.builtin.set_fact:
+        lfk: "{{ lfk|d([]) + item.keys()|list }}"
+      loop: "{{ lft }}"
+      loop_control:
+        label: "{{ item.keys()|list }}"
+
+    - name: Get list of keys from block/rescue/always
+      ansible.builtin.set_fact:
+        lfk: "{{ lfk|d([]) + item.keys()|list }}"
+      loop: "{{ lft|json_query('[].[block, rescue, always]')|flatten }}"
+      loop_control:
+        label: "{{ item.keys()|list }}"
+
+    - name: Display list of modules
+      ansible.builtin.debug:
+        msg: |-
+
+          List of modules
+          ===============
+          {{ lfk|unique|sort|difference(keywords)|to_nice_yaml }}
+
+    - name: Display list of collections
+      ansible.builtin.debug:
+        msg: |-
+
+          List of collections
+          ===================
+          {{ lfk|unique|sort|difference(keywords)|
+             map('splitext')|map('first')|unique|sort|to_nice_yaml }}
