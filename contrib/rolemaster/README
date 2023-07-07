@@ -10,29 +10,46 @@
 # Without any tag the role will display help
 # shell> ansible-playbook rolemaster.yml
 #
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#   RoleMaster version 2.3.0
+#   Management of Ansible roles' meta-data, travis, docs, and licenses
 #
-# Examples
-# --------
+#   USAGE
 #
-# * Create list of roles' paths rm-roles-path
-#   shell> ansible-playbook rolemaster.yml -t rm-list-roles-path
+#   Create list of roles' paths rm_roles_path
+#   shell> ansible-playbook rolemaster.yml -t rm-list-roles
 #
-# * Write roles' meta-data to rm_roles_meta_file
-#   shell> ansible-playbook rolemaster.yml -t rm-list-roles-path,rm-write-roles-meta
+#   Write roles' objects to files
+#   shell> ansible-playbook rolemaster.yml -t rm-list-roles,rm-write-objects
 #
-# * Restore meta-data
-#   shell> ansible-playbook rolemaster.yml -t rm-restore-roles-meta
+#   Read roles' objects from files
+#   shell> ansible-playbook rolemaster.yml -t rm-read-objects
 #
-# * Restore licenses
-#   shell> ansible-playbook rolemaster.yml -t rm-restore-roles-license
+#   Restore meta-data
+#   shell> ansible-playbook rolemaster.yml -t rm-restore-meta
 #
+#   Restore licenses
+#   shell> ansible-playbook rolemaster.yml -t rm-restore-license
 #
-# Notes
-# -----
+#   Restore travis
+#   shell> ansible-playbook rolemaster.yml -t rm-restore-travis
 #
-# 1) Create LICENSE-test and see the diff
-#    shell> for i in `find roles -name "MY-PROJECT*"`; \
-#           do (echo $i; cd $i; diff LICENSE LICENSE-test); \
-#           done
+#   Copy common files
+#   shell> ansible-playbook rolemaster.yml -t rm-copy-common-files
+#
+#   Update docs/source/_themes
+#   shell> ansible-playbook rolemaster.yml -t rm-update_docs_themes
+#
+#   NOTES
+#
+#   1) Append --check --diff to dry-run and display predicted changes
+#   2) Append --extra-vars 'rm_debug=true' to display debug messages
+#   3) Append --extra-vars 'rm_roles_select=rol1,role2' to select roles
+#   4) Create LICENSE-test and see the diff.
+#      shell> for i in `find roles -name "MY-PROJECT*"`; do
+#             (echo $i; cd $i; diff LICENSE LICENSE-test); done
+#
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#   https://github.com/vbotka/ansible-ansible/tree/master/contrib/rolemaster
 #
 # EOF

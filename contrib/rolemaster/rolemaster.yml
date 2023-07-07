@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2020-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2023, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 - hosts: localhost
@@ -8,20 +8,20 @@
 
   vars:
 
-    rm_version: 2.2.0
+    rm_version: 2.3.0
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    rm_owner: vlado
-    rm_group: vlado
-    rm_roles_pattern: vbotka.*
-    rm_roles_license_holder: 'Vladimir Botka <vbotka@gmail.com>'
-    rm_roles_license_year_to: 2021
+    rm_owner: admin
+    rm_group: admin
+    rm_roles_pattern: admin.*
+    rm_roles_license_holder: 'administrator <admin@example.com>'
+    rm_roles_license_year_to: 2023
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS < < <
 
     rm_help_text: |
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       RoleMaster version {{ rm_version }}
-      Management of Ansible roles' meta-data, travis, and licenses
+      Management of Ansible roles' meta-data, travis, docs, and licenses
 
       USAGE
 
@@ -46,11 +46,15 @@
       Copy common files
       shell> ansible-playbook rolemaster.yml -t rm-copy-common-files
 
+      Update docs/source/_themes
+      shell> ansible-playbook rolemaster.yml -t rm-update_docs_themes
+
       NOTES
 
       1) Append --check --diff to dry-run and display predicted changes
       2) Append --extra-vars 'rm_debug=true' to display debug messages
-      3) Create LICENSE-test and see the diff.
+      3) Append --extra-vars 'rm_roles_select=rol1,role2' to select roles
+      4) Create LICENSE-test and see the diff.
          shell> for i in `find roles -name "MY-PROJECT*"`; do
                 (echo $i; cd $i; diff LICENSE LICENSE-test); done
 
@@ -59,6 +63,7 @@
 
     rm_debug: false
     rm_backup_conf: false
+    rm_ansible_conf_path: "{{ playbook_dir }}/ansible.cfg"
     rm_roles_path: ''  # Get roles_path from ansible.cfg
     # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
     rm_roles_file_mode: '0664'
@@ -71,6 +76,7 @@
     rm_roles_license_file_write: false
     rm_roles_license_file: '/home/{{ rm_owner }}/.ansible/db/roles_license.yml'
     rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
+    rm_roles_docs_file: '/home/{{ rm_owner }}/.ansible/db/roles_docs.yml'
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
     rm_roles_blacklist_file: '/home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml'
@@ -82,6 +88,7 @@
       - 'rm-restore-license'
       - 'rm-restore-travis'
       - 'rm-copy-common-files'
+      - 'rm-update_docs_themes'
     # Comma separated list of selected roles. An empty strings selects all roles.
     rm_roles_select: ''
     rm_roles_select_list: "{{ (rm_roles_select|length > 0)|
@@ -117,9 +124,11 @@
 
     - name: 'rm: Set roles_path'
       block:
-        - name: 'rm: list-roles-path: Get roles_path from ansible.cfg'
+        - name: 'rm: list-roles-path: Get roles_path from {{ rm_ansible_conf_path}}'
           ansible.builtin.set_fact:
-            roles_path: "{{ lookup('ini', 'roles_path section=defaults file=ansible.cfg') }}"
+            roles_path: "{{ lookup('ini', ini_params) }}"
+          vars:
+            ini_params: "roles_path section=defaults file={{ rm_ansible_conf_path }}"
           when: rm_roles_path|length == 0
         - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
           ansible.builtin.set_fact:
@@ -177,6 +186,10 @@
     - name: 'rm: Copy common files'
       ansible.builtin.import_tasks: tasks/copy-common-files.yml
       tags: rm-copy-common-files
+
+    - name: 'rm: Update docs/source/_themes'
+      ansible.builtin.import_tasks: tasks/update_docs_themes.yml
+      tags: rm-update_docs_themes
 
 # EOF
 ...
