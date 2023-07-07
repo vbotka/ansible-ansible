@@ -39,10 +39,12 @@
       ma_repo_version: {{ ma_repo_version }}
       ma_repo_dir: {{ ma_repo_dir }}
       ma_rnotes: {{ ma_rnotes }}
-      ma_rnotes_list: { ma_rnotes_list }
-      ma_rnotes_url: {{ ma_rnotes_url }}
-      ma_rnotes_dir: {{ ma_rnotes_dir }}
-      ma_rnotes_list: {{ ma_rnotes_list }}
+      ma_rnotes_core_url: {{ ma_rnotes_core_url }}
+      ma_rnotes_core_dir: {{ ma_rnotes_core_dir }}
+      ma_rnotes_core_list: {{ ma_rnotes_core_list }}
+      ma_rnotes_build_url: {{ ma_rnotes_build_url }}
+      ma_rnotes_build_dir: {{ ma_rnotes_build_dir }}
+      ma_rnotes_build_list: {{ ma_rnotes_build_list }}
   ansible.builtin.debug:
     msg: "{{ '{}'.format(msg) }}"
 
