@@ -60,7 +60,7 @@ ma_config_template_default: "ansible-plugins.cfg.j2"
 Check mode will fail if the directories *ma_plugins_path* and *ma_src_path* are missing. To avoid the failure create the directories first
 
 ```
-shell> ansible-playbook ansible.yml -t ma_plugins_dirs
+shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path
 ```
 
 Check mode will fail for the first time when there are plugins configured in *ma_plugins* and the archives haven't been downloaded yet. To avoid the failure download the archives first
