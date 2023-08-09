@@ -8,7 +8,7 @@
 
   vars:
 
-    rm_version: 2.3.0
+    rm_version: 2.3.1
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
@@ -48,6 +48,7 @@
 
       Update docs/source/_themes
       shell> ansible-playbook rolemaster.yml -t rm-update_docs_themes
+      (Warning: Not idempotent! WIP)
 
       NOTES
 
