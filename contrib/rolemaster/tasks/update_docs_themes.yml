@@ -7,17 +7,19 @@
   ansible.builtin.debug:
     msg: |-
       rm_roles_select_list:
-        {{ rm_roles_select_list|to_nice_yaml|indent(2) }}
+        {{ rm_roles_select_list|to_nice_yaml(indent=2)|indent(2) }}
       rm_roles_blacklist:
-        {{ rm_roles_blacklist|to_nice_yaml|indent(2) }}
+        {{ rm_roles_blacklist|to_nice_yaml(indent=2)|indent(2) }}
       rm_roles_docs:
-        {{ rm_roles_docs|to_nice_yaml|indent(2) }}
+        {{ rm_roles_docs|to_nice_yaml(indent=2)|indent(2) }}
   when: rm_debug|bool
 
 - name: 'rm update_docs_themes: Update docs themes'
   ansible.posix.synchronize:
     src: "{{ rm_roles_docs_themes[item.1] }}"
     dest: "{{ roles_path }}/{{ item.0.key }}/{{ item.0.value.themes_path }}/"
+    rsync_opts:
+      - '--ignore-times'
     # owner: "{{ rm_owner }}"
     # group: "{{ rm_group }}"
     # mode: "0664"

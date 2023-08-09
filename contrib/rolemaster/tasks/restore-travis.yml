@@ -7,16 +7,13 @@
   ansible.builtin.debug:
     msg: |-
       rm_roles_select_list:
-        {{ rm_roles_select_list|to_nice_yaml|indent(2) }}
+        {{ rm_roles_select_list|to_nice_yaml(indent=2)|indent(2) }}
       {% if rm_roles_select_list|length == 0 %}
       rm_roles_travis:
-        {{ rm_roles_travis|to_nice_yaml|indent(2) }}
+        {{ rm_roles_travis|to_nice_yaml(indent=2)|indent(2) }}
       {% else %}
       rm_roles_travis: (selected)
-      {% for i in rm_roles_select_list %}
-        {{ roles_path }}/{{ i }}:
-          {{ rm_roles_travis[roles_path ~ '/' ~ i]|to_nice_yaml|indent(4) }}
-      {% endfor %}
+        {{ rm_roles_travis|dict2items|selectattr('key', 'search', rm_roles_select_list|join('|'))|items2dict|to_nice_yaml(indent=2)|indent(2) }}
       {% endif %}
   when: rm_debug|bool
 
@@ -28,12 +25,17 @@
     group: "{{ rm_group }}"
     backup: "{{ rm_backup_conf }}"
 #   validate: "{{ rm_ansible_lint }} %s"
-  loop: "{{ rm_roles_travis|dict2items }}"
+  loop: "{{ _select }}"
   loop_control:
     label: "{{ item.key }}"
-  when:
-    - item.key|basename in rm_roles_select_list or rm_roles_select_list|length == 0
-    - item.key|basename not in rm_roles_blacklist
+  vars:
+    _select: |
+      {% if rm_roles_select_list|length == 0 %}
+      {{ rm_roles_travis|dict2items }}
+      {% else %}
+      {{ rm_roles_travis|dict2items|selectattr('key', 'search', rm_roles_select_list|join('|')) }}
+      {% endif %}
+  when: item.key|basename not in rm_roles_blacklist
 
 
 # EOF
