@@ -9,6 +9,7 @@
         owner: "{{ ma_devel_owner }}"
         group: "{{ ma_devel_group|default(omit) }}"
         mode: "{{ ma_devel_dmode|default(omit) }}"
+      tags: ma_repo_path
     - name: "devel: Checkout {{ ma_repo_version }}"
       become: "{{ ma_devel_owner }}"
       ansible.builtin.git:
@@ -30,6 +31,7 @@
       loop:
         - "{{ ma_rnotes_core_dir }}"
         - "{{ ma_rnotes_build_dir }}"
+      tags: ma_rnotes_path
     - name: "devel: Get core release notes {{ ma_rnotes_core_list }}"
       check_mode: false  # Note 1.
       ansible.builtin.get_url:
