@@ -151,6 +151,13 @@ debug is enabled ``ma_debug: true``)
 
     shell> ansible-playbook ansible.yml -t ma_debug
 
+Create directories
+
+.. code-block:: console
+   :emphasize-lines: 1
+
+    shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path,ma_repo_path,ma_rnotes_path
+
 See what packages will be installed
 
 .. code-block:: console
@@ -275,7 +282,11 @@ Install packages. Then disable the installation ``ma_install: false`` to speedup
 
 Create directories. The following check would fail without the directories. ::
 
-   shell> ansible-playbook ansible.yml -t ma_plugins_dirs
+   shell> ansible-playbook ansible.yml -t ma_plugins_dirs,ma_src_path
+
+If you want to download the repository and the release notes create also these directories ::
+
+   shell> ansible-playbook ansible.yml -t ma_repo_path,ma_rnotes_path
 
 Run the playbook in the check mode and review the changes ::
 
