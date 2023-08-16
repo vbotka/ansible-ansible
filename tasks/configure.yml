@@ -21,7 +21,7 @@
   loop_control:
     label: "{{ item.path }}"
   when:
-    - ma_config_type|lower == "template"
+    - ma_config_type|lower == 'template'
     - ma_config|length > 0
 
 - name: "configure: Ansible configuration by lineinfile"
@@ -32,14 +32,14 @@
     mode: "{{ item.0.mode }}"
     regexp: "^{{ item.1.key }}"
     line: "{{ item.1.key }}={{ item.1.value }}"
-    insertafter: "\\[{{ item.1.section }}\\]"
+    insertafter: '\[{{ item.1.section }}\]'
     create: true
     backup: "{{ ma_backup_conf }}"
   loop: "{{ ma_config|subelements('config') }}"
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == "lineinfile"
+    - ma_config_type|lower == 'lineinfile'
     - ma_config|length > 0
 
 - name: "configure: Ansible configuration by ini_file"
@@ -57,7 +57,7 @@
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == "ini_file"
+    - ma_config_type|lower == 'ini_file'
     - ma_config|length > 0
 
 # EOF
