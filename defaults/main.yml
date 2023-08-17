@@ -5,6 +5,8 @@ ma_install: true
 ma_debug: false
 ma_backup_conf: false
 
+ma_supported_linux_family: ['RedHat', 'Debian']
+
 # Packages
 freebsd_install_method: packages
 # freebsd_install_method: ports

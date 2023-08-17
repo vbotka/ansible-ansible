@@ -23,7 +23,7 @@
 - name: Import plugins.yml
   ansible.builtin.import_tasks: plugins.yml
   when: ma_plugins|length > 0
-  tags: ma_plugins
+  tags: [ma_plugins, ma_config]
 
 - name: Import configure.yml
   ansible.builtin.import_tasks: configure.yml

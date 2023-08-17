@@ -1,6 +1,6 @@
 ---
 
-- name: Debug
+- name: "debug: Ansible"
   vars:
     msg: |-
       ansible_architecture: {{ ansible_architecture }}
@@ -11,26 +11,28 @@
       ansible_distribution_release: {{ ansible_distribution_release }}
       ansible_python_version: {{ ansible_python_version }}
 
-      ma_install: {{ ma_install }}
-      ma_ara: {{ ma_ara }}
-      ma_backup_conf: {{ ma_backup_conf }}
       freebsd_install_method: {{ freebsd_install_method }}
       freebsd_use_packages: {{ freebsd_use_packages }}
       freebsd_install_retries: {{ freebsd_install_retries }}
       freebsd_install_delay: {{ freebsd_install_delay }}
       linux_install_retries: {{ linux_install_retries }}
       linux_install_delay: {{ linux_install_delay }}
+
+      ma_supported_linux_family: {{ ma_supported_linux_family }}
+      ma_install: {{ ma_install }}
+      ma_ara: {{ ma_ara }}
+      ma_backup_conf: {{ ma_backup_conf }}
       ma_packages:
-        {{ ma_packages|to_nice_yaml|indent(2) }}
+        {{ ma_packages|to_nice_yaml(indent=2)|indent(2) }}
       ma_plugins_paths_list: {{ ma_plugins_paths_list }}
       ma_plugins_path: {{ ma_plugins_path }}
       ma_src_path: {{ ma_src_path }}
       ma_plugins:
-        {{ ma_plugins|to_yaml|indent(2) }}
+        {{ ma_plugins|to_yaml(indent=2)|indent(2) }}
       ma_config_type: {{ ma_config_type }}
       ma_config_template_default: {{ ma_config_template_default }}
       ma_config:
-        {{ ma_config|to_yaml|indent(2) }}
+        {{ ma_config|to_yaml(indent=2)|indent(2) }}
       ma_devel: {{ ma_devel }}
       ma_devel_owner: {{ ma_devel_owner }}
       ma_devel_group: {{ ma_devel_group|default('UNDEFINED') }}

@@ -17,7 +17,7 @@
 - name: "plugins: Download archives"
   ansible.builtin.get_url:
     url: "{{ item.archive_url }}"
-    dest: "{{ ma_src_path }}/{{ item.archive }}"  # Note 1
+    dest: "{{ ma_src_path }}/{{ item.archive }}"
     checksum: "{{ item.checksum }}"
   loop: "{{ ma_plugins }}"
   loop_control:
@@ -33,7 +33,6 @@
   loop: "{{ ma_plugins }}"
   loop_control:
     label: "{{ item.archive }}"
-  when: not ansible_check_mode
   tags: ma_plugins_extract
 
 - name: "plugins: Create links"
@@ -47,7 +46,6 @@
   when:
     - item.link is defined
     - item.dest is defined
-    - not ansible_check_mode
   tags: ma_plugins_link
 
 - name: "plugins: Create lists"
@@ -61,10 +59,11 @@
       when: ma_debug|bool
     - name: "plugins: Create list of plugins ma_plugins_list"
       ansible.builtin.set_fact:
-        ma_plugins_list: "{{ ma_plugins|json_query('[].plugins[].{path: path,
-                                                                  ini_key: ini_key,
-                                                                  enable: enable}')
-                                                                  |list }}"
+        ma_plugins_list: "{{ ma_plugins|
+                             json_query('[].plugins[].{path: path,
+                                                       ini_key: ini_key,
+                                                       enable: enable}')|
+                             list }}"
     - name: "plugins: Debug ma_plugins_list"
       ansible.builtin.debug:
         var: ma_plugins_list
@@ -102,16 +101,10 @@
 
 - name: "plugins: Test used ini_keys"
   ansible.builtin.fail:
-    msg: "[ERROR] wrong ini_key: {{ item }}. End of play."
+    msg: "[ERROR] wrong ini_key: {{ item }}"
   loop: "{{ ma_plugins_inikeys }}"
   when: item not in ma_plugins_inikeys_list
   tags: ma_plugins_test_inikeys
-
-# Notes
-#
-# Note 1: The file will be always downloaded. The module is idempotent. See:
-# Fix docs get_url dest comment. Checksum does not prevent download. #73185
-# https://github.com/ansible/ansible/pull/73185
 
 # EOF
 ...
