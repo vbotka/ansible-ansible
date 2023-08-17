@@ -21,16 +21,16 @@
       linux_install_retries: {{ linux_install_retries }}
       linux_install_delay: {{ linux_install_delay }}
       ma_packages:
-        {{ ma_packages|to_nice_yaml|indent(2) }}
+        {{ ma_packages|to_nice_yaml(indent=2)|indent(2) }}
       ma_plugins_paths_list: {{ ma_plugins_paths_list }}
       ma_plugins_path: {{ ma_plugins_path }}
       ma_src_path: {{ ma_src_path }}
       ma_plugins:
-        {{ ma_plugins|to_yaml|indent(2) }}
+        {{ ma_plugins|to_yaml(indent=2)|indent(2) }}
       ma_config_type: {{ ma_config_type }}
       ma_config_template_default: {{ ma_config_template_default }}
       ma_config:
-        {{ ma_config|to_yaml|indent(2) }}
+        {{ ma_config|to_yaml(indent=2)|indent(2) }}
       ma_devel: {{ ma_devel }}
       ma_devel_owner: {{ ma_devel_owner }}
       ma_devel_group: {{ ma_devel_group|default('UNDEFINED') }}
