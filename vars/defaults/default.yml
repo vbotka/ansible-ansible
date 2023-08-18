@@ -1,0 +1,29 @@
+---
+
+# ma_config:
+#  - path: /etc/ansible/ansible.cfg
+#    template: "{{ ma_config_template_default }}"
+#    owner: root
+#    group: root
+#    mode: '0644'
+#    dmode: '0755'
+#    config:
+#     - {section: defaults, key: inventory, value: /etc/ansible/hosts}
+#     - {section: defaults, key: roles_path, value: /etc/ansible/roles}
+#  - path: /home/admin/.ansible.cfg
+#    template: "{{ ma_config_template_default }}"
+#    owner: admin
+#    group: admin
+#    mode: '0640'
+#    dmode: '0755'
+#    config:
+#     - {section: defaults, key: inventory, value: /home/admin/.ansible/hosts}
+#     - {section: defaults, key: roles_path, value: /home/admin/.ansible/roles}
+#     - {section: defaults, key: remote_tmp, value: /tmp}
+#     - {section: defaults, key: timeout, value: 30}
+#     - {section: defaults, key: remote_user, value: admin}
+#     - {section: defaults, key: log_path, value: /var/log/ansible.log}
+#     - {section: ssh_connection, key: pipelining, value: 'true'}
+
+# EOF
+...
