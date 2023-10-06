@@ -1,0 +1,23 @@
+# {{ ansible_managed }}
+# template: ansible-auto.cfg.j2
+
+{% for i in item.config|groupby('section') %}
+[{{ i.0 }}]
+{% for j in i.1 %}
+{{ j.key }} = {{ j.value }}
+{% endfor %}
+{% if i.0 == 'defaults' and ma_plugins_paths_list|length > 0 %}
+{% for dict_item in ma_plugins_paths_list %}
+{% for key, value in dict_item.items() %}
+{{ key }} =
+{%- for path in value.paths %}{{ ma_plugins_path }}/{{ path }}
+{%- if not loop.last %}:{% endif %}
+{% endfor %}
+
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+
+# EOF
