@@ -19,7 +19,7 @@ linux_install_delay: 5
 # ma_config_type options: template, lineinfile, ini_file
 # See tasks/configure.yml
 ma_config_type: template
-ma_config_template_default: ansible-default.cfg.j2
+ma_config_template_default: ansible-auto.cfg.j2
 ma_config: []
 
 ma_src_path: /usr/local/ansible/src
@@ -56,10 +56,10 @@ ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
 ma_rnotes_core_url: 'https://raw.githubusercontent.com/ansible/ansible/stable-'
 ma_rnotes_core_dir: /scratch/ansible-release-notes/core
-ma_rnotes_core_list: ['2.13', '2.14', '2.15']
+ma_rnotes_core_list: ['2.14', '2.15']
 ma_rnotes_build_url: 'https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/'
 ma_rnotes_build_dir: /scratch/ansible-release-notes/build
-ma_rnotes_build_list: ['6', '7', '8']
+ma_rnotes_build_list: ['7', '8']
 
 # EOF
 ...
