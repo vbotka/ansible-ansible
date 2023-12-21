@@ -16,6 +16,7 @@ Ansible 2.16 update
 Major Changes
 -------------
 - Supported FreeBSD: 12.4, 13.2, 14.0
+- Supported Ubuntu: focal, jammy, lunar, mantic
 
 
 Minor Changes

@@ -18,6 +18,8 @@ galaxy_info:
       versions:
         - focal
         - jammy
+        - lunar
+        - mantic
     - name: EL
       versions:
         - 7
