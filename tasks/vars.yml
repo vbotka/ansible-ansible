@@ -1,14 +1,11 @@
 ---
 
 - name: "vars: Include OS vars"
-  block:
-    - name: "vars: Set variables for al_include_os_vars_path"
-      ansible.builtin.set_fact:
-        al_os_vars_path: "{{ role_path }}"
-    - name: "vars: Include OS vars"
-      ansible.builtin.include_role:
-        name: vbotka.ansible_lib
-        tasks_from: al_include_os_vars_path
+  ansible.builtin.include_role:
+    name: vbotka.ansible_lib
+    tasks_from: al_include_os_vars_path
+  vars:
+    al_os_vars_path: "{{ ansible_parent_role_paths.0 }}"
 
 # EOF
 ...
