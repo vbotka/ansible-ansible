@@ -5,6 +5,14 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.3
+=====
+
+Release Summary
+---------------
+Update docs requirements readthedocs-sphinx-search==0.3.2
+
+
 2.6.2
 =====
 
