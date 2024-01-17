@@ -5,6 +5,23 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.4
+=====
+
+Release Summary
+---------------
+Bug fix. Docs udpate.
+
+Minor Changes
+-------------
+* Bump docs version 2.6.4
+* Update docs
+
+Bugfixes
+--------
+* Bump readthedocs-sphinx-search from 0.3.1 to 0.3.2 in /docs #1
+
+
 2.6.3
 =====
 
