@@ -1,6 +1,5 @@
 ---
-
-# All rights reserved (c) 2019-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -29,15 +28,18 @@
 
   vars:
 
-#   my_version: "0.2.4-CURRENT"
-    my_version: "0.2.3"
+#   my_version: 0.2.5-CURRENT
+    my_version: 0.2.4
     git_module: false
-    my_git_user: "admin"
+    my_git_user: admin
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
-    my_mode: "u=+rwX,g=+rX-w,o=-rwx"
+    my_mode: 'u=+rwX,g=+rX-w,o=-rwx'
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
-    my_repos_file: "vars/repos.yml"
+    my_repos_file: vars/repos.yml
+    my_requirements: "{{ requirements|selectattr('install', 'undefined') +
+                         requirements|selectattr('install', 'defined')|
+                                      selectattr('install') }}"
 
   tasks:
 
@@ -46,33 +48,35 @@
 
     - name: "Debug"
       debug:
-        msg: "{{ msg.split('\n') }}"
+        msg: "{{ '{}'.format(msg) }}"
       vars:
         msg: |
-          my_version [{{ my_version }}]
-          git_module [{{ git_module }}]
-          my_git_user [{{ my_git_user }}]
-          my_user [{{ my_user }}]
-          my_group [{{ my_group }}]
-          my_mode [{{ my_mode }}]
-          my_repos_path [{{ my_repos_path }}]
-          my_repos_file [{{ my_repos_file }}]
-          ansible_check_mode [{{ ansible_check_mode }}]
-          requirements
-          {{ requirements|to_nice_yaml }}
+          my_version: {{ my_version }}
+          git_module: {{ git_module }}
+          my_git_user: {{ my_git_user }}
+          my_user: {{ my_user }}
+          my_group: {{ my_group }}
+          my_mode: {{ my_mode }}
+          my_repos_path: {{ my_repos_path }}
+          my_repos_file: {{ my_repos_file }}
+          ansible_check_mode: {{ ansible_check_mode }}
+          requirements:
+            {{ requirements|to_nice_yaml(indent=2)|indent(2) }}
+#         my_requirements:
+#           {{ my_requirements|to_nice_yaml(indent=2)|indent(2) }}
       when: debug|default(false)|bool
 
-    - name: "Git install repos"
+    - name: "git install repos"
       git:
         repo: "{{ item.src }}"
         dest: "{{ my_repos_path }}/{{ item.name }}"
         version: "{{ item.version|default('HEAD') }}"
-      loop: "{{ requirements }}"
-      when:
-        - item.install|default(true)
-        - git_module|bool
+      loop: "{{ my_requirements }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: git_module|bool
 
-    - name: "Command install repos"
+    - name: "command install repos"
       command: "/bin/sh -c 'cd {{ my_repos_path }};
                             if [ -e {{ item.name|quote }} ]; then
                                (cd {{ item.name }}; git pull);
@@ -81,36 +85,38 @@
                             fi'"
       args:
         chdir: "{{ my_repos_path }}"
-      loop: "{{ requirements }}"
-      when:
-        - item.install|default(true)
-        - not git_module|bool
+      loop: "{{ my_requirements }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: not git_module|bool
 
-    - name: "Chown and chmod repos"
-      file:
-        state: directory
-        recurse: true
-        dest: "{{ my_repos_path }}/{{ item.name }}"
-        owner: "{{ my_user }}"
-        group: "{{ my_group }}"
-        # mode: "{{ my_mode }}"
-      loop: "{{ requirements }}"
-      when:
-        - item.install|default(true)
-        - not ansible_check_mode
+    - name: chown, chmod and link repos
+      block:
 
-    - name: "Link repos"
-      file:
-        state: link
-        src: "{{ my_repos_path }}/{{ item.name }}"
-        dest: "{{ my_repos_path }}/{{ item.link }}"
-        owner: "{{ my_user }}"
-        group: "{{ my_group }}"
-      loop: "{{ requirements }}"
-      when:
-        - item.install|default(true)
-        - item.link is defined
-        - not ansible_check_mode
+        - name: "chown and chmod repos"
+          file:
+            state: directory
+            recurse: true
+            dest: "{{ my_repos_path }}/{{ item.name }}"
+            owner: "{{ my_user }}"
+            group: "{{ my_group }}"
+            # mode: "{{ my_mode }}"
+          loop: "{{ my_requirements }}"
+          loop_control:
+            label: "{{ item.name }}"
+
+        - name: "Link repos"
+          file:
+            state: link
+            src: "{{ my_repos_path }}/{{ item.name }}"
+            dest: "{{ my_repos_path }}/{{ item.link }}"
+            owner: "{{ my_user }}"
+            group: "{{ my_group }}"
+          loop: "{{ my_requirements|selectattr('link', 'defined') }}"
+          loop_control:
+            label: "{{ item.name }}"
+
+      when: not ansible_check_mode
 
 # EOF
 ...

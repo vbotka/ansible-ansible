@@ -1,8 +1,8 @@
-# All rights reserved (c) 2019-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-version_lib="0.2.4-CURRENT"
-# version_lib="0.2.3"
+# version_lib="0.2.5-CURRENT"
+version_lib="0.2.4"
 
 my_ansible_role_dir="${roles_dir}/vbotka.ansible"
 my_workbench_dir="${workbench_dir}"

@@ -10,6 +10,7 @@ install-roles-from-git.py
 pb_create_links.yml
 pb_create_runner_private.yml
 pb_install_repos_from_git.yml
+vars/collections.yml.sample
 vars/links.yml.sample
 vars/projects.yml.sample
 vars/repos.yml.sample
