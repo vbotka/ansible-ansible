@@ -23,34 +23,34 @@
 
   vars:
 
-#   my_version: "0.2.4-CURRENT"
-    my_version: "0.2.3"
+#   my_version: "0.2.5-CURRENT"
+    my_version: "0.2.4"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
-    my_links_file: "vars/links.yml"
+    my_links_file: vars/links.yml
 
   tasks:
 
     - name: "Include list of links from {{ my_links_file }}"
       include_vars: "{{ my_links_file }}"
 
-    - name: Debug
-      debug:
-        msg: "{{ msg.split('\n') }}"
+    - name: Debug variables
       vars:
         msg: |
-          my_version [{{ my_version }}]
-          my_base_path [{{ my_base_path }}]
-          my_links_file [{{ my_links_file }}]
-          ansible_check_mode [{{ ansible_check_mode }}]
-          requirements
-          {{ requirements|to_nice_yaml }}
-      when: debug|default(false)|bool
+          my_version: {{ my_version }}
+          my_base_path: {{ my_base_path }}
+          my_links_file: {{ my_links_file }}
+          ansible_check_mode: {{ ansible_check_mode }}
+          requirements:
+            {{ requirements|to_nice_yaml(indent=2)|indent(2) }}
+      debug:
+        msg: "{{ '{}'.format(msg) }}"
+      when: debug|d(false)|bool
 
-    - name: Debug
+    - name: Debug links
       debug:
         msg: "path {{ item.path }} link {{ item.link }}"
       loop: "{{ requirements }}"
-      when: debug|default(false)|bool
+      when: debug|d(false)|bool
 
     - name: Create links to absolute paths
       file:

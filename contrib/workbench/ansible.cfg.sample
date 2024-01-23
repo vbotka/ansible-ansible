@@ -1,33 +1,14 @@
-
 [defaults]
 inventory = $PWD/hosts
 roles_path = $PWD/../roles
 retry_files_enabled = false
-# stdout_callback = default
-# transport = ssh
-# strategy_plugins =/usr/local/ansible/plugins/mitogen-0.2.6/ansible_mitogen/plugins/strategy
-# strategy = mitogen_linear
-
-[inventory]
-
-[privilege_escalation]
-
-[paramiko_connection]
+# stdout_callback = yaml
 
 [ssh_connection]
 pipelining = true
-# ssh_args = -o ForwardAgent=yes
-
-[persistent_connection]
-
-[accelerate]
-
-[selinux]
 
 [colors]
 deprecate = bright purple
 changed = purple
-
-[diff]
 
 # EOF

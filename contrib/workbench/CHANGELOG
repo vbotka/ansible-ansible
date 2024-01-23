@@ -1,0 +1,37 @@
+0.2.4
+
+Tested OK.
+
+Installation
+============
+
+(1-9)
+mkdir /home/admin/.ansible
+mkdir /home/admin/.ansible/roles
+cd /home/admin/.ansible
+git clone https://github.com/vbotka/ansible-ansible.git roles/vbotka.ansible
+cp -r roles/vbotka.ansible/contrib/workbench ansible-workbench
+ln -s ansible-workbench workbench
+cp workbench/ansible-workbench.cfg.sample ../.ansible-workbench.cfg
+# edit ../.ansible-workbench.cfg
+# edit workbench/ansible.cfg
+cp workbench/hosts.sample.debian workbench/hosts
+# edit workbench/hosts
+# edit or copy workbench/vars
+cp /export/home.bak1/admin.config/.ansible/workbench/vars/*.yml workbench/vars
+
+(10-19)
+ansible-workbench/ansible-workbench.sh -d -n repos
+ansible-workbench/ansible-workbench.sh repos
+ansible-workbench/ansible-workbench.sh -d -n roles
+ansible-workbench/ansible-workbench.sh roles
+ansible-workbench/ansible-workbench.sh -d -n projects
+ansible-workbench/ansible-workbench.sh projects
+ansible-workbench/ansible-workbench.sh -d -n links
+ansible-workbench/ansible-workbench.sh links
+ansible-workbench/ansible-workbench.sh -d -n runner
+ansible-workbench/ansible-workbench.sh runner
+
+Update all
+==========
+ansible-workbench/ansible-workbench.sh all

@@ -5,6 +5,18 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.5
+=====
+
+Release Summary
+---------------
+Update contrib/workbench. Tested OK.
+
+Minor Changes
+-------------
+* Bump docs version 2.6.5
+
+
 2.6.4
 =====
 
