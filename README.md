@@ -26,8 +26,11 @@ This role has been developed and tested with
 
 ### Collections
 
+* ansible.posix
 * community.general
 
+Note: The collection *ansible.posix* is needed for some playbooks and
+roles in *contrib*
 
 ## Role Variables
 
