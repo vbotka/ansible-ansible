@@ -1,41 +1,42 @@
 ---
 
-- name: "plugins: Create directory {{ ma_plugins_path }}"
+- name: "Plugins: Create directory {{ ma_plugins_path }}"
   ansible.builtin.file:
     state: directory
     path: "{{ ma_plugins_path }}"
-    mode: "{{ ma_plugins_path_mode|default(omit) }}"
+    mode: "{{ ma_plugins_path_mode | default(omit) }}"
   tags: ma_plugins_path
 
-- name: "plugins: Create directory {{ ma_src_path }}"
+- name: "Plugins: Create directory {{ ma_src_path }}"
   ansible.builtin.file:
     state: directory
     path: "{{ ma_src_path }}"
-    mode: "{{ ma_src_path_mode|default(omit) }}"
+    mode: "{{ ma_src_path_mode | default(omit) }}"
   tags: ma_src_path
 
-- name: "plugins: Download archives"
+- name: "Plugins: Download archives"
   ansible.builtin.get_url:
     url: "{{ item.archive_url }}"
     dest: "{{ ma_src_path }}/{{ item.archive }}"
+    mode: "0644"
     checksum: "{{ item.checksum }}"
   loop: "{{ ma_plugins }}"
   loop_control:
     label: "{{ item.archive }}"
   tags: ma_plugins_download
 
-- name: "plugins: Extract archives"
+- name: "Plugins: Extract archives"
   ansible.builtin.unarchive:
     remote_src: true
     src: "{{ ma_src_path }}/{{ item.archive }}"
     dest: "{{ ma_plugins_path }}"
-    creates: "{{ item.creates|default(omit) }}"
+    creates: "{{ item.creates | d(omit) }}"
   loop: "{{ ma_plugins }}"
   loop_control:
     label: "{{ item.archive }}"
   tags: ma_plugins_extract
 
-- name: "plugins: Create links"
+- name: "Plugins: Create links"
   ansible.builtin.file:
     state: link
     src: "{{ ma_plugins_path }}/{{ item.dest }}"
@@ -48,60 +49,71 @@
     - item.dest is defined
   tags: ma_plugins_link
 
-- name: "plugins: Create lists"
+- name: "Plugins: Create lists"
+  tags: ma_plugins_lists
   block:
-    - name: "plugins: Create list of used ini_keys ma_plugins_inikeys"
+
+    - name: "Plugins: Create list of used ini_keys ma_plugins_inikeys"
       ansible.builtin.set_fact:
-        ma_plugins_inikeys: "{{ ma_plugins|json_query('[].plugins[].ini_key')|list|unique }}"
-    - name: "plugins: Debug ma_plugins_inikeys"
+        ma_plugins_inikeys: "{{ ma_plugins |
+                                json_query('[].plugins[].ini_key') |
+                                list | unique }}"  # noqa: jinja[invalid]
+
+    - name: "Plugins: Debug ma_plugins_inikeys"
       ansible.builtin.debug:
         var: ma_plugins_inikeys
-      when: ma_debug|bool
-    - name: "plugins: Create list of plugins ma_plugins_list"
+      when: ma_debug | bool
+
+    - name: "Plugins: Create list of plugins ma_plugins_list"
       ansible.builtin.set_fact:
-        ma_plugins_list: "{{ ma_plugins|
+        ma_plugins_list: "{{ ma_plugins |
                              json_query('[].plugins[].{path: path,
-                                                       ini_key: ini_key,
-                                                       enable: enable}')|
-                             list }}"
-    - name: "plugins: Debug ma_plugins_list"
+                                                       ini_key: ini_key, enable: enable}') |
+                             list }}"  # noqa: jinja[invalid]
+
+    - name: "Plugins: Debug ma_plugins_list"
       ansible.builtin.debug:
         var: ma_plugins_list
-      when: ma_debug|bool
-    - name: "plugins: Group plugins by ini_key to ma_plugins_grouped"
+      when: ma_debug | bool
+
+    - name: "Plugins: Group plugins by ini_key to ma_plugins_grouped"
       ansible.builtin.set_fact:
-        ma_plugins_grouped: "{{ ma_plugins_list|groupby('ini_key') }}"
-    - name: "plugins: Debug ma_plugins_grouped"
+        ma_plugins_grouped: "{{ ma_plugins_list | groupby('ini_key') }}"
+
+    - name: "Plugins: Debug ma_plugins_grouped"
       ansible.builtin.debug:
         var: ma_plugins_grouped
-      when: ma_debug|bool
-    - name: "plugins: Create list of ini_key ma_plugins_inikeys_list"
+      when: ma_debug | bool
+
+    - name: "Plugins: Create list of ini_key ma_plugins_inikeys_list"
       ansible.builtin.set_fact:
         ma_plugins_inikeys_list: "{{ ma_plugins_sections.keys() }}"
-    - name: "plugins: Debug ma_plugins_inikeys_list"
+
+    - name: "Plugins: Debug ma_plugins_inikeys_list"
       ansible.builtin.debug:
         var: ma_plugins_inikeys_list
-      when: ma_debug|bool
-    - name: "plugins: Create lists of paths ma_plugins_paths_list"
+      when: ma_debug | bool
+
+    - name: "Plugins: Create lists of paths ma_plugins_paths_list"
       ansible.builtin.set_fact:
         ma_plugins_paths_list: "{{ ma_plugins_paths_list + [{item.0: _value}] }}"
       loop: "{{ ma_plugins_grouped }}"
       loop_control:
         label: "{{ item.0 }}"
       vars:
-        _value: "{{ {'paths': item.1|json_query('[?enable].path')} }}"
-    - name: "plugins: Debug ma_plugins_paths_list"
+        _value: "{{ {'paths': item.1 | json_query('[?enable].path')} }}"
+
+    - name: "Plugins: Debug ma_plugins_paths_list"
       ansible.builtin.debug:
         msg: "{{ item }}"
       loop: "{{ ma_plugins_paths_list }}"
       loop_control:
-        label: "{{ item.keys()|list|first }}"
-      when: ma_debug|bool
-  tags: ma_plugins_lists
+        label: "{{ item.keys() | list | first }}"
+      when: ma_debug | bool
 
-- name: "plugins: Test used ini_keys"
+- name: "Plugins: Test used ini_keys"
   ansible.builtin.fail:
-    msg: "[ERROR] wrong ini_key: {{ item }}"
+    msg: "[ERR] wrong ini_key: {{ item }}"
   loop: "{{ ma_plugins_inikeys }}"
   when: item not in ma_plugins_inikeys_list
   tags: ma_plugins_test_inikeys

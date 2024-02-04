@@ -1,22 +1,25 @@
 ---
 
-- name: 'rm: list-roles: Find roles in {{ roles_path }}'
+- name: "Rm: list-roles: Find roles in {{ roles_path }}"
   ansible.builtin.find:
     paths: "{{ roles_path }}"
     patterns: "{{ rm_roles_pattern }}"
     file_type: directory
   register: results
-- name: 'rm: list-roles: Collect roles paths'
+
+- name: "Rm: list-roles: Collect roles paths"
   ansible.builtin.set_fact:
-    rm_roles_path: "{{ results.files|json_query('[].path') }}"
-- name: 'rm: list-roles: Debug number of roles {{ rm_roles_path|length }}'
+    rm_roles_path: "{{ results.files | json_query('[].path') }}"
+
+- name: "Rm: list-roles: Debug number of roles {{ rm_roles_path | length }}"
   ansible.builtin.debug:
-    msg: "Number of roles: {{ rm_roles_path|length }}"
-  when: rm_debug|bool
-- name: 'rm: list-roles: Debug list roles paths'
+    msg: "Number of roles: {{ rm_roles_path | length }}"
+  when: rm_debug | bool
+
+- name: "Rm: list-roles: Debug list roles paths"
   ansible.builtin.debug:
     var: rm_roles_path|sort
-  when: rm_debug|bool
+  when: rm_debug | bool
 
 # EOF
 ...

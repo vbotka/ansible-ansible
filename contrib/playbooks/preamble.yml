@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2020-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -17,12 +17,15 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
 
-- hosts: localhost
+- name: Configure playbooks
+  hosts: localhost
+
   tasks:
+
     - name: Update parameters of the playbooks.
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: "{{ item }}"
-        insertafter: "^- hosts(.*)$"
+        insertafter: ^- hosts(.*)$
         marker: "# {mark} ANSIBLE MANAGED BLOCK preamble"
         block: |2
             connection: ssh
@@ -30,8 +33,9 @@
             become: true
             become_user: root
             become_method: sudo
-        # validate: ansible-playbook %s --syntax-check
+      # validate: ansible-playbook %s --syntax-check
       loop:
         - freebsd-custom-img.yml
+
 # EOF
 ...

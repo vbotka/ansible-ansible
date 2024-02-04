@@ -72,4 +72,12 @@ Devel workbench. Print diff and update source.
 
     while read l; do cp $l $HOME/.ansible/roles/vbotka.ansible/contrib/workbench/$l; done < FILES
 
+Misc
+====
+
+ 1) Copy .gitignore from admin@remote
+    cd $HOME/.ansible/roles
+    find * -name "vbotka.*" | xargs -i sh -c 'cd {} && scp remote:/home/admin/.ansible/roles/{}/.gitignore .'
+
+
 # EOF

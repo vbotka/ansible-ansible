@@ -15,4 +15,3 @@ rm_roles_license:
     year_from: 2016
     year_to: "{{ rm_roles_license_year_to }}"
     holder: "{{ rm_roles_license_holder }}"
-...

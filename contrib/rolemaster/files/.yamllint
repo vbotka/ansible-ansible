@@ -14,7 +14,7 @@ rules:
     max: 160
     level: warning
   truthy:
-    allowed-values: ['true', 'false', 'True', 'False']
+    allowed-values: ["true", "false", "True", "False"]
   indentation:
     spaces: 2
     indent-sequences: true

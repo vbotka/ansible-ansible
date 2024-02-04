@@ -1,35 +1,39 @@
 ---
-
 # FreeBSD
-- name: "packages: Install Ansible Lint FreeBSD packages"
+- name: "Packages: Install Ansible Lint FreeBSD packages"
+  when:
+    - ansible_os_family == 'FreeBSD'
+    - freebsd_install_method|lower == 'packages'
+
   block:
-    - name: "packages: Install Ansible packages FreeBSD"
+    - name: "Packages: Install Ansible packages FreeBSD"
       community.general.pkgng:
         name: "{{ ma_packages }}"
       register: result
       retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
       delay: "{{ freebsd_install_delay }}"
-    - name: "packages: Debug FreeBSD packages"
+    - name: "Packages: Debug FreeBSD packages"
       ansible.builtin.debug:
         var: result
       when: ma_debug|bool
   rescue:
-    - name: "packages: Rescue FreeBSD packages"
+    - name: "Packages: Rescue FreeBSD packages"
       ansible.builtin.fail:
         msg: |
           [ERROR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
-            {{ ansible_failed_task|to_yaml(indent=2)|indent(2) }}
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
-            {{ ansible_failed_result|to_yaml(indent=2)|indent(2) }}
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+- name: "Packages: Install Ansible Lint FreeBSD ports"
   when:
     - ansible_os_family == 'FreeBSD'
-    - freebsd_install_method|lower == 'packages'
+    - freebsd_install_method|lower == 'ports'
 
-- name: "packages: Install Ansible Lint FreeBSD ports"
+  # Linux
   block:
-    - name: "packages: Install Ansible ports FreeBSD"
+    - name: "Packages: Install Ansible ports FreeBSD"
       community.general.portinstall:
         name: "{{ item }}"
         use_packages: "{{ freebsd_use_packages }}"
@@ -38,27 +42,25 @@
       retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
       delay: "{{ freebsd_install_delay }}"
-    - name: "packages: Debug FreeBSD ports"
+    - name: "Packages: Debug FreeBSD ports"
       ansible.builtin.debug:
         var: result
       when: ma_debug|bool
   rescue:
-    - name: "packages: Rescue FreeBSD ports"
+    - name: "Packages: Rescue FreeBSD ports"
       ansible.builtin.fail:
         msg: |
           [ERROR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
-            {{ ansible_failed_task|to_yaml(indent=2)|indent(2) }}
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
-            {{ ansible_failed_result|to_yaml(indent=2)|indent(2) }}
-  when:
-    - ansible_os_family == 'FreeBSD'
-    - freebsd_install_method|lower == 'ports'
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+- name: "Packages: Install Ansible Lint Linux packages"
+  when: ansible_os_family in ma_supported_linux_family
 
-# Linux
-- name: "packages: Install Ansible Lint Linux packages"
+  # EOF
   block:
-    - name: "packages: Install Ansible packages Linux"
+    - name: "Packages: Install Ansible packages Linux"
       ansible.builtin.package:
         name: "{{ item }}"
       loop: "{{ ma_packages }}"
@@ -66,20 +68,16 @@
       retries: "{{ linux_install_retries }}"
       until: result is succeeded
       delay: "{{ linux_install_delay }}"
-    - name: "packages: Debug Linux packages"
+    - name: "Packages: Debug Linux packages"
       ansible.builtin.debug:
         var: result
       when: ma_debug|bool
   rescue:
-    - name: "packages: Rescue Linux packages"
+    - name: "Packages: Rescue Linux packages"
       ansible.builtin.fail:
         msg: |
           [ERROR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
-            {{ ansible_failed_task|to_yaml(indent=2)|indent(2) }}
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
-            {{ ansible_failed_result|to_yaml(indent=2)|indent(2) }}
-  when: ansible_os_family in ma_supported_linux_family
-
-# EOF
-...
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}

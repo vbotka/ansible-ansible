@@ -5,7 +5,7 @@ rm_roles_meta:
     galaxy_info:
       author: AUTHOR
       company: COMPANY
-      description: "Install and configure Ansible."
+      description: Install and configure Ansible.
       galaxy_tags:
         - freebsd
         - ubuntu
@@ -31,7 +31,7 @@ rm_roles_meta:
     galaxy_info:
       author: AUTHOR
       company: COMPANY
-      description: "Install and configure Ansible Lint."
+      description: Install and configure Ansible Lint.
       galaxy_tags:
         - freebsd
         - ubuntu
@@ -58,7 +58,7 @@ rm_roles_meta:
     galaxy_info:
       author: AUTHOR
       company: COMPANY
-      description: "Configure Apache."
+      description: Configure Apache.
       galaxy_tags:
         - freebsd
         - apache
@@ -71,4 +71,3 @@ rm_roles_meta:
             - 11.2
             - 12.0
       role_name: apache
-...

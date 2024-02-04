@@ -1,41 +1,42 @@
 ---
 
-- name: 'rm restore-meta: Include vars'
+- name: "Rm restore-meta: Include vars"
   ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
-- name: 'rm restore-meta: Debug'
+- name: "Rm restore-meta: Debug"
   ansible.builtin.debug:
     msg: |-
       rm_roles_select_list:
-        {{ rm_roles_select_list|to_nice_yaml(indent=2)|indent(2) }}
-      {% if rm_roles_select_list|length == 0 %}
+        {{ rm_roles_select_list | to_nice_yaml(indent=2) | indent(2) }}
+      {% if rm_roles_select_list | length == 0 %}
       rm_roles_meta:
-        {{ rm_roles_meta|to_nice_yaml(indent=2)|indent(2) }}
+        {{ rm_roles_meta | to_nice_yaml(indent=2) | indent(2) }}
       {% else %}
       rm_roles_meta: (selected)
-        {{ rm_roles_meta|dict2items|selectattr('key', 'search', rm_roles_select_list|join('|'))|items2dict|to_nice_yaml(indent=2)|indent(2) }}
+        {{ rm_roles_meta | dict2items | selectattr('key', 'search', rm_roles_select_list | join('|')) | items2dict | to_nice_yaml(indent=2) | indent(2) }}
       {% endif %}
-  when: rm_debug|bool
+  when: rm_debug | bool
 
-- name: 'rm restore-meta: Create meta files'
+- name: "Rm restore-meta: Create meta files"
   ansible.builtin.template:
     src: templates/main.yml.j2
     dest: "{{ item.key }}/meta/main.yml"
     owner: "{{ rm_owner }}"
     group: "{{ rm_group }}"
+    mode: "0664"
     backup: "{{ rm_backup_conf }}"
-#   validate: "{{ rm_ansible_lint }} %s"
+    # validate: "{{ rm_ansible_lint }} %s"
   loop: "{{ _select }}"
   loop_control:
     label: "{{ item.key }}"
   vars:
     _select: |
-      {% if rm_roles_select_list|length == 0 %}
-      {{ rm_roles_meta|dict2items }}
+      {% if rm_roles_select_list | length == 0 %}
+      {{ rm_roles_meta | dict2items }}
       {% else %}
-      {{ rm_roles_meta|dict2items|selectattr('key', 'search', rm_roles_select_list|join('|')) }}
+      {{ rm_roles_meta | dict2items | selectattr('key', 'search', rm_roles_select_list | join('|')) }}
       {% endif %}
-  when: item.key|basename not in rm_roles_blacklist
+  when: item.key | basename not in rm_roles_blacklist
 
 # EOF
 ...
