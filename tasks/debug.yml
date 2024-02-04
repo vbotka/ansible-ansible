@@ -34,7 +34,7 @@
         {{ ma_config | to_yaml(indent=2) | indent(2) }}
       ma_devel: {{ ma_devel }}
       ma_devel_owner: {{ ma_devel_owner }}
-      ma_devel_group: {{ ma_devel_group | default('UNDEFINED') }}
+      ma_devel_group: {{ ma_devel_group | d('UNDEFINED') }}
       ma_repo: {{ ma_repo }}
       ma_repo_url: {{ ma_repo_url }}
       ma_repo_version: {{ ma_repo_version }}

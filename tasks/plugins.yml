@@ -4,14 +4,14 @@
   ansible.builtin.file:
     state: directory
     path: "{{ ma_plugins_path }}"
-    mode: "{{ ma_plugins_path_mode | default(omit) }}"
+    mode: "{{ ma_plugins_path_mode | d(omit) }}"
   tags: ma_plugins_path
 
 - name: "Plugins: Create directory {{ ma_src_path }}"
   ansible.builtin.file:
     state: directory
     path: "{{ ma_src_path }}"
-    mode: "{{ ma_src_path_mode | default(omit) }}"
+    mode: "{{ ma_src_path_mode | d(omit) }}"
   tags: ma_src_path
 
 - name: "Plugins: Download archives"

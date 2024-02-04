@@ -1,11 +1,13 @@
 ---
+
 # FreeBSD
+
 - name: "Packages: Install Ansible Lint FreeBSD packages"
   when:
     - ansible_os_family == 'FreeBSD'
-    - freebsd_install_method|lower == 'packages'
-
+    - freebsd_install_method | lower == 'packages'
   block:
+
     - name: "Packages: Install Ansible packages FreeBSD"
       community.general.pkgng:
         name: "{{ ma_packages }}"
@@ -13,26 +15,29 @@
       retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
       delay: "{{ freebsd_install_delay }}"
+
     - name: "Packages: Debug FreeBSD packages"
       ansible.builtin.debug:
         var: result
-      when: ma_debug|bool
+      when: ma_debug | bool
+
   rescue:
+
     - name: "Packages: Rescue FreeBSD packages"
       ansible.builtin.fail:
         msg: |
-          [ERROR] task {{ ansible_failed_task.name }} failed.
+          [ERR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
             {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
 - name: "Packages: Install Ansible Lint FreeBSD ports"
   when:
     - ansible_os_family == 'FreeBSD'
-    - freebsd_install_method|lower == 'ports'
-
-  # Linux
+    - freebsd_install_method | lower == 'ports'
   block:
+
     - name: "Packages: Install Ansible ports FreeBSD"
       community.general.portinstall:
         name: "{{ item }}"
@@ -42,24 +47,29 @@
       retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
       delay: "{{ freebsd_install_delay }}"
+
     - name: "Packages: Debug FreeBSD ports"
       ansible.builtin.debug:
         var: result
-      when: ma_debug|bool
+      when: ma_debug | bool
+
   rescue:
+
     - name: "Packages: Rescue FreeBSD ports"
       ansible.builtin.fail:
         msg: |
-          [ERROR] task {{ ansible_failed_task.name }} failed.
+          [ERR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
             {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
+# Linux
+
 - name: "Packages: Install Ansible Lint Linux packages"
   when: ansible_os_family in ma_supported_linux_family
-
-  # EOF
   block:
+
     - name: "Packages: Install Ansible packages Linux"
       ansible.builtin.package:
         name: "{{ item }}"
@@ -68,16 +78,22 @@
       retries: "{{ linux_install_retries }}"
       until: result is succeeded
       delay: "{{ linux_install_delay }}"
+
     - name: "Packages: Debug Linux packages"
       ansible.builtin.debug:
         var: result
-      when: ma_debug|bool
+      when: ma_debug | bool
+
   rescue:
+
     - name: "Packages: Rescue Linux packages"
       ansible.builtin.fail:
         msg: |
-          [ERROR] task {{ ansible_failed_task.name }} failed.
+          [ERR] task {{ ansible_failed_task.name }} failed.
           ansible_failed_task:
             {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
+# EOF
+...
