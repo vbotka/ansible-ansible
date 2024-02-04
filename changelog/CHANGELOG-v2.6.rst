@@ -5,6 +5,14 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.7
+=====
+
+Release Summary
+---------------
+Fix dependencies.
+
+
 2.6.6
 =====
 
