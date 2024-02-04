@@ -7,32 +7,33 @@
 
 - name: Import debug.yml
   ansible.builtin.import_tasks: debug.yml
-  when: ma_debug|bool
+  when: ma_debug | bool
   tags: ma_debug
 
 - name: Import packages.yml
   ansible.builtin.import_tasks: packages.yml
-  when: ma_install|bool
+  when: ma_install | bool
   tags: ma_packages
 
 - name: Import ara.yml
   ansible.builtin.import_tasks: ara.yml
-  when: ma_ara|bool
+  when: ma_ara | bool
   tags: ma_ara
 
 - name: Import plugins.yml
   ansible.builtin.import_tasks: plugins.yml
-  when: ma_plugins|length > 0
+  when: ma_plugins | length > 0
   tags: [ma_plugins, ma_config]
 
 - name: Import configure.yml
   ansible.builtin.import_tasks: configure.yml
-  when: ma_config|length > 0
+  when: ma_config | length > 0
   tags: ma_config
 
 - name: Import devel.yml
   ansible.builtin.import_tasks: devel.yml
-  when: ma_devel|bool
+  when: ma_devel | bool
   tags: ma_devel
 
 # EOF
+...
