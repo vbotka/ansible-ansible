@@ -21,33 +21,34 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://github.com/vbotka/ansible-ansible/tree/master/contrib/workbench
 
-- hosts: localhost
+- name: Install git repositories
+  hosts: localhost
   connection: local
   debugger: on_failed
   gather_facts: false
 
   vars:
 
-#   my_version: 0.2.5-CURRENT
-    my_version: 0.2.4
+    #   my_version: 0.2.6-CURRENT
+    my_version: "0.2.5"
     git_module: false
     my_git_user: admin
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
-    my_mode: 'u=+rwX,g=+rX-w,o=-rwx'
+    my_mode: u=+rwX,g=+rX-w,o=-rwx
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
     my_repos_file: vars/repos.yml
-    my_requirements: "{{ requirements|selectattr('install', 'undefined') +
-                         requirements|selectattr('install', 'defined')|
-                                      selectattr('install') }}"
+    my_requirements: "{{ requirements | selectattr('install', 'undefined') +
+                         requirements | selectattr('install', 'defined') |
+                                        selectattr('install') }}"
 
   tasks:
 
-    - name: "Include list of repos from {{ my_repos_file }}"
-      include_vars: "{{ my_repos_file }}"
+    - name: Include list of repos from {{ my_repos_file }}
+      ansible.builtin.include_vars: "{{ my_repos_file }}"
 
-    - name: "Debug"
-      debug:
+    - name: Debug
+      ansible.builtin.debug:
         msg: "{{ '{}'.format(msg) }}"
       vars:
         msg: |
@@ -61,40 +62,45 @@
           my_repos_file: {{ my_repos_file }}
           ansible_check_mode: {{ ansible_check_mode }}
           requirements:
-            {{ requirements|to_nice_yaml(indent=2)|indent(2) }}
-#         my_requirements:
-#           {{ my_requirements|to_nice_yaml(indent=2)|indent(2) }}
-      when: debug|default(false)|bool
+            {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
+      #   my_requirements:
+      #     {{ my_requirements | to_nice_yaml(indent=2) | indent(2) }}
+      when: debug | d(false) | bool
 
-    - name: "git install repos"
-      git:
+    - name: Git install repos
+      ansible.builtin.git:
         repo: "{{ item.src }}"
         dest: "{{ my_repos_path }}/{{ item.name }}"
-        version: "{{ item.version|default('HEAD') }}"
+        version: "{{ item.version | default('HEAD') }}"
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      when: git_module|bool
+      when: git_module | bool
 
-    - name: "command install repos"
-      command: "/bin/sh -c 'cd {{ my_repos_path }};
-                            if [ -e {{ item.name|quote }} ]; then
-                               (cd {{ item.name }}; git pull);
-                            else
-                               git clone {{ item.src }} {{ item.name }};
-                            fi'"
+    - name: Command install repos
+      ansible.builtin.command: >
+        /bin/sh -c
+        'cd {{ my_repos_path }};
+        if [ -e {{ item.name | quote }} ]; then
+        (cd {{ item.name }}; git pull);
+        else
+        git clone {{ item.src }} {{ item.name }};
+        fi'
       args:
         chdir: "{{ my_repos_path }}"
+      register: out
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      when: not git_module|bool
+      changed_when: false  # TODO: test registered result
+      when: not git_module | bool
 
-    - name: chown, chmod and link repos
+    - name: Chown, chmod and link repos
+      when: not ansible_check_mode
       block:
 
-        - name: "chown and chmod repos"
-          file:
+        - name: Chown and chmod repos
+          ansible.builtin.file:
             state: directory
             recurse: true
             dest: "{{ my_repos_path }}/{{ item.name }}"
@@ -105,18 +111,16 @@
           loop_control:
             label: "{{ item.name }}"
 
-        - name: "Link repos"
-          file:
+        - name: Link repos
+          ansible.builtin.file:
             state: link
             src: "{{ my_repos_path }}/{{ item.name }}"
             dest: "{{ my_repos_path }}/{{ item.link }}"
             owner: "{{ my_user }}"
             group: "{{ my_group }}"
-          loop: "{{ my_requirements|selectattr('link', 'defined') }}"
+          loop: "{{ my_requirements | selectattr('link', 'defined') }}"
           loop_control:
             label: "{{ item.name }}"
-
-      when: not ansible_check_mode
 
 # EOF
 ...

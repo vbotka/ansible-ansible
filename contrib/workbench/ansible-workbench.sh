@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# All rights reserved (c) 2019-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# version="0.2.5-CURRENT"
-version="0.2.4"
+# version="0.2.6-CURRENT"
+version="0.2.5"
 
 usage="ansible-workbench ver ${version}
 Usage:

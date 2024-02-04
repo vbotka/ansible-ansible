@@ -1,6 +1,5 @@
 ---
-
-# All rights reserved (c) 2019-2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -16,22 +15,23 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://github.com/vbotka/ansible-ansible/tree/master/contrib/workbench
 
-- hosts: localhost
+- name: Create links
+  hosts: localhost
   connection: local
   debugger: on_failed
   gather_facts: false
 
   vars:
 
-#   my_version: "0.2.5-CURRENT"
+    #   my_version: "0.2.5-CURRENT"
     my_version: "0.2.4"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_links_file: vars/links.yml
 
   tasks:
 
-    - name: "Include list of links from {{ my_links_file }}"
-      include_vars: "{{ my_links_file }}"
+    - name: Include list of links from {{ my_links_file }}
+      ansible.builtin.include_vars: "{{ my_links_file }}"
 
     - name: Debug variables
       vars:
@@ -41,19 +41,19 @@
           my_links_file: {{ my_links_file }}
           ansible_check_mode: {{ ansible_check_mode }}
           requirements:
-            {{ requirements|to_nice_yaml(indent=2)|indent(2) }}
-      debug:
+            {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
+      ansible.builtin.debug:
         msg: "{{ '{}'.format(msg) }}"
-      when: debug|d(false)|bool
+      when: debug | d(false) | bool
 
     - name: Debug links
-      debug:
-        msg: "path {{ item.path }} link {{ item.link }}"
+      ansible.builtin.debug:
+        msg: path {{ item.path }} link {{ item.link }}
       loop: "{{ requirements }}"
-      when: debug|d(false)|bool
+      when: debug | d(false) | bool
 
     - name: Create links to absolute paths
-      file:
+      ansible.builtin.file:
         state: link
         src: "{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"
@@ -61,7 +61,7 @@
       when: item.path.0 == '/'
 
     - name: Create links to relative paths
-      file:
+      ansible.builtin.file:
         state: link
         src: "{{ my_base_path }}/{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"

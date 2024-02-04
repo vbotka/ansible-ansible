@@ -1,14 +1,14 @@
 ---
 
-- name: 'rm copy-common-files: Include vars meta'
+- name: "Rm copy-common-files: Include vars meta"
   ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
-- name: 'rm copy-common-files: Debug'
+- name: "Rm copy-common-files: Debug"
   ansible.builtin.debug:
     var: rm_roles_meta
   when: rm_debug|bool
 
-- name: 'rm copy-common-files: Copy common files to {{ item.key }}'
+- name: "Rm copy-common-files: Copy common files to {{ item.key }}"
   ansible.builtin.copy:
     src: files/
     dest: "{{ item.key }}"
@@ -16,9 +16,9 @@
     group: "{{ rm_group }}"
     mode: "0664"
     backup: "{{ rm_backup_conf }}"
-  loop: "{{ rm_roles_meta|dict2items }}"
+  loop: "{{ rm_roles_meta | dict2items }}"
   loop_control:
-    label: "{{ item.value.galaxy_info.role_name|default(item.key) }}"
+    label: "{{ item.value.galaxy_info.role_name | default(item.key) }}"
 
 # EOF
 ...

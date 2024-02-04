@@ -1,5 +1,5 @@
 ---
-# All rights reserved (c) 2022, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2022-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -10,7 +10,7 @@
 # shell> ansible-playbook modules-in-role.yml -e my_role_path='../../roles/vbotka.freebsd_postinstall'
 #
 # TASK [Display list of modules] ***********************************************
-# ok: [localhost] => 
+# ok: [localhost] =>
 #   msg: |-
 #
 #     List of modules
@@ -48,7 +48,7 @@
 #     - community.general.timezone
 #
 # TASK [Display list of collections] *******************************************
-# ok: [localhost] => 
+# ok: [localhost] =>
 #   msg: |-
 #
 #     List of collections
@@ -60,7 +60,8 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
 
-- hosts: localhost
+- name: List modules and collections in a role
+  hosts: localhost
   gather_facts: false
 
   vars_files:
@@ -76,40 +77,42 @@
     - name: Find tasks files
       ansible.builtin.find:
         path: "{{ my_role_path }}/tasks"
-        patterns: '*.yml,*.yaml'
+        patterns: "*.yml,*.yaml"
         recurse: true
       register: result
 
     - name: Create list of tasks
       ansible.builtin.set_fact:
-        lft: "{{ lft|d([]) + lookup('file', item)|from_yaml }}"
-      loop: "{{ result.files|map(attribute='path')|list }}"
+        lft: "{{ lft | d([]) + lookup('file', item) | from_yaml }}"
+      loop: "{{ result.files | map(attribute='path') | list }}"
 
     - name: Get list of keys
       ansible.builtin.set_fact:
-        lfk: "{{ lfk|d([]) + item.keys()|list }}"
+        lfk: "{{ lfk | d([]) + item.keys() | list }}"
       loop: "{{ lft }}"
       loop_control:
-        label: "{{ item.keys()|list }}"
+        label: "{{ item.keys() | list }}"
 
     - name: Get list of keys from block/rescue/always
       ansible.builtin.set_fact:
-        lfk: "{{ lfk|d([]) + item.keys()|list }}"
-      loop: "{{ lft|json_query('[].[block, rescue, always]')|flatten }}"
+        lfk: "{{ lfk | d([]) + item.keys() | list }}"
+      loop: "{{ lft | json_query(lft_query) | flatten }}"  # noqa: jinja[invalid]
       loop_control:
-        label: "{{ item.keys()|list }}"
+        label: "{{ item.keys() | list }}"
+      vars:
+        lft_query: '[].[block, rescue, always]'
 
     - name: Display list of modules
       ansible.builtin.debug:
-        msg: |-
+        msg: |2-
 
           List of modules
           ===============
-          {{ lfk|unique|sort|difference(keywords)|to_nice_yaml }}
+          {{ lfk | unique | sort | difference(keywords) | to_nice_yaml }}
 
     - name: Display list of collections
       ansible.builtin.debug:
-        msg: |-
+        msg: |2-
 
           List of collections
           ===================

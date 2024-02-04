@@ -1,6 +1,5 @@
 ---
-
-- name: "ara: Debug"
+- name: "Ara: Debug"
   ansible.builtin.debug:
     msg: Not implemented yet.
 
@@ -13,4 +12,3 @@
 # https://ara.readthedocs.io/en/latest/index.html
 
 # EOF
-...

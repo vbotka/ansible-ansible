@@ -5,8 +5,7 @@ ma_install: true
 ma_debug: false
 ma_backup_conf: false
 
-ma_supported_linux_family: ['RedHat', 'Debian']
-
+ma_supported_linux_family: [RedHat, Debian]
 # Packages
 freebsd_install_method: packages
 # freebsd_install_method: ports
@@ -21,7 +20,6 @@ linux_install_delay: 5
 ma_config_type: template
 ma_config_template_default: ansible-auto.cfg.j2
 ma_config: []
-
 ma_src_path: /usr/local/ansible/src
 
 # ARA
@@ -54,12 +52,9 @@ ma_repo_version: devel
 ma_repo_url: https://github.com/ansible/ansible
 ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
-ma_rnotes_core_url: 'https://raw.githubusercontent.com/ansible/ansible/stable-'
+ma_rnotes_core_url: https://raw.githubusercontent.com/ansible/ansible/stable-
 ma_rnotes_core_dir: /scratch/ansible-release-notes/core
-ma_rnotes_core_list: ['2.14', '2.15']
-ma_rnotes_build_url: 'https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/'
+ma_rnotes_core_list: ["2.14", "2.15"]
+ma_rnotes_build_url: https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/
 ma_rnotes_build_dir: /scratch/ansible-release-notes/build
-ma_rnotes_build_list: ['7', '8']
-
-# EOF
-...
+ma_rnotes_build_list: ["7", "8"]

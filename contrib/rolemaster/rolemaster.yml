@@ -1,21 +1,22 @@
 ---
-# All rights reserved (c) 2020-2023, Vladimir Botka <vbotka@gmail.com>
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-- hosts: localhost
+- name: RoleMaster
+  hosts: localhost
   gather_facts: false
   become: false
 
   vars:
 
-    rm_version: 2.3.1
+    rm_version: 2.4.0
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
     rm_group: admin
     rm_roles_pattern: admin.*
-    rm_roles_license_holder: 'administrator <admin@example.com>'
-    rm_roles_license_year_to: 2023
+    rm_roles_license_holder: administrator <admin@example.com>
+    rm_roles_license_year_to: 2024
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS < < <
 
     rm_help_text: |
@@ -65,130 +66,135 @@
     rm_debug: false
     rm_backup_conf: false
     rm_ansible_conf_path: "{{ playbook_dir }}/ansible.cfg"
-    rm_roles_path: ''  # Get roles_path from ansible.cfg
+    rm_roles_path: "" # Get roles_path from ansible.cfg
     # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
-    rm_roles_file_mode: '0664'
+    rm_roles_file_mode: "0664"
     rm_roles_meta_file_write: true
-    rm_roles_meta_file: '/home/{{ rm_owner }}/.ansible/db/roles_meta.yml'
-    rm_roles_meta_dir: '/home/{{ rm_owner }}/.ansible/db/meta'
+    rm_roles_meta_file: /home/{{ rm_owner }}/.ansible/db/roles_meta.yml
+    rm_roles_meta_dir: /home/{{ rm_owner }}/.ansible/db/meta
     rm_roles_travis_file_write: true
-    rm_roles_travis_file: '/home/{{ rm_owner }}/.ansible/db/roles_travis.yml'
-    rm_roles_travis_dir: '/home/{{ rm_owner }}/.ansible/db/travis'
+    rm_roles_travis_file: /home/{{ rm_owner }}/.ansible/db/roles_travis.yml
+    rm_roles_travis_dir: /home/{{ rm_owner }}/.ansible/db/travis
     rm_roles_license_file_write: false
-    rm_roles_license_file: '/home/{{ rm_owner }}/.ansible/db/roles_license.yml'
-    rm_roles_license_dir: '/home/{{ rm_owner }}/.ansible/db/license'
-    rm_roles_docs_file: '/home/{{ rm_owner }}/.ansible/db/roles_docs.yml'
+    rm_roles_license_file: /home/{{ rm_owner }}/.ansible/db/roles_license.yml
+    rm_roles_license_dir: /home/{{ rm_owner }}/.ansible/db/license
+    rm_roles_docs_file: /home/{{ rm_owner }}/.ansible/db/roles_docs.yml
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
-    rm_roles_blacklist_file: '/home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml'
+    rm_roles_blacklist_file: /home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml
     rm_known_tags:
-      - 'rm-list-roles'
-      - 'rm-write-objects'
-      - 'rm-read-objects'
-      - 'rm-restore-meta'
-      - 'rm-restore-license'
-      - 'rm-restore-travis'
-      - 'rm-copy-common-files'
-      - 'rm-update_docs_themes'
+      - rm-list-roles
+      - rm-write-objects
+      - rm-read-objects
+      - rm-restore-meta
+      - rm-restore-license
+      - rm-restore-travis
+      - rm-copy-common-files
+      - rm-update_docs_themes
     # Comma separated list of selected roles. An empty strings selects all roles.
-    rm_roles_select: ''
-    rm_roles_select_list: "{{ (rm_roles_select|length > 0)|
-                              ternary( rm_roles_select|split(',')|map('trim')|list,
-                                       [] ) }}"
+    rm_roles_select: ""
+    rm_roles_select_list: "{{ (rm_roles_select | length > 0) |
+                              ternary(rm_roles_select | split(',') | map('trim') | list, [] ) }}"
 
   tasks:
 
-#    - name: 'rm: Help variables'
-#      block:
-#        - ansible.builtin.set_fact:
-#            my_tags: "{{ ansible_run_tags|difference(['all']) }}"
-#        - ansible.builtin.debug:
-#            var: my_tags
-#        - ansible.builtin.debug:
-#            msg: "known tags: {{ my_tags|intersect(rm_known_tags) }}"
-#      tags: always
+    #    - name: 'rm: Help variables'
+    #      block:
+    #        - ansible.builtin.set_fact:
+    #            my_tags: "{{ ansible_run_tags|difference(['all']) }}"
+    #        - ansible.builtin.debug:
+    #            var: my_tags
+    #        - ansible.builtin.debug:
+    #            msg: "known tags: {{ my_tags|intersect(rm_known_tags) }}"
+    #      tags: always
 
-    - name: 'rm: Help'
-      block:
-        - ansible.builtin.debug:
-            msg: "{{ '{}'.format(rm_help_text) }}"
-        - ansible.builtin.meta: end_play
+    - name: "Rm: Help"
       vars:
-        my_tags: "{{ ansible_run_tags|difference(['all']) }}"
-      when: (my_tags|length == 0) or
-            (my_tags|intersect(rm_known_tags)|length == 0)
+        my_tags: "{{ ansible_run_tags | difference(['all']) }}"
+      when: my_tags | intersect(rm_known_tags) | length == 0
       tags: always
-
-#    - ansible.builtin.debug:
-#        msg: Continue play
-#    - ansible.builtin.meta: end_play
-
-    - name: 'rm: Set roles_path'
       block:
-        - name: 'rm: list-roles-path: Get roles_path from {{ rm_ansible_conf_path}}'
+
+        - name: Help
+          ansible.builtin.debug:
+            msg: "{{ '{}'.format(rm_help_text) }}"
+
+        - name: End play
+          ansible.builtin.meta: end_play
+
+    - name: "Rm: Set roles_path"
+      tags: always
+      block:
+
+        - name: "Rm: list-roles-path: Get roles_path from {{ rm_ansible_conf_path }}"
           ansible.builtin.set_fact:
             roles_path: "{{ lookup('ini', ini_params) }}"
           vars:
-            ini_params: "roles_path section=defaults file={{ rm_ansible_conf_path }}"
-          when: rm_roles_path|length == 0
-        - name: 'rm: list-roles-path: Get roles_path from rm_roles_path'
+            ini_params: roles_path section=defaults file={{ rm_ansible_conf_path }}
+          when: rm_roles_path | length == 0
+
+        - name: "Rm: list-roles-path: Get roles_path from rm_roles_path"
           ansible.builtin.set_fact:
             roles_path: "{{ rm_roles_path }}"
-          when: rm_roles_path|length > 0
-        - name: 'rm: list-roles-path: Debug {{ roles_path }}'
+          when: rm_roles_path | length > 0
+
+        - name: "Rm: list-roles-path: Debug {{ roles_path }}"
           ansible.builtin.debug:
             var: roles_path
-          when: rm_debug|bool
-        - name: 'rm: list-roles-path: Fail when roles_path is undefined'
-          ansible.builtin.fail:
-            msg: '[ERROR] roles_path is undefined. End of play.'
-          when: roles_path is undefined
-      tags: always
+          when: rm_debug | bool
 
-    - name: 'rm: Set rm_roles_blacklist'
+        - name: "Rm: list-roles-path: Fail when roles_path is undefined"
+          ansible.builtin.fail:
+            msg: "[ERROR] roles_path is undefined. End of play."
+          when: roles_path is undefined
+
+    - name: "Rm: Set rm_roles_blacklist"
+      tags: always
       block:
-        - name: 'rm: roles-blacklist: Set empty list rm_roles_blaclist'
+
+        - name: "Rm: roles-blacklist: Set empty list rm_roles_blaclist"
           ansible.builtin.set_fact:
             rm_roles_blacklist: []
           when: rm_roles_blacklist_file is not exists
-        - name: 'rm: roles-blacklist: Include {{ rm_roles_blacklist_file }}'
+
+        - name: "Rm: roles-blacklist: Include {{ rm_roles_blacklist_file }}"
           ansible.builtin.include_vars: "{{ rm_roles_blacklist_file }}"
           when: rm_roles_blacklist_file is exists
-        - name: 'rm: roles-blacklist: Debug roles_blacklist'
+
+        - name: "Rm: roles-blacklist: Debug roles_blacklist"
           ansible.builtin.debug:
             var: rm_roles_blacklist
-          when: rm_debug|bool
-      tags: always
+          when: rm_debug | bool
 
-    - name: 'rm: Create list of roles paths rm_roles_path'
+    - name: "Rm: Create list of roles paths rm_roles_path"
       ansible.builtin.import_tasks: tasks/list-roles.yml
       tags: rm-list-roles
 
-    - name: 'rm: Write roles objects to files'
+    - name: "Rm: Write roles objects to files"
       ansible.builtin.import_tasks: tasks/write-objects.yml
       tags: rm-write-objects
 
-    - name: 'rm: Read roles objects from files'
+    - name: "Rm: Read roles objects from files"
       ansible.builtin.import_tasks: tasks/read-objects.yml
       tags: rm-read-objects
 
-    - name: 'rm: Restore roles meta-data from rm_roles_meta_file'
+    - name: "Rm: Restore roles meta-data from rm_roles_meta_file"
       ansible.builtin.import_tasks: tasks/restore-meta.yml
       tags: rm-restore-meta
 
-    - name: 'rm: Restore roles license from rm_roles_license_file'
+    - name: "Rm: Restore roles license from rm_roles_license_file"
       ansible.builtin.import_tasks: tasks/restore-license.yml
       tags: rm-restore-license
 
-    - name: 'rm: Restore roles travis from rm_roles_travis_file'
+    - name: "Rm: Restore roles travis from rm_roles_travis_file"
       ansible.builtin.import_tasks: tasks/restore-travis.yml
       tags: rm-restore-travis
 
-    - name: 'rm: Copy common files'
+    - name: "Rm: Copy common files"
       ansible.builtin.import_tasks: tasks/copy-common-files.yml
       tags: rm-copy-common-files
 
-    - name: 'rm: Update docs/source/_themes'
+    - name: "Rm: Update docs/source/_themes"
       ansible.builtin.import_tasks: tasks/update_docs_themes.yml
       tags: rm-update_docs_themes
 

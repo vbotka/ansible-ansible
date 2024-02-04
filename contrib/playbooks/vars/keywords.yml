@@ -41,14 +41,14 @@ keywords:
   - vars
   - vars_files
   - vars_prompt
-  - connection      # role increment
+  - connection # role increment
   - delegate_facts
   - delegate_to
   - when
-  - block           # block increment
+  - block # block increment
   - notify
   - rescue
-  - action          # task increment
+  - action # task increment
   - args
   - async
   - changed_when

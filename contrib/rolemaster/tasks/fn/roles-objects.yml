@@ -1,31 +1,31 @@
 ---
 
-- name: 'rm: fn: roles-objects: Include vars {{ item }}/meta/main.yml'
+- name: "Rm: fn: roles-objects: Include vars {{ item ~ '/meta/main.yml' }}"
   ansible.builtin.include_vars:
     file: "{{ item }}/meta/main.yml"
     name: my_meta
-- name: 'rm: fn: roles-objects: Get role Galaxy info'
-  ansible.builtin.set_fact:
-    rm_roles_meta: "{{ rm_roles_meta|default({}) |
-                       combine({item:
-                               {'galaxy_info': my_meta.galaxy_info,
-                                'dependencies': my_meta.dependencies }}) }}"
 
-- name: 'rm: fn: roles-objects: Include vars {{ item }}/.travis.yml'
+- name: "Rm: fn: roles-objects: Get role Galaxy info"
+  ansible.builtin.set_fact:
+    rm_roles_meta: "{{ rm_roles_meta | default({}) |
+                       combine({item: {'galaxy_info': my_meta.galaxy_info,
+                                       'dependencies': my_meta.dependencies}}) }}"
+
+- name: "Rm: fn: roles-objects: Include vars {{ item ~ '/.travis.yml' }}"
   ansible.builtin.include_vars:
     file: "{{ item }}/.travis.yml"
     name: my_travis
-- name: 'rm: fn: roles-objects: Get role Travis info'
+
+- name: "Rm: fn: roles-objects: Get role Travis info"
   ansible.builtin.set_fact:
-    rm_roles_travis: "{{ rm_roles_travis|default({}) |
-                         combine({item:
-                                 {'language': my_travis.language,
-                                  'python': my_travis.python,
-                                  'sudo': my_travis.sudo,
-                                  'addons': my_travis.addons,
-                                  'install': my_travis.install,
-                                  'script': my_travis.script,
-                                  'notifications': my_travis.notifications }}) }}"
+    rm_roles_travis: "{{ rm_roles_travis | default({}) |
+                         combine({item: {'language': my_travis.language,
+                                         'python': my_travis.python,
+                                         'sudo': my_travis.sudo,
+                                         'addons': my_travis.addons,
+                                         'install': my_travis.install,
+                                         'script': my_travis.script,
+                                         'notifications': my_travis.notifications}}) }}"
 
 # EOF
 ...

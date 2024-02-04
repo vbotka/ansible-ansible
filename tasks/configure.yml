@@ -1,17 +1,17 @@
 ---
 
-- name: "configure: Create directories for Ansible configuration"
+- name: "Configure: Create directories for Ansible configuration"
   ansible.builtin.file:
     state: directory
-    dest: "{{ item.path|dirname }}"
-    mode: "{{ item.dmode|default('0755') }}"
+    dest: "{{ item.path | dirname }}"
+    mode: "{{ item.dmode | d('0755') }}"
   loop: "{{ ma_config }}"
   loop_control:
-    label: "{{ item.path|dirname }}"
+    label: "{{ item.path | dirname }}"
 
-- name: "configure: Ansible configuration from template"
+- name: "Configure: Ansible configuration from template"
   ansible.builtin.template:
-    src: "{{ item.template|default(ma_config_template_default) }}"
+    src: "{{ item.template | d(ma_config_template_default) }}"
     dest: "{{ item.path }}"
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
@@ -22,27 +22,27 @@
     label: "{{ item.path }}"
   when:
     - ma_config_type|lower == 'template'
-    - ma_config|length > 0
+    - ma_config | length > 0
 
-- name: "configure: Ansible configuration by lineinfile"
+- name: "Configure: Ansible configuration by lineinfile"
   ansible.builtin.lineinfile:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
     group: "{{ item.0.group }}"
     mode: "{{ item.0.mode }}"
-    regexp: "^{{ item.1.key }}"
+    regexp: ^{{ item.1.key }}
     line: "{{ item.1.key }}={{ item.1.value }}"
-    insertafter: '\[{{ item.1.section }}\]'
+    insertafter: \[{{ item.1.section }}\]
     create: true
     backup: "{{ ma_backup_conf }}"
-  loop: "{{ ma_config|subelements('config') }}"
+  loop: "{{ ma_config | subelements('config') }}"
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == 'lineinfile'
-    - ma_config|length > 0
+    - ma_config_type | lower == 'lineinfile'
+    - ma_config | length > 0
 
-- name: "configure: Ansible configuration by ini_file"
+- name: "Configure: Ansible configuration by ini_file"
   community.general.ini_file:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
@@ -53,12 +53,12 @@
     value: "{{ item.1.key }}={{ item.1.value }}"
     create: true
     backup: "{{ ma_backup_conf }}"
-  loop: "{{ ma_config|subelements('config') }}"
+  loop: "{{ ma_config | subelements('config') }}"
   loop_control:
     label: "{{ item.0.path }}"
   when:
-    - ma_config_type|lower == 'ini_file'
-    - ma_config|length > 0
+    - ma_config_type | lower == 'ini_file'
+    - ma_config | length > 0
 
 # EOF
 ...
