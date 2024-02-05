@@ -10,7 +10,7 @@ vbotka.ansible 2.6 Release Notes
 
 Release Summary
 ---------------
-Fix README.
+Fix README. Update docs.
 
 
 2.6.9
