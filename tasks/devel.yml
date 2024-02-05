@@ -3,7 +3,6 @@
 - name: "Devel: Checkout repository"
   when: ma_repo|bool
   tags: ma_devel_repo
-
   block:
 
     - name: "Devel: Create directory {{ ma_repo_dir }}"
