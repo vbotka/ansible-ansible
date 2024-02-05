@@ -13,14 +13,16 @@ User's guide
 Introduction
 ************
 
-Run this role to install and configure Ansible. Optionally install
+Run this role to install and configure Ansible. Optionally, install
 Ansible plugins, checkout repo with the source code, and download the
 Ansible release notes.
 
 * Ansible role: `ansible <https://galaxy.ansible.com/vbotka/ansible/>`_
+
 * Supported systems:
   
   * `FreeBSD Supported Production Releases <https://www.freebsd.org/releases/>`_
+
   * `Ubuntu Supported Releases <http://releases.ubuntu.com/>`_
 
 * Requirements:
@@ -56,12 +58,14 @@ Install the library ::
 
     shell> ansible-galaxy role install vbotka.ansible_lib
 
-Install the collection ::
+and install the collection if necessary ::
 
     shell> ansible-galaxy collection install community.general
 
 .. seealso::
+
    * To install specific versions from various sources see `Installing content <https://galaxy.ansible.com/docs/using/installing.html>`_
+
    * Take a look at other roles ``shell> ansible-galaxy search --author=vbotka``
 
 
@@ -83,18 +87,21 @@ srv.example.com (2)
      gather_facts: true
      connection: ssh
      remote_user: admin
-     become: yes
+     become: true
      become_user: root
      become_method: sudo
      roles:
        - vbotka.ansible
 
-.. note:: ``gather_facts: true`` (3) must be set to gather facts needed to evaluate OS-specific
-   options of the role. For example, to install packages, the variable ``ansible_os_family`` is
-   needed to select the appropriate Ansible module.
+.. note:: ``gather_facts: true`` (3) must be set to gather facts
+   needed to evaluate OS-specific options of the role. For example, to
+   install packages, the variable ``ansible_os_family`` is needed to
+   select the appropriate Ansible module.
 
 .. seealso::
+
    * For details see `Connection Plugins <https://docs.ansible.com/ansible/latest/plugins/connection.html>`_ (4-5)
+
    * See also `Understanding Privilege Escalation <https://docs.ansible.com/ansible/latest/user_guide/become.html#understanding-privilege-escalation>`_ (6-8)
 
 
@@ -114,22 +121,25 @@ configuration
 
 , or set the extra variable in the command
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
-   shell> ansible-playbook ansible.yml -e 'ma_debug=true'
+   shell> ansible-playbook ansible.yml -e ma_debug=true
 
 .. note::
 
-   * The debug output of this role is optimized for the **yaml** callback plugin. Set this plugin
-     for example in the environment ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``
+   * The debug output of this role is optimized for the **yaml**
+     callback plugin. Set this plugin for example in the environment
+     ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``.
 
    * See details about the yaml callback plugin ``shell> ansible-doc -t callback yaml``
 
    * See list of other callback plugins ``shell> ansible-doc -t callback -l``
 
 
-.. seealso:: * `Playbook Debugger <https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html>`_
+.. seealso::
+
+   * `Playbook Debugger <https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html>`_
 
 
 .. _ug_tags:
@@ -138,36 +148,37 @@ configuration
 Tags
 ****
 
-The tags provide the user with a very useful tool to run selected tasks of the role. To see what
-tags are available list the tags of the role with the command
+The tags provide the user with a very useful tool to run selected
+tasks of the role. To see what tags are available list the tags of the
+role:
 
 .. include:: tags-list.rst
 
-For example, display the list of the variables and their values with the tag ``ma_debug`` (when the
-debug is enabled ``ma_debug: true``)
+For example, display the list of the variables and their values with
+the tag ``ma_debug`` (when the debug is enabled ``ma_debug=true``)
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t ma_debug
+    shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
 Create directories
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
     shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path,ma_repo_path,ma_rnotes_path
 
 See what packages will be installed
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
     shell> ansible-playbook ansible.yml -t ma_packages --check
 
 Install packages and exit the play
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
     shell> ansible-playbook ansible.yml -t ma_packages
@@ -192,22 +203,22 @@ Test single tasks at single remote host *test_01*. Create a playbook
 
 Customize configuration in ``host_vars/test_01/ma-*.yml`` and check the syntax
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml --syntax-check
 
 Then dry-run the selected task and see what will be changed. Replace <tag> with valid tag.
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t <tag> --check --diff
 
-When all seems to be ready run the command. Run the command twice and make sure the playbook and the
-configuration is idempotent
+When all seems to be ready run the command. Run the command twice and
+make sure the playbook and the configuration is idempotent
 
-.. code-block:: console
+.. code-block:: sh
    :emphasize-lines: 1
 
    shell> ansible-playbook ansible.yml -t <tag>
@@ -218,8 +229,10 @@ configuration is idempotent
 .. _ug_task_plugins:
 .. include:: task-plugins.rst
 
+
 Examples
 --------
+
 .. toctree::
    :name: ansible_plugins_toc
 
@@ -229,13 +242,16 @@ Examples
 .. _ug_task_devel:
 .. include:: task-devel.rst
 
+
 Examples
 --------
+
 .. toctree::
    :name: ansible_devel_toc
 
    task-ansible-devel-ex1
    task-ansible-devel-ex2
+
 
 .. _ug_vars:
 
@@ -243,16 +259,20 @@ Examples
 Variables
 *********
 
-In this chapter we describe role's default variables stored in the
-directory **defaults**.
+The default variables are stored in the directory **defaults**. OS
+specific variables are stored in the directory **vars/defaults**.
 
-.. seealso:: * `Ansible variable precedence: Where should I put a variable? <https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable>`_
+.. seealso::
+
+   * Annotated Source code :ref:`as_vars.yml`
+
+   * `Ansible variable precedence: Where should I put a variable? <https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable>`_
 
 
 .. _ug_defaults:
 
 Default variables
-=================
+-----------------
 
   <TBD>
 
@@ -272,28 +292,36 @@ Default variables
 Best practice
 *************
 
-Display and review the variables. Then disable debug ``ma_debug: false`` to speedup the playbook. ::
+Test syntax ::
 
-   shell> ansible-playbook ansible.yml -t ma_debug -e 'ma_debug=true'
+   shell> ansible-playbook pb.yml --syntax-check
 
-Install packages. Then disable the installation ``ma_install: false`` to speedup the playbook. ::
+Display and review the variables. Then disable debug
+``ma_debug=false`` to speedup the playbook ::
 
-   shell> ansible-playbook ansible.yml -t ma_packages -e 'ma_install=true'
+   shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
-Create directories. The following check would fail without the directories. ::
+Install packages. Then disable the installation ``ma_install=false``
+to speedup the playbook ::
+
+   shell> ansible-playbook ansible.yml -t ma_packages -e ma_install=true
+
+Create directories. The following check would fail without the directories ::
 
    shell> ansible-playbook ansible.yml -t ma_plugins_dirs,ma_src_path
 
-If you want to download the repository and the release notes create also these directories ::
+If you want to download the repository and the release notes create
+also these directories ::
 
    shell> ansible-playbook ansible.yml -t ma_repo_path,ma_rnotes_path
 
 Run the playbook in the check mode and review the changes ::
 
-  shell> ansible-playbook ansible.yml --check --diff
+   shell> ansible-playbook ansible.yml --check --diff
 
-Run the playbook if all seems to be right. The role and the configuration data in the examples are
-idempotent. After the installation and configuration completed there should be no changes reported
-by *ansible-playbook* when running the playbook repeatedly ::
+Run the playbook if all seems to be right. The role and the
+configuration data in the examples are idempotent. After the
+installation and configuration completed there should be no changes
+reported by *ansible-playbook* when running the playbook repeatedly ::
 
     shell> ansible-playbook ansible.yml
