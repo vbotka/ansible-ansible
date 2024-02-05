@@ -92,7 +92,7 @@ be ignored. See the notes in the configuration file.
 
 ```bash
 shell> ansible-lint -c .ansible-lint.local
-
+```
 
 ## References
 
