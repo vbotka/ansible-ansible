@@ -54,10 +54,10 @@
   block:
 
     - name: "Plugins: Create list of used ini_keys ma_plugins_inikeys"
-      ansible.builtin.set_fact:
+      ansible.builtin.set_fact:  # noqa: jinja[invalid]
         ma_plugins_inikeys: "{{ ma_plugins |
                                 json_query('[].plugins[].ini_key') |
-                                list | unique }}"  # noqa: jinja[invalid]
+                                list | unique }}"
 
     - name: "Plugins: Debug ma_plugins_inikeys"
       ansible.builtin.debug:
@@ -65,11 +65,11 @@
       when: ma_debug | bool
 
     - name: "Plugins: Create list of plugins ma_plugins_list"
-      ansible.builtin.set_fact:
+      ansible.builtin.set_fact:  # noqa: jinja[invalid]
         ma_plugins_list: "{{ ma_plugins |
                              json_query('[].plugins[].{path: path,
                                                        ini_key: ini_key, enable: enable}') |
-                             list }}"  # noqa: jinja[invalid]
+                             list }}"
 
     - name: "Plugins: Debug ma_plugins_list"
       ansible.builtin.debug:
