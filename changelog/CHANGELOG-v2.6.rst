@@ -5,6 +5,14 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.11
+======
+
+Release Summary
+---------------
+Update contrib/rolemaster/templates/travis.yml.j2
+
+
 2.6.10
 ======
 

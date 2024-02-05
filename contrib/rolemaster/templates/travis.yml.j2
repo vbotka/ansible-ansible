@@ -3,23 +3,20 @@ language: {{ item.value.language }}
 python: "{{ item.value.python }}"
 
 # Use the new container infrastructure
-sudo: {{ item.value.sudo|bool|lower }}
+sudo: {{ item.value.sudo | bool | lower }}
 
 # Install ansible
 addons:
-{{ item.value.addons|to_yaml(indent=2)|indent(2, true) }}
-
+{{ item.value.addons | to_yaml(indent=2) | indent(2, true) }}
 install:
-{{ item.value.install|to_nice_yaml(indent=2)|indent(2, true) }}
-
+{{ item.value.install | to_nice_yaml(indent=2) | indent(2, true) }}
 script:
-{{ item.value.script|to_nice_yaml(indent=2)|indent(2, true) }}
-
+{{ item.value.script | to_nice_yaml(indent=2) | indent(2, true) }}
 notifications:
-{{ item.value.notifications|to_nice_yaml(indent=2)|indent(2, true) }}
-
-{% if item.value.branches|default([])|length > 0 %}
+{{ item.value.notifications | to_nice_yaml(indent=2) | indent(2, true) }}
+{% if item.value.branches | d([]) | length > 0 %}
 branches:
-{{ item.value.branches|to_yaml(indent=2)|indent(2, true) }}{% endif %}
+{{ item.value.branches | to_yaml(indent=2) | indent(2, true) }}{% endif %}
 
 # EOF
+...
