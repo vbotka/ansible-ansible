@@ -12,6 +12,13 @@ Release Summary
 ---------------
 Update contrib/rolemaster/templates/travis.yml.j2
 
+Major Changes
+-------------
+
+Minor Changes
+-------------
+* travis.yml formatting.
+
 
 2.6.10
 ======
