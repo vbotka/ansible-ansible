@@ -2,7 +2,7 @@
 
 # FreeBSD
 
-- name: "Packages: Install Ansible Lint FreeBSD packages"
+- name: "Packages: Install Ansible FreeBSD packages"
   when:
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'packages'
@@ -32,7 +32,7 @@
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
-- name: "Packages: Install Ansible Lint FreeBSD ports"
+- name: "Packages: Install Ansible FreeBSD ports"
   when:
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'ports'
