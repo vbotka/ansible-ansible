@@ -18,6 +18,7 @@ Major Changes
 Minor Changes
 -------------
 * travis.yml formatting.
+* Add ma_debug to the name of debug task.
 
 
 2.6.10
