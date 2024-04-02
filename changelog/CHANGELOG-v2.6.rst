@@ -19,6 +19,8 @@ Minor Changes
 -------------
 * travis.yml formatting.
 * Add ma_debug to the name of debug task.
+* Add 9 to ma_rnotes_build_list
+* Add 2.16 to ma_rnotes_core_list
 
 
 2.6.10
