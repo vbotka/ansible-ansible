@@ -3,6 +3,7 @@
 ############
 User's guide
 ############
+
 .. contents:: Table of Contents
    :depth: 4
 
@@ -223,8 +224,8 @@ make sure the playbook and the configuration is idempotent
 
    shell> ansible-playbook ansible.yml -t <tag>
 
-.. _ug_task_configure:
-.. include:: task-configure.rst
+.. _ug_task_config:
+.. include:: task-config.rst
 
 .. _ug_task_plugins:
 .. include:: task-plugins.rst

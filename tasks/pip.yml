@@ -1,0 +1,85 @@
+---
+
+# TODO: Still open?
+# The pip module always set to changed when using check mode #62826
+# https://github.com/ansible/ansible/issues/62826
+
+# Note 1.
+# The pip module isn't always idempotent #28952
+# https://github.com/ansible/ansible/issues/28952
+# The isssue was closed. See the Conclusion
+
+- name: Install Ansible Lint PyPI packages for ma_owner
+  block:
+
+    - name: "Pip: Install Ansible Lint PyPI packages for {{ ma_owner }}"
+      become_user: "{{ ma_owner }}"
+      become: true
+      changed_when:
+        - result.changed
+        - not ansible_check_mode
+      ansible.builtin.pip:
+        name: "{{ item.name }}"
+        executable: "{{ ma_pip_executable }}"
+        extra_args: "{{ ma_pip_extraagrs | d(omit) }}"
+        version: "{{ item.version | d(omit) }}"
+        state: "{{ item.state | d(omit) }}"
+      loop: "{{ ma_pip_packages }}"
+      register: result
+      until: result is succeeded
+      retries: "{{ pip_install_retries }}"
+      delay: "{{ pip_install_delay }}"
+
+    - name: "Pip: Debug PyPI packages"
+      ansible.builtin.debug:
+        var: result
+      when: ma_debug | bool or ansible_check_mode
+
+  rescue:
+
+    - name: "Pip: Rescue PyPI packages"
+      ansible.builtin.fail:
+        msg: |
+          [ERR] task {{ ansible_failed_task.name }} failed.
+          ansible_failed_task:
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
+          ansible_failed_result:
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
+- name: Install Ansible Lint PyPI requirements for ma_owner
+  block:
+
+    - name: "Pip: Install Ansible Lint pip requirements for {{ ma_owner }}"
+      become_user: "{{ ma_owner }}"
+      become: true
+      changed_when:
+        - result.changed
+        - not ansible_check_mode
+      ansible.builtin.pip:
+        requirements: "{{ ma_pip_requirements }}"
+        executable: "{{ ma_pip_executable }}"
+        extra_args: "{{ pip_extraagrs | d(omit) }}"
+      register: result
+      until: result is succeeded
+      retries: "{{ pip_install_retries }}"
+      delay: "{{ pip_install_delay }}"
+      when: ma_pip_requirements | length > 0
+
+    - name: "Pip: Debug PyPI requirements"
+      ansible.builtin.debug:
+        var: result
+      when: ma_debug|bool
+
+  rescue:
+
+    - name: "Pip: Rescue PyPI requirements"
+      ansible.builtin.fail:
+        msg: |
+          [ERR] task {{ ansible_failed_task.name }} failed.
+          ansible_failed_task:
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
+          ansible_failed_result:
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
+# EOF
+...

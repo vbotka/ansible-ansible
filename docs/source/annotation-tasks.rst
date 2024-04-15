@@ -49,22 +49,22 @@ Description of the task.
 
 
 
-.. _as_configure.yml:
+.. _as_config.yml:
 
-configure.yml
--------------
+config.yml
+----------
 
-Synopsis: Configure configure.
+Synopsis: Configure config.
 
 
 Description of the task.
 
 
-[`tasks/configure.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/configure.yml>`_]
+[`tasks/config.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/config.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
-.. literalinclude:: ../../tasks/configure.yml
+.. literalinclude:: ../../tasks/config.yml
     :language: Yaml
     :emphasize-lines: 1,2
     :linenos:

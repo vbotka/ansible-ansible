@@ -25,11 +25,11 @@ mytasks:
     hints: []
     warnings: []
 
-  - file: configure.yml
-    link: configure.yml
-    path: tasks/configure.yml
+  - file: config.yml
+    link: config.yml
+    path: tasks/config.yml
     synopsis: |
-      Configure configure.
+      Configure config.
     description: |
       Description of the task.
     lines: 1,2

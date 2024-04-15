@@ -1,11 +1,46 @@
 ---
 
+- name: Declare ma_owner when undefined
+  when: ma_owner is undefined
+  block:
+
+    - name: "Vars: Get the user"
+      ansible.builtin.setup:
+        gather_subset: user
+      become: false
+
+    - name: "Vars: Debug user"
+      ansible.builtin.debug:
+        msg: |
+          ansible_user: {{ ansible_user | d('UDEFINED') }}
+          ansible_user_id: {{ ansible_user_id | d('UDEFINED') }}
+      when: ma_debug | bool
+
+    - name: "Vars: Declare ma_owner"
+      ansible.builtin.set_fact:
+        ma_owner: "{{ ansible_user | d(ansible_user_id) }}"
+
 - name: "Vars: Include OS vars"
   ansible.builtin.include_role:  # noqa: var-naming[no-role-prefix]
     name: vbotka.ansible_lib
     tasks_from: al_include_os_vars_path
   vars:
     al_os_vars_path: "{{ ansible_parent_role_paths.0 }}"
+
+- name: "Vars: Override ma_packages"
+  ansible.builtin.set_fact:
+    ma_packages: "{{ ma_packages_override }}"
+  when: ma_packages_override is defined
+
+- name: "Vars: Override ma_pip_executable"
+  ansible.builtin.set_fact:
+    ma_pip_executable: "{{ ma_pip_executable_override }}"
+  when: ma_pip_executable_override is defined
+
+- name: "Vars: Override ma_pip_requirements"
+  ansible.builtin.set_fact:
+    ma_pip_requirements: "{{ ma_pip_requirements_override }}"
+  when: ma_pip_requirements_override is defined
 
 # EOF
 ...

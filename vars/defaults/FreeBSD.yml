@@ -1,9 +1,21 @@
 ---
-# FreeBSD vars for ansible
+# FreeBSD vars/defaults for ansible
 
 ma_packages:
-  - sysutils/ansible
-  - sysutils/py-ansible-lint
-# - devel/py-epdb
+  - name: sysutils/ansible
+    state: "{{ ma_packages_state }}"
+  - name: sysutils/py-ansible-lint
+    state: "{{ ma_packages_state }}"
+# - name: devel/py-epdb
+#   state: "{{ ma_packages_state }}"
+
+ma_virtualenv_command: python3 -m venv
+ma_virtualenv_packages: []
+
+ma_pip_executable: /usr/local/bin/pip-{{ ansible_python_version | splitext | first }}
+
+# Path to a pip requirements file local to the remote system
+ma_pip_requirements: ""
 
 # EOF
+...

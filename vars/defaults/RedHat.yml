@@ -2,6 +2,18 @@
 # RedHat vars for ansible
 
 ma_packages:
-  - ansible
+  - name: python-ansible
+    state: "{{ ma_packages_state }}"
+
+ma_virtualenv_command: python3 -m venv
+ma_virtualenv_packages:
+  - name: python3-venv
+    state: "{{ ma_packages_state }}"
+
+ma_pip_executable: /usr/bin/pip3
+
+# Path to a pip requirements file local to the remote system
+ma_pip_requirements: ""
 
 # EOF
+...

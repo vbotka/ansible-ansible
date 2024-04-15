@@ -1,25 +1,47 @@
 ---
 # default vars for ansible
 
-ma_install: true
+ma_pkg_install: false
+ma_pip_install: false
+ma_venv_install: false
+
+ma_packages_state: present
+# ma_packages see vars/defaults
+ma_pip_packages_state: present
+ma_pip_packages:
+  - name: ansible
+    state: "{{ ma_pip_packages_state }}"
+
 ma_debug: false
 ma_backup_conf: false
 
 ma_supported_linux_family: [RedHat, Debian]
-# Packages
+ma_pip_extraagrs: --user --upgrade
+
+# FreeBSD
+freebsd_install_retries: 3
+freebsd_install_delay: 10
 freebsd_install_method: packages
 # freebsd_install_method: ports
 freebsd_use_packages: true
-freebsd_install_retries: 10
-freebsd_install_delay: 5
-linux_install_retries: 10
-linux_install_delay: 5
 
+# Linux
+linux_install_retries: 3
+linux_install_delay: 10
+
+# pip
+pip_install_retries: 3
+pip_install_delay: 10
+
+# venv
+ma_virtualenv: $HOME/env
+
+# Config
+ma_config: []
 # ma_config_type options: template, lineinfile, ini_file
 # See tasks/configure.yml
 ma_config_type: template
 ma_config_template_default: ansible-auto.cfg.j2
-ma_config: []
 ma_src_path: /usr/local/ansible/src
 
 # ARA
