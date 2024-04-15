@@ -27,6 +27,7 @@ Minor Changes
 * Fix package tasks names.
 * Update contrib/rolemaster/templates/travis.yml.j2
 * Update debug.yml
+* Update docs
 
 Breaking Changes / Porting Guide
 --------------------------------
@@ -37,6 +38,8 @@ Breaking Changes / Porting Guide
 * Add variables ma_packages_state and ma_pip_packages_state
 * Tasks configure.yml renamed to config.yml
 * Include config.yml only if ma_config not empty.
+* Tasks packages.yml renamed to pkg.yml
+* Tag ma_packages renmed to ma_pkg
 
 
 2.6.10

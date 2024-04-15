@@ -121,6 +121,30 @@ Description of the task.
 
 
 
+.. _as_pkg.yml:
+
+pkg.yml
+-------
+
+Synopsis: Configure pkg.
+
+
+Description of the task.
+
+
+[`tasks/pkg.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/pkg.yml>`_]
+
+.. highlight:: yaml
+    :linenothreshold: 5
+.. literalinclude:: ../../tasks/pkg.yml
+    :language: Yaml
+    :emphasize-lines: 1,2
+    :linenos:
+
+
+
+
+
 .. _as_packages.yml:
 
 packages.yml
@@ -132,11 +156,35 @@ Synopsis: Configure packages.
 Description of the task.
 
 
-[`tasks/packages.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/packages.yml>`_]
+[`tasks/fn/packages.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/fn/packages.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
-.. literalinclude:: ../../tasks/packages.yml
+.. literalinclude:: ../../tasks/fn/packages.yml
+    :language: Yaml
+    :emphasize-lines: 1,2
+    :linenos:
+
+
+
+
+
+.. _as_pip.yml:
+
+pip.yml
+-------
+
+Synopsis: Configure pip.
+
+
+Description of the task.
+
+
+[`tasks/pip.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/pip.yml>`_]
+
+.. highlight:: yaml
+    :linenothreshold: 5
+.. literalinclude:: ../../tasks/pip.yml
     :language: Yaml
     :emphasize-lines: 1,2
     :linenos:
@@ -169,6 +217,30 @@ Description of the task.
 
 
 
+.. _as_sanity.yml:
+
+sanity.yml
+----------
+
+Synopsis: Configure sanity.
+
+
+Description of the task.
+
+
+[`tasks/sanity.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/sanity.yml>`_]
+
+.. highlight:: yaml
+    :linenothreshold: 5
+.. literalinclude:: ../../tasks/sanity.yml
+    :language: Yaml
+    :emphasize-lines: 1,2
+    :linenos:
+
+
+
+
+
 .. _as_vars.yml:
 
 vars.yml
@@ -185,6 +257,30 @@ Description of the task.
 .. highlight:: yaml
     :linenothreshold: 5
 .. literalinclude:: ../../tasks/vars.yml
+    :language: Yaml
+    :emphasize-lines: 1,2
+    :linenos:
+
+
+
+
+
+.. _as_venv.yml:
+
+venv.yml
+--------
+
+Synopsis: Configure venv.
+
+
+Description of the task.
+
+
+[`tasks/venv.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/venv.yml>`_]
+
+.. highlight:: yaml
+    :linenothreshold: 5
+.. literalinclude:: ../../tasks/venv.yml
     :language: Yaml
     :emphasize-lines: 1,2
     :linenos:
