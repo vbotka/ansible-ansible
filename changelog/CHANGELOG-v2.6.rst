@@ -16,6 +16,7 @@ Major Changes
 -------------
 * Support FreeBSD 13.3 and 14.0
 * Add tasks venv.yml. Support Python vritual environment.
+* Add tasks sanity.yml. Add variables ma_sanity*
 
 Minor Changes
 -------------
@@ -25,6 +26,7 @@ Minor Changes
 * Add 2.16 to ma_rnotes_core_list
 * Fix package tasks names.
 * Update contrib/rolemaster/templates/travis.yml.j2
+* Update debug.yml
 
 Breaking Changes / Porting Guide
 --------------------------------

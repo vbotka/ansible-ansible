@@ -10,6 +10,11 @@
   when: ma_debug | bool
   tags: ma_debug
 
+- name: Import sanity.yml
+  ansible.builtin.import_tasks: sanity.yml
+  when: ma_sanity | bool
+  tags: ma_sanity
+
 - name: Import packages.yml
   ansible.builtin.import_tasks: packages.yml
   when: ma_pkg_install | bool

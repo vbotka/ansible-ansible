@@ -18,6 +18,15 @@ ma_backup_conf: false
 ma_supported_linux_family: [RedHat, Debian]
 ma_pip_extraagrs: --user --upgrade
 
+# Sanity
+ma_sanity: true
+# Test ma_pip_install, ma_venv_install, and ma_pkg_install are mutually exclusive
+ma_sanity_pip_exclusive: true
+# Test ma_owner is defined
+ma_sanity_pip_owner_defined: "{{ ma_pip_install }}"
+# Test ma_pip_executable exists
+ma_sanity_pip_exists: "{{ ma_pip_install }}"
+
 # FreeBSD
 freebsd_install_retries: 3
 freebsd_install_delay: 10

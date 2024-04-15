@@ -21,6 +21,10 @@
       pip_install_delay: {{ pip_install_delay }}
 
       ma_supported_linux_family: {{ ma_supported_linux_family }}
+      ma_sanity: {{ ma_sanity }}
+      ma_sanity_pip_exclusive: {{ ma_sanity_pip_exclusive }}
+      ma_sanity_pip_owner_defined: {{ ma_sanity_pip_owner_defined }}
+      ma_sanity_pip_exists: {{ ma_sanity_pip_exists }}
 
       ma_owner: {{ ma_owner }}
       ma_backup_conf: {{ ma_backup_conf }}
