@@ -1,19 +1,19 @@
 ---
 
-# FreeBSD
-
-- name: "Packages: Install Ansible Lint FreeBSD packages"
+- name: FreeBSD packages
   when:
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'packages'
   block:
 
-    - name: "Packages: Install Ansible packages FreeBSD"
+    - name: "Packages: Install Ansible Lint FreeBSD packages"
       community.general.pkgng:
-        name: "{{ ma_packages }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state | d(omit) }}"
+      loop: "{{ ma_packages_incl }}"
       register: result
-      retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
+      retries: "{{ freebsd_install_retries }}"
       delay: "{{ freebsd_install_delay }}"
 
     - name: "Packages: Debug FreeBSD packages"
@@ -32,20 +32,20 @@
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
-- name: "Packages: Install Ansible Lint FreeBSD ports"
+- name: FreeBSD ports
   when:
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'ports'
   block:
 
-    - name: "Packages: Install Ansible ports FreeBSD"
+    - name: "Packages: Install Ansible Lint FreeBSD ports"
       community.general.portinstall:
-        name: "{{ item }}"
+        name: "{{ item.name }}"
         use_packages: "{{ freebsd_use_packages }}"
-      loop: "{{ ma_packages }}"
+      loop: "{{ ma_packages_incl }}"
       register: result
-      retries: "{{ freebsd_install_retries }}"
       until: result is succeeded
+      retries: "{{ freebsd_install_retries }}"
       delay: "{{ freebsd_install_delay }}"
 
     - name: "Packages: Debug FreeBSD ports"
@@ -64,19 +64,18 @@
           ansible_failed_result:
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
-# Linux
-
-- name: "Packages: Install Ansible Lint Linux packages"
+- name: Linux packages
   when: ansible_os_family in ma_supported_linux_family
   block:
 
-    - name: "Packages: Install Ansible packages Linux"
+    - name: "Packages: Install Ansible Lint Linux packages"
       ansible.builtin.package:
-        name: "{{ item }}"
-      loop: "{{ ma_packages }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state | d(omit) }}"
+      loop: "{{ ma_packages_incl }}"
       register: result
-      retries: "{{ linux_install_retries }}"
       until: result is succeeded
+      retries: "{{ linux_install_retries }}"
       delay: "{{ linux_install_delay }}"
 
     - name: "Packages: Debug Linux packages"

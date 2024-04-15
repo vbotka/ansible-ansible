@@ -1,0 +1,49 @@
+---
+
+- name: "Venv: Install packages for Python virtual environment."
+  ansible.builtin.include_tasks: fn/packages.yml
+  vars:
+    ma_packages_incl: "{{ ma_virtualenv_packages }}"
+  when: ma_virtualenv_packages|length > 0
+
+- name: Install Ansible Lint PyPI packages for ma_owner
+  block:
+
+    - name: "Venv: Install Ansible PyPI packages for {{ ma_owner }}"
+      become_user: "{{ ma_owner }}"
+      become: true
+      # changed_when: result.changed
+      ansible.builtin.pip:
+        name: "{{ item.name }}"
+        # executable: "{{ ma_pip_executable }}"
+        # extra_args: "{{ ma_pip_extraagrs | d(omit) }}"
+        version: "{{ item.version | d(omit) }}"
+        state: "{{ item.state | d(omit) }}"
+        virtualenv: "{{ ma_virtualenv }}"
+        virtualenv_command: "{{ ma_virtualenv_command | d(omit) }}"
+        virtualenv_python: "{{ ma_virtualenv_python | d(omit) }}"
+        virtualenv_site_packages: "{{ ma_virtualenv_site_packages | d(omit) }}"
+      loop: "{{ ma_pip_packages }}"
+      register: result
+      until: result is succeeded
+      retries: "{{ pip_install_retries }}"
+      delay: "{{ pip_install_delay }}"
+
+    - name: "Venv: Debug PyPI packages"
+      ansible.builtin.debug:
+        var: result
+      when: ma_debug | bool
+
+  rescue:
+
+    - name: "Venv: Rescue PyPI packages"
+      ansible.builtin.fail:
+        msg: |
+          [ERR] task {{ ansible_failed_task.name }} failed.
+          ansible_failed_task:
+            {{ ansible_failed_task | to_yaml(indent=2) | indent(2) }}
+          ansible_failed_result:
+            {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
+
+# EOF
+...

@@ -1,5 +1,5 @@
 ---
-# Debian vars/defaults for ansible
+# Ubuntu vars/defaults for ansible
 
 ma_packages:
   - name: ansible

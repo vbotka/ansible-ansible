@@ -1,6 +1,6 @@
 ---
 
-- name: "Debug: Ansible"
+- name: "Debug: Ansible ma_debug={{ ma_debug | bool }}"
   vars:
     msg: |-
       ansible_architecture: {{ ansible_architecture }}
@@ -17,22 +17,50 @@
       freebsd_install_delay: {{ freebsd_install_delay }}
       linux_install_retries: {{ linux_install_retries }}
       linux_install_delay: {{ linux_install_delay }}
+      pip_install_retries: {{ pip_install_retries }}
+      pip_install_delay: {{ pip_install_delay }}
 
       ma_supported_linux_family: {{ ma_supported_linux_family }}
-      ma_install: {{ ma_install }}
-      ma_ara: {{ ma_ara }}
+      ma_sanity: {{ ma_sanity }}
+      ma_sanity_pip_exclusive: {{ ma_sanity_pip_exclusive }}
+      ma_sanity_pip_owner_defined: {{ ma_sanity_pip_owner_defined }}
+      ma_sanity_pip_exists: {{ ma_sanity_pip_exists }}
+
+      ma_owner: {{ ma_owner }}
       ma_backup_conf: {{ ma_backup_conf }}
+      ma_config_type: {{ ma_config_type }}
+      ma_config_template_default: {{ ma_config_template_default }}
+      ma_config:
+        {{ ma_config | to_yaml(indent=2) | indent(2) }}
+      ma_pip_install: {{ ma_pip_install }}
+      ma_pip_extraagrs: {{ ma_pip_extraagrs | d('UNDEFINED') }}
+      ma_pip_executable: {{ ma_pip_executable }}
+      ma_pip_executable_override: {{ ma_pip_executable_override | d('UNDEFINED') }}
+      ma_pip_requirements: {{ ma_pip_requirements }}
+      ma_pip_requirements_override: {{ ma_pip_requirements_override | d('UNDEFINED') }}
+      ma_pip_packages_state: {{ ma_pip_packages_state }}
+      ma_pip_packages:
+        {{ ma_pip_packages | to_yaml(indent=2) | indent(2) }}
+      ma_venv_install: {{ ma_venv_install }}
+      ma_virtualenv: {{ ma_virtualenv }}
+      ma_virtualenv_command: {{ ma_virtualenv_command | d('UNDEFINED') }}
+      ma_virtualenv_python: {{ ma_virtualenv_python | d('UNDEFINED') }}
+      ma_virtualenv_site_packages: {{ ma_virtualenv_site_packages | d('UNDEFINED') }}
+      ma_virtualenv_packages:
+        {{ ma_virtualenv_packages | to_yaml(indent=2) | indent(2) }}
+      ma_pkg_install: {{ ma_pkg_install }}
+      ma_packages_state: {{ ma_packages_state }}
       ma_packages:
-        {{ ma_packages | to_nice_yaml(indent=2) | indent(2) }}
+        {{ ma_packages | to_yaml(indent=2) | indent(2) }}
+      ma_packages_override: {{ ma_packages_override | d('UNDEFINED') }}
+
       ma_plugins_paths_list: {{ ma_plugins_paths_list }}
       ma_plugins_path: {{ ma_plugins_path }}
       ma_src_path: {{ ma_src_path }}
       ma_plugins:
         {{ ma_plugins | to_yaml(indent=2) | indent(2) }}
-      ma_config_type: {{ ma_config_type }}
-      ma_config_template_default: {{ ma_config_template_default }}
-      ma_config:
-        {{ ma_config | to_yaml(indent=2) | indent(2) }}
+      ma_ara: {{ ma_ara }}
+
       ma_devel: {{ ma_devel }}
       ma_devel_owner: {{ ma_devel_owner }}
       ma_devel_group: {{ ma_devel_group | d('UNDEFINED') }}
@@ -47,6 +75,7 @@
       ma_rnotes_build_url: {{ ma_rnotes_build_url }}
       ma_rnotes_build_dir: {{ ma_rnotes_build_dir }}
       ma_rnotes_build_list: {{ ma_rnotes_build_list }}
+
   ansible.builtin.debug:
     msg: "{{ '{}'.format(msg) }}"
 

@@ -1,25 +1,56 @@
 ---
 # default vars for ansible
 
-ma_install: true
+ma_pkg_install: false
+ma_pip_install: false
+ma_venv_install: false
+
+ma_packages_state: present
+# ma_packages see vars/defaults
+ma_pip_packages_state: present
+ma_pip_packages:
+  - name: ansible
+    state: "{{ ma_pip_packages_state }}"
+
 ma_debug: false
 ma_backup_conf: false
 
 ma_supported_linux_family: [RedHat, Debian]
-# Packages
+ma_pip_extraagrs: --user --upgrade
+
+# Sanity
+ma_sanity: true
+# Test ma_pip_install, ma_venv_install, and ma_pkg_install are mutually exclusive
+ma_sanity_pip_exclusive: true
+# Test ma_owner is defined
+ma_sanity_pip_owner_defined: "{{ ma_pip_install }}"
+# Test ma_pip_executable exists
+ma_sanity_pip_exists: "{{ ma_pip_install }}"
+
+# FreeBSD
+freebsd_install_retries: 3
+freebsd_install_delay: 10
 freebsd_install_method: packages
 # freebsd_install_method: ports
 freebsd_use_packages: true
-freebsd_install_retries: 10
-freebsd_install_delay: 5
-linux_install_retries: 10
-linux_install_delay: 5
 
+# Linux
+linux_install_retries: 3
+linux_install_delay: 10
+
+# pip
+pip_install_retries: 3
+pip_install_delay: 10
+
+# venv
+ma_virtualenv: $HOME/env
+
+# Config
+ma_config: []
 # ma_config_type options: template, lineinfile, ini_file
 # See tasks/configure.yml
 ma_config_type: template
 ma_config_template_default: ansible-auto.cfg.j2
-ma_config: []
 ma_src_path: /usr/local/ansible/src
 
 # ARA
@@ -54,10 +85,10 @@ ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
 ma_rnotes_core_url: https://raw.githubusercontent.com/ansible/ansible/stable-
 ma_rnotes_core_dir: /scratch/ansible-release-notes/core
-ma_rnotes_core_list: ["2.14", "2.15"]
+ma_rnotes_core_list: ["2.14", "2.15", "2.16"]
 ma_rnotes_build_url: https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/
 ma_rnotes_build_dir: /scratch/ansible-release-notes/build
-ma_rnotes_build_list: ["7", "8"]
+ma_rnotes_build_list: ["7", "8", "9"]
 
 # EOF
 ...

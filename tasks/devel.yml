@@ -1,7 +1,7 @@
 ---
 
 - name: "Devel: Checkout repository"
-  when: ma_repo|bool
+  when: ma_repo | bool
   tags: ma_devel_repo
   block:
 

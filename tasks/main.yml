@@ -10,10 +10,25 @@
   when: ma_debug | bool
   tags: ma_debug
 
-- name: Import packages.yml
-  ansible.builtin.import_tasks: packages.yml
-  when: ma_install | bool
-  tags: ma_packages
+- name: Import sanity.yml
+  ansible.builtin.import_tasks: sanity.yml
+  when: ma_sanity | bool
+  tags: ma_sanity
+
+- name: Import pkg.yml
+  ansible.builtin.import_tasks: pkg.yml
+  when: ma_pkg_install | bool
+  tags: ma_pkg
+
+- name: Import pip.yml
+  ansible.builtin.import_tasks: pip.yml
+  when: ma_pip_install | bool
+  tags: ma_pip
+
+- name: Import venv.yml
+  ansible.builtin.import_tasks: venv.yml
+  when: ma_venv_install | bool
+  tags: ma_venv
 
 - name: Import ara.yml
   ansible.builtin.import_tasks: ara.yml
@@ -25,8 +40,8 @@
   when: ma_plugins | length > 0
   tags: [ma_plugins, ma_config]
 
-- name: Import configure.yml
-  ansible.builtin.import_tasks: configure.yml
+- name: Import config.yml
+  ansible.builtin.import_tasks: config.yml
   when: ma_config | length > 0
   tags: ma_config
 

@@ -25,11 +25,11 @@ mytasks:
     hints: []
     warnings: []
 
-  - file: configure.yml
-    link: configure.yml
-    path: tasks/configure.yml
+  - file: config.yml
+    link: config.yml
+    path: tasks/config.yml
     synopsis: |
-      Configure configure.
+      Configure config.
     description: |
       Description of the task.
     lines: 1,2
@@ -64,11 +64,37 @@ mytasks:
     hints: []
     warnings: []
 
+  - file: pkg.yml
+    link: pkg.yml
+    path: tasks/pkg.yml
+    synopsis: |
+      Configure pkg.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
   - file: packages.yml
     link: packages.yml
-    path: tasks/packages.yml
+    path: tasks/fn/packages.yml
     synopsis: |
       Configure packages.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: pip.yml
+    link: pip.yml
+    path: tasks/pip.yml
+    synopsis: |
+      Configure pip.
     description: |
       Description of the task.
     lines: 1,2
@@ -90,11 +116,37 @@ mytasks:
     hints: []
     warnings: []
 
+  - file: sanity.yml
+    link: sanity.yml
+    path: tasks/sanity.yml
+    synopsis: |
+      Configure sanity.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
   - file: vars.yml
     link: vars.yml
     path: tasks/vars.yml
     synopsis: |
       Configure vars.
+    description: |
+      Description of the task.
+    lines: 1,2
+    seealso: []
+    notes: []
+    hints: []
+    warnings: []
+
+  - file: venv.yml
+    link: venv.yml
+    path: tasks/venv.yml
+    synopsis: |
+      Configure venv.
     description: |
       Description of the task.
     lines: 1,2

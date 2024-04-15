@@ -3,8 +3,9 @@
 ############
 User's guide
 ############
+
 .. contents:: Table of Contents
-   :depth: 4
+   :depth: 3
 
 
 .. _ug_introduction:
@@ -223,8 +224,11 @@ make sure the playbook and the configuration is idempotent
 
    shell> ansible-playbook ansible.yml -t <tag>
 
-.. _ug_task_configure:
-.. include:: task-configure.rst
+.. _ug_task_install:
+.. include:: task-install.rst
+
+.. _ug_task_config:
+.. include:: task-config.rst
 
 .. _ug_task_plugins:
 .. include:: task-plugins.rst
@@ -294,17 +298,19 @@ Best practice
 
 Test syntax ::
 
-   shell> ansible-playbook pb.yml --syntax-check
+   shell> ansible-playbook ansible.yml --syntax-check
 
 Display and review the variables. Then disable debug
 ``ma_debug=false`` to speedup the playbook ::
 
    shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
-Install packages. Then disable the installation ``ma_install=false``
-to speedup the playbook ::
+Install OS-packages ``ma_pkg_install=true`` or PyPI packages
+``ma_pip_install=true``. Optionally, install the packages in Python
+virtual environment ``ma_venv_install=true``. Then disable the
+installation to speedup the playbook ::
 
-   shell> ansible-playbook ansible.yml -t ma_packages -e ma_install=true
+   shell> ansible-playbook ansible.yml -t ma_pkg -e ma_pkg_install=true
 
 Create directories. The following check would fail without the directories ::
 
@@ -319,7 +325,7 @@ Run the playbook in the check mode and review the changes ::
 
    shell> ansible-playbook ansible.yml --check --diff
 
-Run the playbook if all seems to be right. The role and the
+If all seems to be right run the playbook. The role and the
 configuration data in the examples are idempotent. After the
 installation and configuration completed there should be no changes
 reported by *ansible-playbook* when running the playbook repeatedly ::

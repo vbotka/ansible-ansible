@@ -1,7 +1,11 @@
 ara.yml
-configure.yml
+config.yml
 debug.yml
 devel.yml
-packages.yml
+pkg.yml
+fn/packages.yml
+pip.yml
 plugins.yml
+sanity.yml
 vars.yml
+venv.yml

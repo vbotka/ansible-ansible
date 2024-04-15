@@ -1,0 +1,41 @@
+---
+
+- name: "Sanity: Test ma_pip_install, ma_pkg_install, and ma_venv_install are mutually exclusive"
+  ansible.builtin.assert:
+    that: count|int < 2
+    fail_msg: "[ERR] ma_pip_install, ma_pkg_install, and ma_venv_install are mutually exclusive."
+  vars:
+    count: "{{ [ma_pip_install, ma_pkg_install, ma_venv_install] |
+               select |
+               length }}"
+  when: ma_sanity_pip_exclusive | bool
+
+- name: "Sanity: Test ma_owner is defined if ma_pip_install or ma_venv_install"
+  ansible.builtin.assert:
+    that: ma_owner is defined
+    fail_msg: "[ERR] Variable ma_owner required for pip and venv."
+  when:
+    - ma_sanity_pip_owner_defined | bool
+    - ma_pip_install|bool or ma_venv_install|bool
+
+- name: If ma_pip_install test existence of {{ ma_pip_executable }}
+  when:
+    - ma_sanity_pip_exists | bool
+    - ma_pip_install | bool
+  block:
+
+    - name: "Sanity: Stat {{ ma_pip_executable }}"
+      ansible.builtin.stat:
+        path: "{{ ma_pip_executable }}"
+      register: result
+
+    - name: "Sanity: If ma_pip_install test existence of {{ ma_pip_executable }}"
+      ansible.builtin.assert:
+        that: result.stat.exists
+        fail_msg: "[ERR] {{ ma_pip_executable }} required for pip."
+
+# [TODO]
+# when: ma_pip_install exist: python3-setuptools, python3-pip
+
+# EOF
+...
