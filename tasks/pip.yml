@@ -68,7 +68,7 @@
     - name: "Pip: Debug PyPI requirements"
       ansible.builtin.debug:
         var: result
-      when: ma_debug|bool
+      when: ma_debug | bool
 
   rescue:
 
