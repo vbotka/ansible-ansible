@@ -10,14 +10,17 @@ vbotka.ansible 2.6 Release Notes
 
 Release Summary
 ---------------
-Bug fix.
+docs update.
 
 Major Changes
 -------------
 
 Minor Changes
 -------------
+* Update docs
 * Formatting
+* Fix README tag badge
+
 
 2.6.11
 ======
