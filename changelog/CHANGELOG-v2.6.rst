@@ -18,10 +18,11 @@ Major Changes
 Minor Changes
 -------------
 * Exclude docs from local ansible-lint
-* Use default rules in local ansible-lint
 * Update docs
 * Formatting
 * Fix README tag badge
+* Use default rules in local ansible-lint config.
+* Update skip_list in local ansible-lint config.
 
 
 2.6.11
