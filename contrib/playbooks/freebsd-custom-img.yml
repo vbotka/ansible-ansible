@@ -34,7 +34,7 @@
   remote_user: admin
   become: true
   become_user: root
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   # END ANSIBLE MANAGED BLOCK preamble
 
   vars:
