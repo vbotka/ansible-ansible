@@ -19,7 +19,7 @@
           ansible.builtin.template:
             src: annotation/annotation-tasks.rst.j2
             dest: source/annotation-tasks.rst
-            mode: '0644'
+            mode: "0644"
 
     - name: Handlers
       tags: handlers
@@ -33,7 +33,7 @@
           ansible.builtin.template:
             src: annotation/annotation-handlers.rst.j2
             dest: source/annotation-handlers.rst
-            mode: '0644'
+            mode: "0644"
 
     - name: Templates
       tags: templates
@@ -47,7 +47,7 @@
           ansible.builtin.template:
             src: annotation/annotation-templates.rst.j2
             dest: source/annotation-templates.rst
-            mode: '0644'
+            mode: "0644"
 
 # EOF
 ...

@@ -16,11 +16,12 @@ By default, nothing will be installed:
    ma_venv_install: false
 
 
-By default, the options are mutually exclusive
+.. warning::
 
-.. code-block:: yaml
-
-   ma_sanity_pip_exclusive: true
+   By default, *ma_pkg_install*, *ma_pip_install*, and
+   *ma_venv_install* are mutually exclusive. Disable
+   *ma_sanity_pip_exclusive* if you want to install more options in
+   the same play.
 
 
 Install OS-specific packages
@@ -39,6 +40,7 @@ If all is right install the package
   shell> ansible-playbook ansible.yml -t ma_pkg -e ma_debug=true -e ma_pkg_install=true
 		
 .. seealso::
+
    * Annotated Source code :ref:`as_pkg.yml`
 
 
@@ -59,6 +61,14 @@ If all is right install the package
 
 .. seealso::
    * Annotated Source code :ref:`as_pip.yml`
+
+.. warning::
+
+   `Conclusions. The pip module isn't always idempotent #28952 <https://github.com/ansible/ansible/issues/28952>`_
+   Quoting: "Managing system site-packages with Pip is not a good idea
+   and will probably break your OS. Those should be solely managed by
+   the OS package manager (apt/yum/dnf/etc.). If you want to manage
+   env for some software in Python, better use a virtualenv technology."
 
      
 Install PyPI package in Python virtual environment

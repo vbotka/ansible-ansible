@@ -5,6 +5,29 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.12
+======
+
+Release Summary
+---------------
+docs update.
+
+Major Changes
+-------------
+
+Minor Changes
+-------------
+* Exclude docs from local ansible-lint
+* Update docs
+* Update contrib/docs
+* Add contrib/docs/init.sh
+* Formatting
+* Fix README tag badge
+* Use default rules in local ansible-lint config.
+* Update skip_list in local ansible-lint config.
+* Fix Ansible lint become_method in contrib playbooks.
+
+
 2.6.11
 ======
 

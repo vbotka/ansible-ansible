@@ -5,7 +5,7 @@ User's guide
 ############
 
 .. contents:: Table of Contents
-   :depth: 3
+   :depth: 4
 
 
 .. _ug_introduction:
@@ -161,28 +161,31 @@ the tag ``ma_debug`` (when the debug is enabled ``ma_debug=true``)
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
+   shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
+
 
 Create directories
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path,ma_repo_path,ma_rnotes_path
+   shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path,ma_repo_path,ma_rnotes_path
 
-See what packages will be installed
 
-.. code-block:: sh
-   :emphasize-lines: 1
-
-    shell> ansible-playbook ansible.yml -t ma_packages --check
-
-Install packages and exit the play
+See what OS packages will be installed
 
 .. code-block:: sh
    :emphasize-lines: 1
 
-    shell> ansible-playbook ansible.yml -t ma_packages
+   shell> ansible-playbook ansible.yml -t ma_pkg --check
+
+
+Install OS packages and exit the play
+
+.. code-block:: sh
+   :emphasize-lines: 1
+
+   shell> ansible-playbook ansible.yml -t ma_pkg
 
 
 .. _ug_tasks:
@@ -202,7 +205,7 @@ Test single tasks at single remote host *test_01*. Create a playbook
      roles:
        - vbotka.ansible
 
-Customize configuration in ``host_vars/test_01/ma-*.yml`` and check the syntax
+Customize configuration, for example, in ``host_vars/test_01/ma-*.yml`` and check the syntax
 
 .. code-block:: sh
    :emphasize-lines: 1
@@ -290,13 +293,17 @@ Default variables
     :linenos:
 
 
+.. _ug_varsos:
+.. include:: guide-variables-os.rst
+
+
 .. _ug_bp:
 
 *************
 Best practice
 *************
 
-Test syntax ::
+Test the syntax ::
 
    shell> ansible-playbook ansible.yml --syntax-check
 
@@ -305,7 +312,11 @@ Display and review the variables. Then disable debug
 
    shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
-Install OS-packages ``ma_pkg_install=true`` or PyPI packages
+Dry-run the playbook in the check mode and display changes ::
+
+   shell> ansible-playbook ansible.yml --check --diff
+
+Install OS packages ``ma_pkg_install=true`` or PyPI packages
 ``ma_pip_install=true``. Optionally, install the packages in Python
 virtual environment ``ma_venv_install=true``. Then disable the
 installation to speedup the playbook ::
@@ -320,10 +331,6 @@ If you want to download the repository and the release notes create
 also these directories ::
 
    shell> ansible-playbook ansible.yml -t ma_repo_path,ma_rnotes_path
-
-Run the playbook in the check mode and review the changes ::
-
-   shell> ansible-playbook ansible.yml --check --diff
 
 If all seems to be right run the playbook. The role and the
 configuration data in the examples are idempotent. After the
