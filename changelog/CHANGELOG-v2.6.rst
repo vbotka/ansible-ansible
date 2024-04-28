@@ -19,6 +19,7 @@ Minor Changes
 -------------
 * Exclude docs from local ansible-lint
 * Update docs
+* Update contrib/docs
 * Formatting
 * Fix README tag badge
 * Use default rules in local ansible-lint config.
