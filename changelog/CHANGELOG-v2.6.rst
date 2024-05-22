@@ -20,6 +20,10 @@ Minor Changes
 * Bump docs 2.6.13
 * Remove obsolete comment from docs/source/conf.py
 
+Bugfixes
+--------
+* docs labels levels
+
 
 2.6.12
 ======

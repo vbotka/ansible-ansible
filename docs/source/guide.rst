@@ -279,7 +279,7 @@ specific variables are stored in the directory **vars/defaults**.
 .. _ug_defaults:
 
 Default variables
------------------
+=================
 
   <TBD>
 
