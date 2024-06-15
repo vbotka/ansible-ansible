@@ -14,6 +14,7 @@ Maintenance and bugfix release including docs update.
 
 Major Changes
 -------------
+* Add support of FreeBSD 14.1
 
 Minor Changes
 -------------
