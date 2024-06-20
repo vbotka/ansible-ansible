@@ -29,26 +29,26 @@
 
   vars:
 
-    #   my_version: 0.2.6-CURRENT
-    my_version: "0.2.5"
+#   my_version: 1.0.1-CURRENT
+    my_version: 1.0.0
+
     git_module: false
     my_git_user: admin
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
-    my_mode: u=+rwX,g=+rX-w,o=-rwx
+    my_mode: 'u=+rwX,g=+rX-w,o=-rwx'
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
     my_repos_file: vars/repos.yml
     my_requirements: "{{ requirements | selectattr('install', 'undefined') +
-                         requirements | selectattr('install', 'defined') |
-                                        selectattr('install') }}"
+                         requirements | selectattr('install', 'defined') | selectattr('install') }}"
 
   tasks:
 
-    - name: Include list of repos from {{ my_repos_file }}
-      ansible.builtin.include_vars: "{{ my_repos_file }}"
+    - name: "Include list of repos from {{ my_repos_file }}"
+      include_vars: "{{ my_repos_file }}"
 
-    - name: Debug
-      ansible.builtin.debug:
+    - name: "Debug"
+      debug:
         msg: "{{ '{}'.format(msg) }}"
       vars:
         msg: |
@@ -63,44 +63,40 @@
           ansible_check_mode: {{ ansible_check_mode }}
           requirements:
             {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
-      #   my_requirements:
-      #     {{ my_requirements | to_nice_yaml(indent=2) | indent(2) }}
+#         my_requirements:
+#           {{ my_requirements | to_nice_yaml(indent=2) | indent(2) }}
       when: debug | d(false) | bool
 
-    - name: Git install repos
-      ansible.builtin.git:
+    - name: "git install repos"
+      when: git_module | bool
+      git:
         repo: "{{ item.src }}"
         dest: "{{ my_repos_path }}/{{ item.name }}"
-        version: "{{ item.version | default('HEAD') }}"
+        version: "{{ item.version | d(omit) }}"
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      when: git_module | bool
 
-    - name: Command install repos
-      ansible.builtin.command: >
-        /bin/sh -c
-        'cd {{ my_repos_path }};
-        if [ -e {{ item.name | quote }} ]; then
-        (cd {{ item.name }}; git pull);
-        else
-        git clone {{ item.src }} {{ item.name }};
-        fi'
+    - name: "command install repos"
+      when: not git_module | bool
+      command: |
+        /bin/sh -c 'cd {{ my_repos_path }};
+                    if [ -e {{ item.name|quote }} ]; then
+                        (cd {{ item.name }}; git pull);
+                    else
+                        git clone {{ item.src }} {{ item.name }};
+                    fi'
       args:
         chdir: "{{ my_repos_path }}"
-      register: out
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      changed_when: false  # TODO: test registered result
-      when: not git_module | bool
 
-    - name: Chown, chmod and link repos
-      when: not ansible_check_mode
+    - name: chown, chmod and link repos
       block:
 
-        - name: Chown and chmod repos
-          ansible.builtin.file:
+        - name: "Chown and chmod repos"
+          file:
             state: directory
             recurse: true
             dest: "{{ my_repos_path }}/{{ item.name }}"
@@ -111,8 +107,8 @@
           loop_control:
             label: "{{ item.name }}"
 
-        - name: Link repos
-          ansible.builtin.file:
+        - name: "Link repos"
+          file:
             state: link
             src: "{{ my_repos_path }}/{{ item.name }}"
             dest: "{{ my_repos_path }}/{{ item.link }}"

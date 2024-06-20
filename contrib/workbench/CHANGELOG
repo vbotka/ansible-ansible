@@ -1,7 +1,7 @@
-0.2.5
+1.0.0
 #####
 
-Fix Ansible lint.
+Production release. Tested OK.
 
 
 0.2.4

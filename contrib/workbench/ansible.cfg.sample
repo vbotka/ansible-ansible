@@ -1,8 +1,9 @@
 [defaults]
 inventory = $PWD/hosts
 roles_path = $PWD/../roles
+collections_path = $PWD/../collections
 retry_files_enabled = false
-# stdout_callback = yaml
+stdout_callback = yaml
 
 [ssh_connection]
 pipelining = true
@@ -10,5 +11,7 @@ pipelining = true
 [colors]
 deprecate = bright purple
 changed = purple
+
+[diff]
 
 # EOF

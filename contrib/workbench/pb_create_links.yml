@@ -1,4 +1,5 @@
 ---
+
 # All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
@@ -23,17 +24,18 @@
 
   vars:
 
-    #   my_version: "0.2.5-CURRENT"
-    my_version: "0.2.4"
+#   my_version: "1.0.1-CURRENT"
+    my_version: "1.0.0"
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_links_file: vars/links.yml
 
   tasks:
 
-    - name: Include list of links from {{ my_links_file }}
-      ansible.builtin.include_vars: "{{ my_links_file }}"
+    - name: "Include list of links from {{ my_links_file }}"
+      include_vars: "{{ my_links_file }}"
 
     - name: Debug variables
+      when: debug | d(false) | bool
       vars:
         msg: |
           my_version: {{ my_version }}
@@ -42,31 +44,30 @@
           ansible_check_mode: {{ ansible_check_mode }}
           requirements:
             {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
-      ansible.builtin.debug:
+      debug:
         msg: "{{ '{}'.format(msg) }}"
-      when: debug | d(false) | bool
 
     - name: Debug links
-      ansible.builtin.debug:
-        msg: path {{ item.path }} link {{ item.link }}
-      loop: "{{ requirements }}"
       when: debug | d(false) | bool
+      debug:
+        msg: "path {{ item.path }} link {{ item.link }}"
+      loop: "{{ requirements }}"
 
     - name: Create links to absolute paths
-      ansible.builtin.file:
+      when: item.path.0 == '/'
+      file:
         state: link
         src: "{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"
       loop: "{{ requirements }}"
-      when: item.path.0 == '/'
 
     - name: Create links to relative paths
-      ansible.builtin.file:
+      when: item.path.0 != '/'
+      file:
         state: link
         src: "{{ my_base_path }}/{{ item.path }}"
         dest: "{{ my_base_path }}/{{ item.link }}"
       loop: "{{ requirements }}"
-      when: item.path.0 != '/'
 
 # EOF
 ...

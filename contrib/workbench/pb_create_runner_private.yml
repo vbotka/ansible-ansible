@@ -23,8 +23,8 @@
 
   vars:
 
-    #   my_version: 0.2.5-CURRENT
-    my_version: "0.2.4"
+#   my_version: 1.0.1-CURRENT
+    my_version: 1.0.0
     my_base_path: "{{ lookup('env','HOME') }}/.ansible"
     my_runner_file: vars/runner.yml
     my_runner_directories:
@@ -33,8 +33,8 @@
 
   tasks:
 
-    - name: Include list of private data from {{ my_runner_file }}
-      ansible.builtin.include_vars: "{{ my_runner_file }}"
+    - name: "Include list of private data from {{ my_runner_file }}"
+      include_vars: "{{ my_runner_file }}"
       tags: always
 
     - name: Debug
@@ -51,66 +51,64 @@
               ansible_check_mode: {{ ansible_check_mode }}
               requirements:
                 {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
-          ansible.builtin.debug:
+          debug:
             msg: "{{ '{}'.format(msg) }}"
 
         - name: Debug private data dirs
-          ansible.builtin.debug:
-            msg: dir [{{ my_base_path }}/runner/{{ item.0.path }}/{{ item.1 }}]
+          debug:
+            msg: "dir [{{ my_base_path }}/runner/{{ item.0.path }}/{{ item.1 }}]"
           loop: "{{ requirements | product(my_runner_directories) | list }}"
           loop_control:
             label: "{{ item.0.path }}"
 
     - name: Create private data dirs
-      ansible.builtin.file:
+      tags: dirs
+      file:
         state: directory
         path: "{{ my_base_path }}/runner/{{ item.0.path }}/{{ item.1 }}"
-        mode: "0755"
-      loop: "{{ requirements | product(my_runner_directories) | list }}"
+      loop: "{{ requirements|product(my_runner_directories)|list }}"
       loop_control:
         label: "{{ item.0.path }}/{{ item.1 }}"
-      tags: dirs
 
     - name: Create private data
-      when: not ansible_check_mode
       block:
 
         - name: Create private env files
-          ansible.builtin.template:
+          tags: env
+          template:
             src: "{{ my_key }}.j2"
             dest: "{{ my_base_path }}/runner/{{ item.0.path }}/env/{{ my_key }}"
             owner: "{{ item.1.owner | d(omit) }}"
             group: "{{ item.1.group | d(omit) }}"
             mode: "{{ item.1.mode | d(omit) }}"
-          loop: "{{ requirements | subelements('env', skip_missing=true) }}"
+          loop: "{{ requirements | subelements('env', skip_missing=True) }}"
           loop_control:
             label: "{{ item.0.path }}/env/{{ my_key }}"
           vars:
             my_key: "{{ item.1.set }}"
             my_val: "{{ item.1.conf }}"
-          tags: env
 
         - name: Link projects to private data dirs
-          ansible.builtin.file:
+          tags: links_project
+          file:
             state: link
-            src: "{{ my_base_path }}/projects/{{ item.project }}"
+            src: "{{ my_base_path }}/projects/{{ item.project}}"
             dest: "{{ my_base_path }}/runner/{{ item.path }}/project"
-            force: "{{ item.force | d(false) }}"
+            force: "{{ item.force|d(false) }}"
           loop: "{{ requirements }}"
           loop_control:
             label: "{{ item.path }}/project -> {{ item.project }}"
-          tags: links_project
 
         - name: Link project hosts to private data inventory
-          ansible.builtin.file:
+          tags: links_hosts
+          file:
             state: link
             src: "{{ my_base_path }}/runner/{{ item.path }}/project/hosts"
             dest: "{{ my_base_path }}/runner/{{ item.path }}/inventory/hosts"
-            force: "{{ item.force | d(false) }}"
+            force: "{{ item.force|d(false) }}"
           loop: "{{ requirements }}"
           loop_control:
             label: "{{ item.path }}/project/hosts -> {{ item.path }}/inventory/hosts"
-          tags: links_hosts
 
 # EOF
 ...
