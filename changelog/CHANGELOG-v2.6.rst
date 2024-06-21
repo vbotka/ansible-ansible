@@ -25,6 +25,7 @@ Minor Changes
 Bugfixes
 --------
 * docs labels levels
+* contrib/workbench bugfix release
 
 
 2.6.12

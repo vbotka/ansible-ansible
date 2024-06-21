@@ -3,8 +3,8 @@
 # All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# version="1.0.1-CURRENT"
-version="1.0.0"
+# version="1.0.2-CURRENT"
+version="1.0.1"
 
 usage="ansible-workbench ver ${version}
 Usage:
@@ -15,9 +15,9 @@ Usage:
 Where:
       -h --help ....... Show this help and exit
       -V --version .... Print version and exit
-      -v1 --actionable  Use Ansible actionable callback plugin
-      -v2 --minimal ... Use Ansible minimal callback plugin
-      -v3 --yaml ...... Use Ansible yaml callback plugin
+      -v1 --quiet ..... Callback yaml no ok/skipped hosts
+      -v2 --minimal ... Callback minimal
+      -v3 --yaml ...... Callback yaml
       -d --debug ...... Display debug and set playbook_debug=true
       -n --dry-run .... Set dryrun=true and playbook_dryrun=--check
                         No dry run for: ansible, config, dirs
@@ -121,11 +121,14 @@ for i in "$@"; do
             printf '%b\n' "${version}"
             exit 0
             ;;
-        -v1|--actionable)
-            export ANSIBLE_STDOUT_CALLBACK=actionable
+        -v1|--quiet)
+            export ANSIBLE_STDOUT_CALLBACK=yaml
+	    export ANSIBLE_DISPLAY_OK_HOSTS=false
+	    export ANSIBLE_DISPLAY_SKIPPED_HOSTS=false
             ;;
         -v2|--minimal)
             export ANSIBLE_STDOUT_CALLBACK=minimal
+	    export ANSIBLE_CALLBACK_RESULT_FORMAT=yaml
             ;;
         -v3|--yaml)
             export ANSIBLE_STDOUT_CALLBACK=yaml
