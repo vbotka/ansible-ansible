@@ -10,7 +10,7 @@ vbotka.ansible 2.6 Release Notes
 
 Release Summary
 ---------------
-Maintenance and bugfix release including docs update.
+Ansible 2.17 maintenance and bugfix release including docs update.
 
 Major Changes
 -------------
