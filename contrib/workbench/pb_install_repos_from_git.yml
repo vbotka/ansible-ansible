@@ -80,17 +80,19 @@
       ansible.builtin.command: |
         /bin/sh -c 'cd {{ my_repos_path }};
                     if [ -e {{ item.name|quote }} ]; then
-                        (cd {{ item.name }}; git pull);
+                        msg=$(cd {{ item.name }}; git pull);
                     else
+                        msg=$(git clone {{ item.src }} {{ item.name }});
+                    fi;
+                    echo $msg'
 
-
-                    git clone {{ item.src }} {{ item.name }};
-                    fi'
       args:
         chdir: "{{ my_repos_path }}"
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
+      register: result
+      changed_when: result_stdout != "Already up to date."
 
     - name: Chown, chmod and link repos
       block:
