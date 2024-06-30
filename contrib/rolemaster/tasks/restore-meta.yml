@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm restore-meta: Include vars"
   ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
@@ -39,4 +38,3 @@
   when: item.key | basename not in rm_roles_blacklist
 
 # EOF
-...

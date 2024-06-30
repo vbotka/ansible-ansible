@@ -1,10 +1,8 @@
 ---
-
 - name: "Devel: Checkout repository"
   when: ma_repo | bool
   tags: ma_devel_repo
   block:
-
     - name: "Devel: Create directory {{ ma_repo_dir }}"
       ansible.builtin.file:
         state: directory
@@ -25,7 +23,6 @@
   when: ma_rnotes | bool
   tags: ma_devel_rnotes
   block:
-
     - name: "Devel: Create directories for release notes"
       ansible.builtin.file:
         state: directory
@@ -39,7 +36,7 @@
       tags: ma_rnotes_path
 
     - name: "Devel: Get core release notes {{ ma_rnotes_core_list }}"
-      check_mode: false  # Note 1.
+      check_mode: false # Note 1.
       ansible.builtin.get_url:
         url: "{{ _url }}"
         dest: "{{ (ma_rnotes_core_dir, _file) | community.general.path_join }}"
@@ -51,8 +48,7 @@
         label: "{{ _url }}"
       vars:
         _file: CHANGELOG-v{{ item }}.rst
-        _url: "{{ (ma_rnotes_core_url ~ item, 'changelogs', _file) |
-                  community.general.path_join }}"
+        _url: "{{ (ma_rnotes_core_url ~ item, 'changelogs', _file) | community.general.path_join }}"
 
     - name: "Devel: Get build release notes {{ ma_rnotes_build_list }}"
       check_mode: false #  Note 1.
@@ -75,4 +71,3 @@
 #    report *changed* in check_mode.
 
 # EOF
-...

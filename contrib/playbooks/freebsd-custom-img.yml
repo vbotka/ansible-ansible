@@ -39,7 +39,7 @@
 
   vars:
 
-    fci_version: "0.1.0"
+    fci_version: 0.1.0
 
     # mount image
     fci_mount: true
@@ -106,13 +106,12 @@
   #     key: "{{ lookup('file', 'copy/ssh-pub-keys/admin-ar2/id_rsa.pub') }}"
 
   tasks:
-
     - name: Create mount point
       when: fci_mount_point
       ansible.builtin.file:
         state: directory
         path: "{{ fci_mount_path }}"
-        mode: '0755'
+        mode: "0755"
       tags: fci_mount_point
 
     - name: Mount image

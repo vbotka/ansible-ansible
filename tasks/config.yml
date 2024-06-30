@@ -1,5 +1,4 @@
 ---
-
 - name: "Config: Create directories for Ansible configuration"
   ansible.builtin.file:
     state: directory
@@ -55,4 +54,3 @@
   when: ma_config_type | lower == 'ini_file'
 
 # EOF
-...

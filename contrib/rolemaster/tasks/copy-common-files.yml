@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm copy-common-files: Include vars meta"
   ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
@@ -21,4 +20,3 @@
     label: "{{ item.value.galaxy_info.role_name | default(item.key) }}"
 
 # EOF
-...

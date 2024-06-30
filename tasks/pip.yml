@@ -1,5 +1,4 @@
 ---
-
 # TODO: Still open?
 # The pip module always set to changed when using check mode #62826
 # https://github.com/ansible/ansible/issues/62826
@@ -11,7 +10,6 @@
 
 - name: Install Ansible Lint PyPI packages for ma_owner
   block:
-
     - name: "Pip: Install Ansible Lint PyPI packages for {{ ma_owner }}"
       become_user: "{{ ma_owner }}"
       become: true
@@ -36,7 +34,6 @@
       when: ma_debug | bool or ansible_check_mode
 
   rescue:
-
     - name: "Pip: Rescue PyPI packages"
       ansible.builtin.fail:
         msg: |
@@ -48,7 +45,6 @@
 
 - name: Install Ansible Lint PyPI requirements for ma_owner
   block:
-
     - name: "Pip: Install Ansible Lint pip requirements for {{ ma_owner }}"
       become_user: "{{ ma_owner }}"
       become: true
@@ -71,7 +67,6 @@
       when: ma_debug | bool
 
   rescue:
-
     - name: "Pip: Rescue PyPI requirements"
       ansible.builtin.fail:
         msg: |
@@ -82,4 +77,3 @@
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
 # EOF
-...

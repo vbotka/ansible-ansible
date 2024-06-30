@@ -1,5 +1,4 @@
 ---
-
 - name: Include fn/roles-objects.yml
   ansible.builtin.include_tasks: fn/roles-objects.yml
   loop: "{{ rm_roles_path | default([]) }}"
@@ -27,13 +26,12 @@
 - name: "Rm: write-objects: Write meta"
   when: rm_roles_meta_file_write
   block:
-
     - name: "Rm: write-objects: Create temp file"
       ansible.builtin.tempfile:
         path: "{{ rm_roles_meta_dir }}"
       register: result
 
-    - name: 'Rm: write-objects: Set temp file permissions'
+    - name: "Rm: write-objects: Set temp file permissions"
       ansible.builtin.file:
         path: "{{ result.path }}"
         mode: "{{ rm_roles_file_mode }}"
@@ -68,7 +66,6 @@
 - name: "Rm: write-objects: Write travis"
   when: rm_roles_travis_file_write
   block:
-
     - name: "Rm: write-objects: Create temp file"
       ansible.builtin.tempfile:
         path: "{{ rm_roles_travis_dir }}"
@@ -107,4 +104,3 @@
         follow: true
 
 # EOF
-...

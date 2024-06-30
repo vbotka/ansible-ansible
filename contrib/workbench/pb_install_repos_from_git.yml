@@ -19,7 +19,7 @@
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# https://github.com/vbotka/ansible-ansible/tree/master/contrib/workbench
+# https://github.com/vbotka/ansible-ansible/contrib/workbench
 
 - name: Install git repositories
   hosts: localhost
@@ -29,26 +29,24 @@
 
   vars:
 
-#   my_version: 1.0.1-CURRENT
+    # my_version: 1.0.1-CURRENT
     my_version: 1.0.0
 
     git_module: false
     my_git_user: admin
     my_user: "{{ lookup('env','USER') }}"
     my_group: "{{ my_user }}"
-    my_mode: 'u=+rwX,g=+rX-w,o=-rwx'
+    my_mode: u=+rwX,g=+rX-w,o=-rwx
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
     my_repos_file: vars/repos.yml
     my_requirements: "{{ requirements | selectattr('install', 'undefined') +
                          requirements | selectattr('install', 'defined') | selectattr('install') }}"
 
   tasks:
-
-    - name: "Include list of repos from {{ my_repos_file }}"
-      include_vars: "{{ my_repos_file }}"
-
-    - name: "Debug"
-      debug:
+    - name: Include list of repos from {{ my_repos_file }}
+      ansible.builtin.include_vars: "{{ my_repos_file }}"
+    - name: Debug
+      ansible.builtin.debug:
         msg: "{{ '{}'.format(msg) }}"
       vars:
         msg: |
@@ -63,13 +61,13 @@
           ansible_check_mode: {{ ansible_check_mode }}
           requirements:
             {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
-#         my_requirements:
-#           {{ my_requirements | to_nice_yaml(indent=2) | indent(2) }}
+      #   my_requirements:
+      #     {{ my_requirements | to_nice_yaml(indent=2) | indent(2) }}
       when: debug | d(false) | bool
 
-    - name: "git install repos"
+    - name: Git install repos
       when: git_module | bool
-      git:
+      ansible.builtin.git:
         repo: "{{ item.src }}"
         dest: "{{ my_repos_path }}/{{ item.name }}"
         version: "{{ item.version | d(omit) }}"
@@ -77,14 +75,16 @@
       loop_control:
         label: "{{ item.name }}"
 
-    - name: "command install repos"
+    - name: Command install repos
       when: not git_module | bool
-      command: |
+      ansible.builtin.command: |
         /bin/sh -c 'cd {{ my_repos_path }};
                     if [ -e {{ item.name|quote }} ]; then
                         (cd {{ item.name }}; git pull);
                     else
-                        git clone {{ item.src }} {{ item.name }};
+
+
+                    git clone {{ item.src }} {{ item.name }};
                     fi'
       args:
         chdir: "{{ my_repos_path }}"
@@ -92,11 +92,10 @@
       loop_control:
         label: "{{ item.name }}"
 
-    - name: chown, chmod and link repos
+    - name: Chown, chmod and link repos
       block:
-
-        - name: "Chown and chmod repos"
-          file:
+        - name: Chown and chmod repos
+          ansible.builtin.file:
             state: directory
             recurse: true
             dest: "{{ my_repos_path }}/{{ item.name }}"
@@ -107,8 +106,8 @@
           loop_control:
             label: "{{ item.name }}"
 
-        - name: "Link repos"
-          file:
+        - name: Link repos
+          ansible.builtin.file:
             state: link
             src: "{{ my_repos_path }}/{{ item.name }}"
             dest: "{{ my_repos_path }}/{{ item.link }}"
@@ -119,4 +118,3 @@
             label: "{{ item.name }}"
 
 # EOF
-...

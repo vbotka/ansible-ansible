@@ -1,5 +1,4 @@
 ---
-
 - name: "Plugins: Create directory {{ ma_plugins_path }}"
   ansible.builtin.file:
     state: directory
@@ -52,12 +51,9 @@
 - name: "Plugins: Create lists"
   tags: ma_plugins_lists
   block:
-
     - name: "Plugins: Create list of used ini_keys ma_plugins_inikeys"
-      ansible.builtin.set_fact:  # noqa: jinja[invalid]
-        ma_plugins_inikeys: "{{ ma_plugins |
-                                json_query('[].plugins[].ini_key') |
-                                list | unique }}"
+      ansible.builtin.set_fact: # noqa: jinja[invalid]
+        ma_plugins_inikeys: "{{ ma_plugins | json_query('[].plugins[].ini_key') | list | unique }}"
 
     - name: "Plugins: Debug ma_plugins_inikeys"
       ansible.builtin.debug:
@@ -65,10 +61,9 @@
       when: ma_debug | bool
 
     - name: "Plugins: Create list of plugins ma_plugins_list"
-      ansible.builtin.set_fact:  # noqa: jinja[invalid]
+      ansible.builtin.set_fact: # noqa: jinja[invalid]
         ma_plugins_list: "{{ ma_plugins |
-                             json_query('[].plugins[].{path: path,
-                                                       ini_key: ini_key, enable: enable}') |
+                             json_query('[].plugins[].{path: path, ini_key: ini_key, enable: enable}') |
                              list }}"
 
     - name: "Plugins: Debug ma_plugins_list"
@@ -119,4 +114,3 @@
   tags: ma_plugins_test_inikeys
 
 # EOF
-...

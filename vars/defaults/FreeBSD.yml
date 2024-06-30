@@ -11,11 +11,9 @@ ma_packages:
 
 ma_virtualenv_command: python3 -m venv
 ma_virtualenv_packages: []
-
 ma_pip_executable: /usr/local/bin/pip-{{ ansible_python_version | splitext | first }}
 
 # Path to a pip requirements file local to the remote system
 ma_pip_requirements: ""
 
 # EOF
-...

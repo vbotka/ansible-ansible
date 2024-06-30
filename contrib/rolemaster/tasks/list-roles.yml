@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm: list-roles: Find roles in {{ roles_path }}"
   ansible.builtin.find:
     paths: "{{ roles_path }}"
@@ -22,4 +21,3 @@
   when: rm_debug | bool
 
 # EOF
-...

@@ -1,11 +1,9 @@
 ---
-
 - name: FreeBSD packages
   when:
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'packages'
   block:
-
     - name: "Packages: Install Ansible Lint FreeBSD packages"
       community.general.pkgng:
         name: "{{ item.name }}"
@@ -22,7 +20,6 @@
       when: ma_debug | bool
 
   rescue:
-
     - name: "Packages: Rescue FreeBSD packages"
       ansible.builtin.fail:
         msg: |
@@ -37,7 +34,6 @@
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'ports'
   block:
-
     - name: "Packages: Install Ansible Lint FreeBSD ports"
       community.general.portinstall:
         name: "{{ item.name }}"
@@ -54,7 +50,6 @@
       when: ma_debug | bool
 
   rescue:
-
     - name: "Packages: Rescue FreeBSD ports"
       ansible.builtin.fail:
         msg: |
@@ -67,7 +62,6 @@
 - name: Linux packages
   when: ansible_os_family in ma_supported_linux_family
   block:
-
     - name: "Packages: Install Ansible Lint Linux packages"
       ansible.builtin.package:
         name: "{{ item.name }}"
@@ -84,7 +78,6 @@
       when: ma_debug | bool
 
   rescue:
-
     - name: "Packages: Rescue Linux packages"
       ansible.builtin.fail:
         msg: |
@@ -95,4 +88,3 @@
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
 # EOF
-...

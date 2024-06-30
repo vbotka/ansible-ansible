@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm: fn: roles-objects: Include vars {{ item ~ '/meta/main.yml' }}"
   ansible.builtin.include_vars:
     file: "{{ item }}/meta/main.yml"
@@ -28,4 +27,3 @@
                                          'notifications': my_travis.notifications}}) }}"
 
 # EOF
-...
