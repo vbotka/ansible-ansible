@@ -5,6 +5,30 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.13
+======
+
+Release Summary
+---------------
+Ansible 2.17 maintenance and bugfix release including docs update.
+
+Major Changes
+-------------
+* Add support of FreeBSD 14.1
+
+Minor Changes
+-------------
+* Bump docs 2.6.13
+* Remove obsolete comment from docs/source/conf.py
+* Update README
+* Ansible-lint automatic --fix
+
+Bugfixes
+--------
+* docs labels levels
+* contrib/workbench bugfix release
+
+
 2.6.12
 ======
 
@@ -33,12 +57,12 @@ Minor Changes
 
 Release Summary
 ---------------
-Support FreeBSD 13.3 and 14.0. Support Python vritual environment.
+Support FreeBSD 13.3 and 14.0. Support Python virtual environment.
 
 Major Changes
 -------------
 * Support FreeBSD 13.3 and 14.0
-* Add tasks venv.yml. Support Python vritual environment.
+* Add tasks venv.yml. Support Python virtual environment.
 * Add tasks sanity.yml. Add variables ma_sanity*
 
 Minor Changes
@@ -62,7 +86,7 @@ Breaking Changes / Porting Guide
 * Tasks configure.yml renamed to config.yml
 * Include config.yml only if ma_config not empty.
 * Tasks packages.yml renamed to pkg.yml
-* Tag ma_packages renmed to ma_pkg
+* Tag ma_packages renamed to ma_pkg
 
 
 2.6.10
@@ -122,7 +146,7 @@ Minor Changes
 
 Release Summary
 ---------------
-Bug fix. Docs udpate.
+Bug fix. Docs update.
 
 Minor Changes
 -------------

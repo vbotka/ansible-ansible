@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm: read-objects: Include vars meta"
   ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
@@ -19,4 +18,3 @@
 #   when: rm_debug|bool
 
 # EOF
-...

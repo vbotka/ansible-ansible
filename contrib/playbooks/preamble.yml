@@ -21,7 +21,6 @@
   hosts: localhost
 
   tasks:
-
     - name: Update parameters of the playbooks.
       ansible.builtin.blockinfile:
         path: "{{ item }}"
@@ -38,4 +37,3 @@
         - freebsd-custom-img.yml
 
 # EOF
-...

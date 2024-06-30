@@ -1,5 +1,4 @@
 ---
-
 - name: "Venv: Install packages for Python virtual environment."
   ansible.builtin.include_tasks: fn/packages.yml
   vars:
@@ -8,7 +7,6 @@
 
 - name: Install Ansible Lint PyPI packages for ma_owner
   block:
-
     - name: "Venv: Install Ansible PyPI packages for {{ ma_owner }}"
       become_user: "{{ ma_owner }}"
       become: true
@@ -35,7 +33,6 @@
       when: ma_debug | bool
 
   rescue:
-
     - name: "Venv: Rescue PyPI packages"
       ansible.builtin.fail:
         msg: |
@@ -46,4 +43,3 @@
             {{ ansible_failed_result | to_yaml(indent=2) | indent(2) }}
 
 # EOF
-...

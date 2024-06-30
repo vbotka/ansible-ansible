@@ -61,7 +61,7 @@
                 (echo $i; cd $i; diff LICENSE LICENSE-test); done
 
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      https://github.com/vbotka/ansible-ansible/tree/master/contrib/rolemaster
+      https://github.com/vbotka/ansible-ansible/contrib/rolemaster/rolemaster.yml
 
     rm_debug: false
     rm_backup_conf: false
@@ -94,10 +94,9 @@
     # Comma separated list of selected roles. An empty strings selects all roles.
     rm_roles_select: ""
     rm_roles_select_list: "{{ (rm_roles_select | length > 0) |
-                              ternary(rm_roles_select | split(',') | map('trim') | list, [] ) }}"
+                               ternary(rm_roles_select | split(',') | map('trim') | list, [] ) }}"
 
   tasks:
-
     #    - name: 'rm: Help variables'
     #      block:
     #        - ansible.builtin.set_fact:
@@ -114,7 +113,6 @@
       when: my_tags | intersect(rm_known_tags) | length == 0
       tags: always
       block:
-
         - name: Help
           ansible.builtin.debug:
             msg: "{{ '{}'.format(rm_help_text) }}"
@@ -125,7 +123,6 @@
     - name: "Rm: Set roles_path"
       tags: always
       block:
-
         - name: "Rm: list-roles-path: Get roles_path from {{ rm_ansible_conf_path }}"
           ansible.builtin.set_fact:
             roles_path: "{{ lookup('ini', ini_params) }}"
@@ -151,7 +148,6 @@
     - name: "Rm: Set rm_roles_blacklist"
       tags: always
       block:
-
         - name: "Rm: roles-blacklist: Set empty list rm_roles_blaclist"
           ansible.builtin.set_fact:
             rm_roles_blacklist: []
@@ -199,4 +195,3 @@
       tags: rm-update_docs_themes
 
 # EOF
-...

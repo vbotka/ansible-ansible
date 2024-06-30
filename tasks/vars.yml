@@ -1,9 +1,7 @@
 ---
-
 - name: Declare ma_owner when undefined
   when: ma_owner is undefined
   block:
-
     - name: "Vars: Get the user"
       ansible.builtin.setup:
         gather_subset: user
@@ -21,7 +19,7 @@
         ma_owner: "{{ ansible_user | d(ansible_user_id) }}"
 
 - name: "Vars: Include OS vars"
-  ansible.builtin.include_role:  # noqa: var-naming[no-role-prefix]
+  ansible.builtin.include_role: # noqa: var-naming[no-role-prefix]
     name: vbotka.ansible_lib
     tasks_from: al_include_os_vars_path
   vars:
@@ -43,4 +41,3 @@
   when: ma_pip_requirements_override is defined
 
 # EOF
-...

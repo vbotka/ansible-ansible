@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 # All rights reserved (c) 2019-2024, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-# version="0.2.6-CURRENT"
-version="0.2.5"
+# version="1.0.2-CURRENT"
+version="1.0.1"
 
 usage="ansible-workbench ver ${version}
 Usage:
@@ -15,11 +15,12 @@ Usage:
 Where:
       -h --help ....... Show this help and exit
       -V --version .... Print version and exit
-      -v1 --actionable  Use Ansible actionable callback plugin
-      -v2 --minimal ... Use Ansible minimal callback plugin
-      -v3 --yaml ...... Use Ansible yaml callback plugin
+      -v1 --quiet ..... Callback yaml no ok/skipped hosts
+      -v2 --minimal ... Callback minimal
+      -v3 --yaml ...... Callback yaml
       -d --debug ...... Display debug and set playbook_debug=true
       -n --dry-run .... Set dryrun=true and playbook_dryrun=--check
+                        No dry run for: ansible, config, dirs
       command ......... ansible, config, dirs,
                         repos, roles, projects, links, runner,
                         all, none, test, update, diff
@@ -55,38 +56,79 @@ if [ "$#" -lt "${expected_args}" ]; then
 fi
 
 # Configuration
+workbench_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+export my_ansible_workbench_cfg="${HOME}/.ansible-workbench.cfg"
+export my_ansible_cfg="${workbench_dir:?}/ansible.cfg"
+export my_ansible_hosts="${workbench_dir:?}/hosts"
+
 my_config_file=""
-if [ -e ${HOME}/.ansible-workbench.cfg ]; then
+
+if [ -e "${HOME}/.ansible-workbench.cfg" ]; then
     my_config_file="${HOME}/.ansible-workbench.cfg"
-    . ${HOME}/.ansible-workbench.cfg
+    . "${HOME}/.ansible-workbench.cfg"
 fi
-if [ -e ${PWD}/.ansible-workbench.cfg ]; then
+if [ -e "${PWD}/.ansible-workbench.cfg" ]; then
     my_config_file="${PWD}/.ansible-workbench.cfg"
-    . ${PWD}/.ansible-workbench.cfg
+    . "${PWD}/.ansible-workbench.cfg"
 fi
 
+my_dirs="${base_dir:?}
+${repos_dir:?}
+${roles_dir:?}
+${collections_dir:?}
+${projects_dir:?}
+${runner_dir:?}"
+
+my_objects="repos
+roles
+collections
+projects
+links
+runner"
+
+my_paths="${base_dir}
+${repos_dir}
+${roles_dir}
+${collections_dir}
+${projects_dir}
+${runner_dir}
+${workbench_dir}
+${roles_dir}/vbotka.ansible
+${HOME}/.ansible-workbench.cfg
+${workbench_dir}/ansible.cfg
+${workbench_dir}/hosts
+${workbench_dir}/vars/links.yml
+${workbench_dir}/vars/projects.yml
+${workbench_dir}/vars/repos.yml
+${workbench_dir}/vars/roles.yml
+${workbench_dir}/vars/runner.yml"
+
 # Functions
-. ${workbench_dir}/ansible-workbench-lib.sh
+. "${workbench_dir}/ansible-workbench-lib.sh"
 
 # Main
 dryrun="false"
 playbook_debug="false"
-playbook_dryrun=""
+playbook_dryrun="false"
 for i in "$@"; do
     case $i in
         -h|--help)
-            printf "${usage}\n"
+            printf '%b\n' "${usage}"
             exit 0
             ;;
         -V|--version)
-            printf "${version}\n"
+            printf '%b\n' "${version}"
             exit 0
             ;;
-        -v1|--actionable)
-            export ANSIBLE_STDOUT_CALLBACK=actionable
+        -v1|--quiet)
+            export ANSIBLE_STDOUT_CALLBACK=yaml
+	    export ANSIBLE_DISPLAY_OK_HOSTS=false
+	    export ANSIBLE_DISPLAY_SKIPPED_HOSTS=false
             ;;
         -v2|--minimal)
             export ANSIBLE_STDOUT_CALLBACK=minimal
+	    export ANSIBLE_CALLBACK_RESULT_FORMAT=yaml
             ;;
         -v3|--yaml)
             export ANSIBLE_STDOUT_CALLBACK=yaml
@@ -163,8 +205,8 @@ for i in "$@"; do
             exit 0
             ;;
         *)
-            printf "[ERR] Unknown command ${i}\n"
-            printf "${usage}\n"
+            printf '%b\n' "[ERR] Unknown command ${i}"
+            printf '%b\n' "${usage}"
             exit 1
             ;;
     esac

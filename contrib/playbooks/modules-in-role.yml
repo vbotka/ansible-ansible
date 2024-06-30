@@ -68,7 +68,6 @@
     - keywords.yml
 
   tasks:
-
     - name: The variable my_role_path is mandatory
       ansible.builtin.assert:
         that: my_role_path|d('')|length > 0
@@ -96,11 +95,11 @@
     - name: Get list of keys from block/rescue/always
       ansible.builtin.set_fact:
         lfk: "{{ lfk | d([]) + item.keys() | list }}"
-      loop: "{{ lft | json_query(lft_query) | flatten }}"  # noqa: jinja[invalid]
+      loop: "{{ lft | json_query(lft_query) | flatten }}" # noqa: jinja[invalid]
       loop_control:
         label: "{{ item.keys() | list }}"
       vars:
-        lft_query: '[].[block, rescue, always]'
+        lft_query: "[].[block, rescue, always]"
 
     - name: Display list of modules
       ansible.builtin.debug:

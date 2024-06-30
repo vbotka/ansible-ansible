@@ -1,16 +1,19 @@
-0.2.5
-#####
+1.0.1
+=====
+Bugfix release.
 
-Fix Ansible lint.
+
+1.0.0
+=====
+Production release.
 
 
 0.2.4
-#####
-
+=====
 Tested OK.
 
 Installation
-============
+------------
 
 (1-9)
 mkdir /home/admin/.ansible
@@ -40,5 +43,5 @@ ansible-workbench/ansible-workbench.sh -d -n runner
 ansible-workbench/ansible-workbench.sh runner
 
 Update all
-==========
+----------
 ansible-workbench/ansible-workbench.sh all

@@ -19,7 +19,7 @@
 #   * Used by ansible-workbench.sh
 #   * vars are defaults. Will be overriden by --extra-vars
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# https://github.com/vbotka/ansible-ansible/tree/master/contrib/workbench
+# https://github.com/vbotka/ansible-ansible/contrib/workbench
 
 - name: Install git repositories
   hosts: localhost
@@ -29,8 +29,9 @@
 
   vars:
 
-    #   my_version: 0.2.6-CURRENT
-    my_version: "0.2.5"
+    # my_version: 1.0.1-CURRENT
+    my_version: 1.0.0
+
     git_module: false
     my_git_user: admin
     my_user: "{{ lookup('env','USER') }}"
@@ -39,14 +40,11 @@
     my_repos_path: "{{ lookup('env','HOME') }}/.ansible"
     my_repos_file: vars/repos.yml
     my_requirements: "{{ requirements | selectattr('install', 'undefined') +
-                         requirements | selectattr('install', 'defined') |
-                                        selectattr('install') }}"
+                         requirements | selectattr('install', 'defined') | selectattr('install') }}"
 
   tasks:
-
     - name: Include list of repos from {{ my_repos_file }}
       ansible.builtin.include_vars: "{{ my_repos_file }}"
-
     - name: Debug
       ansible.builtin.debug:
         msg: "{{ '{}'.format(msg) }}"
@@ -68,37 +66,36 @@
       when: debug | d(false) | bool
 
     - name: Git install repos
+      when: git_module | bool
       ansible.builtin.git:
         repo: "{{ item.src }}"
         dest: "{{ my_repos_path }}/{{ item.name }}"
-        version: "{{ item.version | default('HEAD') }}"
+        version: "{{ item.version | d(omit) }}"
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      when: git_module | bool
 
     - name: Command install repos
-      ansible.builtin.command: >
-        /bin/sh -c
-        'cd {{ my_repos_path }};
-        if [ -e {{ item.name | quote }} ]; then
-        (cd {{ item.name }}; git pull);
-        else
-        git clone {{ item.src }} {{ item.name }};
-        fi'
+      when: not git_module | bool
+      ansible.builtin.command: |
+        /bin/sh -c 'cd {{ my_repos_path }};
+                    if [ -e {{ item.name|quote }} ]; then
+                        msg=$(cd {{ item.name }}; git pull);
+                    else
+                        msg=$(git clone {{ item.src }} {{ item.name }});
+                    fi;
+                    echo $msg'
+
       args:
         chdir: "{{ my_repos_path }}"
-      register: out
       loop: "{{ my_requirements }}"
       loop_control:
         label: "{{ item.name }}"
-      changed_when: false  # TODO: test registered result
-      when: not git_module | bool
+      register: result
+      changed_when: result_stdout != "Already up to date."
 
     - name: Chown, chmod and link repos
-      when: not ansible_check_mode
       block:
-
         - name: Chown and chmod repos
           ansible.builtin.file:
             state: directory
@@ -123,4 +120,3 @@
             label: "{{ item.name }}"
 
 # EOF
-...

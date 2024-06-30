@@ -1,5 +1,4 @@
 ---
-
 - name: "Rm update_docs_themes: Include vars meta"
   ansible.builtin.include_vars: "{{ rm_roles_docs_file }}"
 
@@ -20,9 +19,9 @@
     dest: "{{ roles_path }}/{{ item.0.key }}/{{ item.0.value.themes_path }}/"
     rsync_opts:
       - --ignore-times
-    # owner: "{{ rm_owner }}"
-    # group: "{{ rm_group }}"
-    # mode: "0664"
+  # owner: "{{ rm_owner }}"
+  # group: "{{ rm_group }}"
+  # mode: "0664"
   loop: "{{ rm_roles_docs | dict2items | subelements('value.themes') }}"
   loop_control:
     label: "{{ item.0.key }} {{ item.1 }}"
@@ -31,4 +30,3 @@
     - item.0.key | basename not in rm_roles_blacklist
 
 # EOF
-...
