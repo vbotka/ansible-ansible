@@ -14,7 +14,11 @@ Maintenance update
 Major Changes
 -------------
 * Add support for Ubuntu 24.04 Noble
-* Add version ma_role_version
+
+Minor Changes
+-------------
+* Add variable ma_role_version
+* Update tasks debug.yml
 
 
 2.6.13
