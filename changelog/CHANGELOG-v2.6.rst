@@ -3,10 +3,6 @@ vbotka.ansible 2.6 Release Notes
 ================================
 
 .. contents:: Topics
-# BEGIN Commits 2.6.14
-- Add variable ma_role_version
-- Start 2.6.14 devel
-# END Commits 2.6.14
 # BEGIN Release notes 2.6.14
 2.6.14
 ======
@@ -16,11 +12,16 @@ Major Changes
 -------------
 Minor Changes
 -------------
+- RoleMaster commit
+- Add variable ma_role_version
+- Start 2.6.14 devel
+
 Bugfixes
 --------
 Breaking Changes / Porting Guide
 --------------------------------
 # END Release notes 2.6.14
+
 
 2.6.14
 ======
