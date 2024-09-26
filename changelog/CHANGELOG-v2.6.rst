@@ -5,6 +5,23 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.14
+======
+
+Release Summary
+---------------
+Maintenance update
+
+Major Changes
+-------------
+* Add support for Ubuntu 24.04 Noble
+
+Minor Changes
+-------------
+* Add variable ma_role_version
+* Update tasks debug.yml
+
+
 2.6.13
 ======
 
