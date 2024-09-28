@@ -1,43 +1,47 @@
 ---
-- name: "Rm: retore-license: Include vars"
+
+- name: "Retore-license: Include vars"
   ansible.builtin.include_vars: "{{ rm_roles_license_file }}"
 
-- name: "Rm: retore-license: Debug"
-  ansible.builtin.debug:
-    msg: |-
-      rm_roles_select_list:
-        {{ rm_roles_select_list | to_nice_yaml(indent=2) | indent(2) }}
-      {% if rm_roles_select_list | length == 0 %}
-      rm_roles_license:
-        {{ rm_roles_license | to_nice_yaml(indent=2) | indent(2) }}
-      {% else %}
-      rm_roles_license: (selected)
-      {% for i in rm_roles_select_list %}
-        {{ i }}:
-          {{ rm_roles_license[i] | to_nice_yaml(indent=2) | indent(4) }}
-      {% endfor %}
-      {% endif %}
-  when: rm_debug | bool
-
-- name: "Rm: restore-license: Create roles license files"
-  ansible.builtin.template:
-    src: templates/{{ item.value.template }}
-    dest: "{{ roles_path }}/{{ item.key }}/LICENSE"
-    owner: "{{ rm_owner }}"
-    group: "{{ rm_group }}"
-    mode: "{{ rm_roles_file_mode }}"
-    backup: "{{ rm_backup_conf }}"
-    # validate: "{{ rm_ansible_lint }} %s"
-  loop: "{{ _select }}"
-  loop_control:
-    label: "{{ item.key }}"
+- name: Restore license
   vars:
-    _select: |
-      {% if rm_roles_select_list | length == 0 %}
-      {{ rm_roles_license | dict2items }}
-      {% else %}
-      {{ rm_roles_license | dict2items | selectattr('key', 'in', rm_roles_select_list) }}
-      {% endif %}
-  when: item.key | basename not in rm_roles_blacklist
+    regex_select: "({{ my_roles_select | join('|') }})$"
+    rm_roles_license_list: "{{ rm_roles_license | dict2items }}"
+    my_roles_license: "{{ my_roles_select |
+                          ternary(rm_roles_license_list | selectattr('key', 'search', regex_select),
+                                  rm_roles_license_list) }}"
+  block:
+
+    - name: "Restore-license: Debug rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |-
+          my_roles_select:
+            {{ my_roles_select | to_nice_yaml(indent=2) | indent(2) }}
+          my_roles_license:
+            {{ my_roles_license | to_nice_yaml(indent=2) | indent(2) }}
+      when: rm_debug | bool
+
+    - name: "Restore-license: Create license files"
+      ansible.builtin.template:
+        src: templates/{{ item.value.template }}
+        dest: "{{ my_roles_path }}/{{ item.key }}/LICENSE"
+        owner: "{{ rm_owner }}"
+        group: "{{ rm_group }}"
+        mode: "{{ rm_roles_file_mode }}"
+        backup: "{{ rm_backup_conf }}"
+        # validate: "{{ rm_ansible_lint }} %s"
+      loop: "{{ my_roles_license }}"
+      register: out
+      loop_control:
+        label: "{{ item.key }}"
+
+    - name: "Restore-license: Set my_roles"
+      ansible.builtin.set_fact:
+        my_roles: "{{ out.results | json_query('[?changed].item.key') }}"
+
+    - name: "Restore-license: Debug my_roles rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: my_roles | to_nice_yaml
+      when: rm_debug | bool
 
 # EOF

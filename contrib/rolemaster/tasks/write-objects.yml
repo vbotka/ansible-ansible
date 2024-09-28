@@ -1,19 +1,19 @@
 ---
-- name: Include fn/roles-objects.yml
+
+- name: "Write-objects: Include fn/roles-objects.yml"
   ansible.builtin.include_tasks: fn/roles-objects.yml
-  loop: "{{ rm_roles_path | default([]) }}"
+  loop: "{{ my_roles | default([]) }}"
 
-- name: "Rm: write-objects: Debug meta"
+- name: "Write-objects: Debug rm_debug={{ rm_debug }}"
   ansible.builtin.debug:
-    var: rm_roles_meta
+    msg: |
+      rm_roles_meta:
+        {{ rm_roles_meta | to_nice_yaml(indent=2) | indent(2) }}
+      rm_roles_travis:
+        {{ rm_roles_travis | to_nice_yaml(indent=2) | indent(2) }}
   when: rm_debug | bool
 
-- name: "Rm: write-objects: Debug travis"
-  ansible.builtin.debug:
-    var: rm_roles_travis
-  when: rm_debug | bool
-
-- name: "Rm: write-objects: Create dirs"
+- name: "Write-objects: Create dirs"
   ansible.builtin.file:
     state: directory
     path: "{{ item }}"
@@ -23,49 +23,51 @@
     - "{{ rm_roles_license_dir }}"
     - "{{ rm_roles_meta_dir }}"
 
-- name: "Rm: write-objects: Write meta"
-  when: rm_roles_meta_file_write
+- name: Write meta
+  when: rm_roles_meta_file_write | bool
   block:
-    - name: "Rm: write-objects: Create temp file"
+
+    - name: "Write-objects: Create temp file"
       ansible.builtin.tempfile:
         path: "{{ rm_roles_meta_dir }}"
       register: result
 
-    - name: "Rm: write-objects: Set temp file permissions"
+    - name: 'Write-objects: Set temp file permissions'
       ansible.builtin.file:
         path: "{{ result.path }}"
         mode: "{{ rm_roles_file_mode }}"
       when: not ansible_check_mode
 
-    - name: "Rm: write-objects: Debug temp file"
+    - name: "Write-objects: Debug temp file rm_debug={{ rm_debug }}"
       ansible.builtin.debug:
         msg: "{{ result.path }}"
       when:
         - rm_debug | bool
         - not ansible_check_mode
 
-    - name: "Rm: write-objects: Debug meta link"
+    - name: "Write-objects: Debug meta link rm_debug={{ rm_debug }}"
       ansible.builtin.debug:
         msg: "{{ rm_roles_meta_file }}"
       when: rm_debug | bool
 
-    - name: "Rm: write-objects: Link temp file to {{ rm_roles_meta_file }}"
+    - name: "Write-objects: Link temp file to {{ rm_roles_meta_file }}"
       ansible.builtin.file:
         state: link
         src: "{{ result.path }}"
         dest: "{{ rm_roles_meta_file }}"
       when: not ansible_check_mode
 
-    - name: "Rm: write-roles-objects: Write {{ rm_roles_meta_file }}"
+    - name: "Write-roles-objects: Write {{ rm_roles_meta_file }}"
       ansible.builtin.template:
         src: templates/roles-meta.j2
         dest: "{{ rm_roles_meta_file }}"
         mode: "0644"
         follow: true
 
-- name: "Rm: write-objects: Write travis"
-  when: rm_roles_travis_file_write
+- name: Write travis
+  when: rm_roles_travis_file_write | bool
   block:
+
     - name: "Rm: write-objects: Create temp file"
       ansible.builtin.tempfile:
         path: "{{ rm_roles_travis_dir }}"

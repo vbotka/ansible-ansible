@@ -9,53 +9,48 @@
 #
 # shell> ansible-playbook modules-in-role.yml -e my_role_path='../../roles/vbotka.freebsd_postinstall'
 #
-# TASK [Display list of modules] ***********************************************
+# TASK [Display results] ***********************************************
 # ok: [localhost] =>
-#   msg: |-
+#   msg: |2-
 #
-#     List of modules
-#     ===============
-#     - ansible.builtin.assert
-#     - ansible.builtin.blockinfile
-#     - ansible.builtin.command
-#     - ansible.builtin.copy
-#     - ansible.builtin.cron
-#     - ansible.builtin.debug
-#     - ansible.builtin.fail
-#     - ansible.builtin.file
-#     - ansible.builtin.getent
-#     - ansible.builtin.group
-#     - ansible.builtin.import_tasks
-#     - ansible.builtin.include_role
-#     - ansible.builtin.include_tasks
-#     - ansible.builtin.lineinfile
-#     - ansible.builtin.meta
-#     - ansible.builtin.replace
-#     - ansible.builtin.set_fact
-#     - ansible.builtin.shell
-#     - ansible.builtin.stat
-#     - ansible.builtin.template
-#     - ansible.builtin.unarchive
-#     - ansible.builtin.user
-#     - ansible.posix.authorized_key
-#     - ansible.posix.mount
-#     - ansible.posix.synchronize
-#     - ansible.posix.sysctl
-#     - community.general.cronvar
-#     - community.general.ini_file
-#     - community.general.pkgng
-#     - community.general.portinstall
-#     - community.general.timezone
+#     list_of_modules:
+#       - ansible.builtin.assert
+#       - ansible.builtin.blockinfile
+#       - ansible.builtin.command
+#       - ansible.builtin.copy
+#       - ansible.builtin.cron
+#       - ansible.builtin.debug
+#       - ansible.builtin.fail
+#       - ansible.builtin.file
+#       - ansible.builtin.getent
+#       - ansible.builtin.group
+#       - ansible.builtin.import_tasks
+#       - ansible.builtin.include_role
+#       - ansible.builtin.include_tasks
+#       - ansible.builtin.lineinfile
+#       - ansible.builtin.meta
+#       - ansible.builtin.replace
+#       - ansible.builtin.set_fact
+#       - ansible.builtin.shell
+#       - ansible.builtin.stat
+#       - ansible.builtin.template
+#       - ansible.builtin.unarchive
+#       - ansible.builtin.user
+#       - ansible.posix.authorized_key
+#       - ansible.posix.mount
+#       - ansible.posix.synchronize
+#       - ansible.posix.sysctl
+#       - community.general.cronvar
+#       - community.general.ini_file
+#       - community.general.pkgng
+#       - community.general.portinstall
+#       - community.general.timezone
 #
-# TASK [Display list of collections] *******************************************
-# ok: [localhost] =>
-#   msg: |-
 #
-#     List of collections
-#     ===================
-#     - ansible.builtin
-#     - ansible.posix
-#     - community.general
+#     list_of_collections:
+#       - ansible.builtin
+#       - ansible.posix
+#       - community.general
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://github.com/vbotka/ansible-ansible/tree/master/contrib/playbooks
@@ -67,16 +62,32 @@
   vars_files:
     - keywords.yml
 
+  vars:
+
+    lfm: "{{ (lft | json_query('[].keys(@)') +
+              lft | json_query('[].[block[].keys(@), rescue[].keys(@), always[].keys(@)]')) |
+              flatten | unique | difference(keywords) | sort }}"
+    lfc: "{{ lfm | map('splitext') | map('first') | unique | sort }}"
+
   tasks:
-    - name: The variable my_role_path is mandatory
-      ansible.builtin.assert:
-        that: my_role_path|d('')|length > 0
-        fail_msg: The variable my_role_path is mandatory.
+
+    - name: Sanity
+      block:
+
+        - name: The variable my_role_path is mandatory
+          ansible.builtin.assert:
+            that: my_role_path | d('') | length > 0
+            fail_msg: '[ERR] The variable my_role_path is mandatory.'
+
+        - name: The directory my_role_path exists
+          ansible.builtin.assert:
+            that: my_role_path is exists
+            fail_msg: '[ERR] The directory {{ my_role_path }} does not exist.'
 
     - name: Find tasks files
       ansible.builtin.find:
         path: "{{ my_role_path }}/tasks"
-        patterns: "*.yml,*.yaml"
+        patterns: '*.yml,*.yaml'
         recurse: true
       register: result
 
@@ -85,35 +96,11 @@
         lft: "{{ lft | d([]) + lookup('file', item) | from_yaml }}"
       loop: "{{ result.files | map(attribute='path') | list }}"
 
-    - name: Get list of keys
-      ansible.builtin.set_fact:
-        lfk: "{{ lfk | d([]) + item.keys() | list }}"
-      loop: "{{ lft }}"
-      loop_control:
-        label: "{{ item.keys() | list }}"
-
-    - name: Get list of keys from block/rescue/always
-      ansible.builtin.set_fact:
-        lfk: "{{ lfk | d([]) + item.keys() | list }}"
-      loop: "{{ lft | json_query(lft_query) | flatten }}" # noqa: jinja[invalid]
-      loop_control:
-        label: "{{ item.keys() | list }}"
-      vars:
-        lft_query: "[].[block, rescue, always]"
-
-    - name: Display list of modules
+    - name: Display results
       ansible.builtin.debug:
-        msg: |2-
+        msg: |-
 
-          List of modules
-          ===============
-          {{ lfk | unique | sort | difference(keywords) | to_nice_yaml }}
-
-    - name: Display list of collections
-      ansible.builtin.debug:
-        msg: |2-
-
-          List of collections
-          ===================
-          {{ lfk|unique|sort|difference(keywords)|
-             map('splitext')|map('first')|unique|sort|to_nice_yaml }}
+          list_of_modules:
+            {{ lfm | to_nice_yaml(indent=2) | indent(2) }}
+          list_of_collections:
+            {{ lfc | to_nice_yaml(indent=2) | indent(2) }}

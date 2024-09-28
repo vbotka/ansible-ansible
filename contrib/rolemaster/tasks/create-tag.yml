@@ -1,0 +1,29 @@
+---
+
+- name: "Bump-version: Sanity semver"
+  ansible.builtin.import_tasks: fn/sanity-semver.yml
+
+- name: "Bump-version: Create new_versions_dict"
+  ansible.builtin.import_tasks: fn/new-versions-dict.yml
+
+- name: Create tags
+  block:
+
+    - name: "Create-tag: Create tags"
+      ansible.builtin.script:
+        cmd: "{{ rm_scripts_dir }}/{{ script }} {{ params }}"
+        chdir: "{{ item }}"
+      loop: "{{ my_roles }}"
+      vars:
+        script: tag-create.sh
+        new_version: "{{ new_versions_dict[item] }}"
+        message: "{{ new_version }} See changelog."
+        params: "{{ [item, message, new_version] | select | map('quote') | join(' ') }}"
+      register: out
+
+    - name: "Create-tag: Debug result rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: out
+      when: rm_debug2 | bool
+
+# EOF
