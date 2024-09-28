@@ -1,0 +1,31 @@
+---
+
+- name: End host when var script missing or empty.
+  when: script | d('') | length == 0
+  block:
+
+    - name: "Run-script: Debug [ERR] variable script is missing or empty."
+      ansible.builtin.debug:
+        msg: |
+          [ERR] variable script is missing or empty. End host.
+
+    - name: "Run-script: End host."
+      ansible.builtin.meta: end_host
+
+- name: "Run-script: Set var script_path"
+  ansible.builtin.set_fact:
+    script_path: "{{ [playbook_dir, rm_scripts_dir, script] | join('/') }}"
+
+- name: End host when script does not exist.
+  when: script_path is not exists
+  block:
+
+    - name: "Run-script: Debug [ERR] {{ script_path | basename ~ ' does not exist. End host.'}}"
+      ansible.builtin.debug:
+        msg: |
+          [ERR] {{ script_path }} does not exist. End host.
+
+    - name: "Run-script: End host."
+      ansible.builtin.meta: end_host
+
+# EOF

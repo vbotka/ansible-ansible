@@ -1,0 +1,19 @@
+---
+rm_known_tags:
+  - rm_bump_changelog
+  - rm_bump_version
+  - rm_copy_common_files
+  - rm_create_tag
+  - rm_debug
+  - rm_list_roles
+  - rm_list_modified_roles
+  - rm_read_objects
+  - rm_read_objects_license
+  - rm_read_objects_meta
+  - rm_read_objects_travis
+  - rm_restore_license
+  - rm_restore_meta
+  - rm_restore_travis
+  - rm_run_script
+  - rm_update_docs_themes
+  - rm_write_objects

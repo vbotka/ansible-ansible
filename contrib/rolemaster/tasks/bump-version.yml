@@ -1,0 +1,110 @@
+---
+
+- name: "Bump-version: Sanity semver"
+  ansible.builtin.import_tasks: fn/sanity-semver.yml
+
+- name: "Bump-version: Create new_versions_dict"
+  ansible.builtin.import_tasks: fn/new-versions-dict.yml
+
+- name: Bump variable <prefix>_role_version in /defaults/main.yml
+  block:
+
+    - name: "Bump-version: Stat /defaults/main.yml"
+      ansible.builtin.stat:
+        path: "{{ item }}/defaults/main.yml"
+      loop: "{{ my_roles }}"
+      register: out
+      loop_control:
+        label: "{{ item | basename }}"
+
+    - name: "Bump-version: Debug /defaults/main.yml rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: out
+      when: rm_debug2 | bool
+
+    - name: "Bump-version: Bump role_version in /defaults/main.yml"
+      ansible.builtin.lineinfile:
+        path: "{{ item.stat.path }}"
+        regexp: '^{{ variable }}: .*$'
+        line: '{{ variable }}: {{ new_version }}'
+        firstmatch: true
+        insertafter: '^#.*$'
+      loop: "{{ out.results | selectattr('stat.exists') }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+      vars:
+        role: "{{ item.item | basename }}"
+        variable: "{{ rm_role_prefix[role] }}_role_version"
+        new_version: "{{ new_versions_dict[item.item] }}"
+
+- name: Bump variable <prefix>_role_version in defaults/main/main.yml
+  block:
+
+    - name: "Bump-version: Stat defaults/main/main.yml"
+      ansible.builtin.stat:
+        path: "{{ item }}/defaults/main/main.yml"
+      loop: "{{ my_roles }}"
+      register: out
+      loop_control:
+        label: "{{ item | basename }}"
+
+    - name: "Bump-version: Debug defaults/main/main.yml rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: out
+      when: rm_debug2 | bool
+
+    - name: "Bump-version: Bump role_version in defaults/main/main.yml"
+      ansible.builtin.lineinfile:
+        path: "{{ item.stat.path }}"
+        regexp: '^{{ variable }}: .*$'
+        line: '{{ variable }}: {{ new_version }}'
+        firstmatch: true
+        insertafter: '^#.*$'
+      loop: "{{ out.results | selectattr('stat.exists') }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+      vars:
+        role: "{{ item.item | basename }}"
+        variable: "{{ rm_role_prefix[role] }}_role_version"
+        new_version: "{{ new_versions_dict[item.item] }}"
+
+- name: Bump variables in docs/source/conf.py
+  block:
+
+    - name: "Bump-version: Stat docs/source/conf.py"
+      ansible.builtin.stat:
+        path: "{{ item }}/docs/source/conf.py"
+      loop: "{{ my_roles }}"
+      register: out
+      loop_control:
+        label: "{{ item | basename }}"
+
+    - name: "Bump-version: Debug docs/source/conf.py rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: out
+      when: rm_debug2 | bool
+
+    - name: "Bump-version: Bump version in docs/source/conf.py"
+      ansible.builtin.lineinfile:
+        path: "{{ item.stat.path }}"
+        regexp: '^version = .*$'
+        line: "version = '{{ major_minor }}'"
+      loop: "{{ out.results | selectattr('stat.exists') }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+      vars:
+        new_version: "{{ new_versions_dict[item.item] }}"
+        major_minor: "{{ new_version | splitext | first }}"
+
+    - name: "Bump-version: Bump release in docs/source/conf.py"
+      ansible.builtin.lineinfile:
+        path: "{{ item.stat.path }}"
+        regexp: '^release = .*$'
+        line: "release = '{{ new_version }}'"
+      loop: "{{ out.results | selectattr('stat.exists') }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+      vars:
+        new_version: "{{ new_versions_dict[item.item] }}"
+
+# EOF

@@ -79,7 +79,7 @@
       when: not git_module | bool
       ansible.builtin.command: |
         /bin/sh -c 'cd {{ my_repos_path }};
-                    if [ -e {{ item.name|quote }} ]; then
+                    if [ -e {{ item.name | quote }} ]; then
                         msg=$(cd {{ item.name }}; git pull);
                     else
                         msg=$(git clone {{ item.src }} {{ item.name }});

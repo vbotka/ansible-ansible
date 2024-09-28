@@ -1,20 +1,65 @@
 ---
-- name: "Rm: read-objects: Include vars meta"
-  ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
 
-- name: "Rm: read-objects: Debug meta"
-  ansible.builtin.debug:
-    var: rm_roles_meta
-  when: rm_debug | bool
+- name: Meta
+  vars:
+    regex_select: "({{ my_roles_select | join('|') }})$"
+    rm_roles_meta_list: "{{ rm_roles_meta | dict2items }}"
+    my_roles_meta: "{{ my_roles_select | ternary(rm_roles_meta_list | selectattr('key', 'search', regex_select),
+                                                 rm_roles_meta_list) }}"
+  tags: rm_read_objects_meta
+  block:
 
-# - ansible.builtin.debug:
-#     var: rm_roles_meta.keys()
-#   when: rm_debug|bool
-# - ansible.builtin.debug:
-#     msg: "{{ item.key }}"
-#   loop: "{{ rm_roles_meta|dict2items }}"
-#   loop_control:
-#     label: "{{ item.value.galaxy_info.role_name|default(item.key) }}"
-#   when: rm_debug|bool
+    - name: "Read-objects: Include vars meta"
+      ansible.builtin.include_vars: "{{ rm_roles_meta_file }}"
+
+    - name: "Read-objects: Debug meta rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: my_roles_meta
+      when: rm_debug | bool
+
+    - name: "Read-objects: Debug meta rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        msg: |
+          git name: galaxy name
+          {{ git_galaxy | to_nice_yaml(indent=2) | indent(0) }}
+      vars:
+        git_names: "{{ my_roles_meta | json_query('[].key') | map('basename') }}"
+        gal_names: "{{ my_roles_meta | json_query('[].value.galaxy_info.role_name') }}"
+        git_galaxy: "{{ dict(git_names | zip(gal_names)) }}"
+      when: rm_debug2 | bool
+
+- name: Travis
+  vars:
+    regex_select: "({{ my_roles_select | join('|') }})$"
+    rm_roles_travis_list: "{{ rm_roles_travis | dict2items }}"
+    my_roles_travis: "{{ my_roles_select | ternary(rm_roles_travis_list | selectattr('key', 'search', regex_select),
+                                                   rm_roles_travis_list) }}"
+  tags: rm_read_objects_travis
+  block:
+
+    - name: "Read-objects: Include vars travis"
+      ansible.builtin.include_vars: "{{ rm_roles_travis_file }}"
+
+    - name: "Read-objects: Debug travis rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: my_roles_travis
+      when: rm_debug | bool
+
+- name: License
+  vars:
+    regex_select: "({{ my_roles_select | join('|') }})$"
+    rm_roles_license_list: "{{ rm_roles_license | dict2items }}"
+    my_roles_license: "{{ my_roles_select | ternary(rm_roles_license_list | selectattr('key', 'search', regex_select),
+                                                    rm_roles_license_list) }}"
+  tags: rm_read_objects_license
+  block:
+
+    - name: "Read-objects: Include vars license"
+      ansible.builtin.include_vars: "{{ rm_roles_license_file }}"
+
+    - name: "Read-objects: Debug license rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: my_roles_license
+      when: rm_debug | bool
 
 # EOF

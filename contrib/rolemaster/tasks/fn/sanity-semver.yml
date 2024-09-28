@@ -1,0 +1,27 @@
+---
+
+- name: End host when var semver missing or empty.
+  when: semver | d('') | length == 0
+  block:
+
+    - name: "Bump-changelog: Debug"
+      ansible.builtin.debug:
+        msg: |
+          [ERR] variable semver is missing or empty. End host.
+
+    - name: "Bump-changelog: End host."
+      ansible.builtin.meta: end_host
+
+- name: End host when semver not in major,minor,patch.
+  when: semver not in ['major', 'minor', 'patch']
+  block:
+
+    - name: "Bump-changelog: Debug"
+      ansible.builtin.debug:
+        msg: |
+          [ERR] {{ semver }} not in ['major', 'minor', 'patch']. End host.
+
+    - name: "Bump-changelog: End host."
+      ansible.builtin.meta: end_host
+
+# EOF

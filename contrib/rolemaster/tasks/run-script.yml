@@ -1,0 +1,43 @@
+---
+
+- name: "Run-script: Sanity script"
+  ansible.builtin.import_tasks: fn/sanity-script.yml
+
+- name: "Run-script: Execute script={{ script }}"
+  ansible.builtin.script:
+    cmd: "{{ script_path }} {{ params }}"
+    chdir: "{{ item }}"
+  loop: "{{ my_roles }}"
+  register: out
+  vars:
+    param2: "{{ rm_script_param2 | d('') }}"
+    param3: "{{ rm_script_param3 | d('') }}"
+    params: "{{ [item, param2, param3] | select | map('quote') | join(' ') }}"
+
+- name: "Run-script: Debug out rm_debug2={{ rm_debug2 }}"
+  ansible.builtin.debug:
+    var: out | to_nice_yaml
+  when: rm_debug2 | bool
+
+- name: Debug
+  vars:
+    result: "{{ out.results | json_query('[].stdout_lines') |
+                              map('last') |
+                              map('trim') |
+                              map('from_yaml') |
+                              combine }}"
+  when: rm_debug | bool
+  block:
+
+    - name: "Run-script: Debug result rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: result | to_nice_yaml
+
+    - name: "Run-script: Debug result rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |
+          {% for k, v in result.items() %}
+          {{ v | to_yaml | trim }}: {{ k }}
+          {% endfor %}
+
+# EOF

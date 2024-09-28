@@ -7,14 +7,19 @@
   gather_facts: false
   become: false
 
+  vars_files:
+    - rm_role_prefix.yml
+    - rm_known_tags.yml
+
   vars:
 
-    rm_version: 2.4.0
+    rm_version: 2.5.0
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
     rm_group: admin
-    rm_roles_pattern: admin.*
+    rm_roles_namespace: admin
+    rm_roles_pattern: '{{ rm_roles_namespace }}.*'
     rm_roles_license_holder: administrator <admin@example.com>
     rm_roles_license_year_to: 2024
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS < < <
@@ -22,97 +27,276 @@
     rm_help_text: |
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       RoleMaster version {{ rm_version }}
-      Management of Ansible roles' meta-data, travis, docs, and licenses
+
+      Management of Ansible roles:
+
+        * Backup, update, and restore objects: meta-data, travis, and licenses
+        * Update common files and docs
+        * Create and update changelogs
+        * Misc (Bump version, ...)
+        * Run external scripts
+
+      Without any tag this help will be displayed. Select the functionality by a
+      single tag or a combination of tags. Take a look at the imported tasks
+      before you run them.
+
+      The tag rm_read_objects and rm_restore_* tags run on all stored roles
+      created by rm_write_objects (or any other way you might want to). You can
+      use the variable rm_roles_select to select role(s) (todo:
+      rm_roles_reject). Other tags require list of roles stored in the variable
+      my_roles. This list is created by the tags rm_list_roles or
+      rm_list_modified_roles. Run one of these tags first. You can select/reject
+      items in this list by using comma separated lists
+      rm_roles_select/rm_roles_reject.
+
+      The tags rm_list_roles and rm_list_modified_roles require the path to the
+      roles in the variable my_roles_path. This variable is created
+      automatically (See the vars section 'Evaluate my_roles_path' below). You
+      can declare the variable rm_roles_path. If undefined or empty the option
+      roles_path from the configuration file will be taken. The expected value
+      is a single path string (todo: Parse multiple paths. The find module
+      parameter paths works with a list).
 
       USAGE
 
-      Create list of roles' paths rm_roles_path
-      shell> ansible-playbook rolemaster.yml -t rm-list-roles
+      * Create list of roles' paths my_roles
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles -e rm_debug=true
+      * Write roles' objects to files
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_write_objects
+      * Read roles' objects from files
+        shell> ansible-playbook rolemaster.yml -t rm_read_objects
+      * Restore meta-data
+        shell> ansible-playbook rolemaster.yml -t rm_restore_meta
+      * Restore licenses
+        shell> ansible-playbook rolemaster.yml -t rm_restore_license
+      * Restore travis
+        shell> ansible-playbook rolemaster.yml -t rm_restore_travis
+      * Copy common files
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_copy_common_files
+      * Update docs/source/_themes
+        shell> ansible-playbook rolemaster.yml -t rm_update_docs_themes
+      * Run script
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=<script-file>
+      * Bump changelog
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_changelog -e semver=[major|minor|patch]
+      * Bump version
+        shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_version -e semver=[major|minor|patch]
+      * Create list of modified roles' paths my_roles
+        shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles
 
-      Write roles' objects to files
-      shell> ansible-playbook rolemaster.yml -t rm-list-roles,rm-write-objects
+      WARNING
 
-      Read roles' objects from files
-      shell> ansible-playbook rolemaster.yml -t rm-read-objects
-
-      Restore meta-data
-      shell> ansible-playbook rolemaster.yml -t rm-restore-meta
-
-      Restore licenses
-      shell> ansible-playbook rolemaster.yml -t rm-restore-license
-
-      Restore travis
-      shell> ansible-playbook rolemaster.yml -t rm-restore-travis
-
-      Copy common files
-      shell> ansible-playbook rolemaster.yml -t rm-copy-common-files
-
-      Update docs/source/_themes
-      shell> ansible-playbook rolemaster.yml -t rm-update_docs_themes
-      (Warning: Not idempotent! WIP)
+        Some tasks won't display correct differences predictions (--diff) when
+        running in the check mode (--check). For example, run.script doesn't run
+        the task ansible.builtin.script in the check mode. Therefore, the
+        results will be an empty dictionaries and following loops, if any, will
+        be skipped.
 
       NOTES
 
-      1) Append --check --diff to dry-run and display predicted changes
-      2) Append --extra-vars 'rm_debug=true' to display debug messages
-      3) Append --extra-vars 'rm_roles_select=rol1,role2' to select roles
-      4) Create LICENSE-test and see the diff.
-         shell> for i in `find roles -name "MY-PROJECT*"`; do
-                (echo $i; cd $i; diff LICENSE LICENSE-test); done
+      * Append --check --diff to dry-run and display predicted changes.
+      * Append --extra-vars rm_debug=true to display debug messages.
+      * Append --extra-vars rm_roles_select=role1,role2 to select roles.
+      * Append --extra-vars rm_roles_reject=role8,role9 to reject roles.
+
+      * Optionally, put the list of the rejected roles into a file and set the
+        variable my_roles_reject_file
+
+      * Put the path to the roles into the variable rm_roles_path. If
+        rm_roles_path is missing or empty the path will be taken from the
+        configuration file (default ansible.cfg in the playbook
+        dir). Optionally, put path to other configuration file into the variable
+        rm_ansible_conf_path
+
+      * Tag rm_run_script expects the list my_roles. Run it after rm_list_roles
+        or rm_list_modified_roles
+
+      * Git scripts expect functional authentication configured, if
+        necessary. For example, use git-credential-oauth
+
+      * The first parameter of a script is always the path to the role. There
+        are two optional parameters: rm_script_param2 and rm_script_param3. For
+        example, the second parameter provides the git message for the scripts:
+        add_commit_push.sh and commit_push.sh (See examples). Empty parameters
+        are omitted. Don't use rm_script_param3 if rm_script_param2 doesn't
+        exist or empty.
+
+      EXAMPLES
+
+      1)  Run a script. Display current branches.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=branch-show-current.sh -e rm_debug=true
+
+      2)  Run a script. Switch to the devel branch. Display results.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=switch-devel.sh -e rm_debug=true
+
+      3)  Run a script. Switch to the master branch. Display results.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=switch-master.sh -e rm_debug=true
+
+      4)  Bump changelog. Expect semantic versioning. Increment patch.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_changelog -e semver=patch -e rm_debug=true
+
+      5)  Push current branch of the role1 to the configured upstream. If needed, a functional
+          authentication is expected.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_select=role1
+
+      6)  Restore Travis configuration. Git add and commit changes. Push current
+          branch to the configured upstream.
+          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'"
+
+      7)  Update Travis configuration on role1. Git add and commit modifications. Push current branch
+          to the configured upstream.
+          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'" -e rm_roles_select=role1
+
+      8)  Bump version in variables (SEE tasks/bump-version.yml). Then add, commit, and push
+          modifications.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_version -e semver=patch
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Bump version'"
+
+      9)  Add, commit, and push role1 modifications, if any. Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update changelog.'" -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+
+      10) Merge (--no-ff) role1 devel branch to current branch (master). Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+
+      11) Push role1 current branch to the configured upstream. If needed, a functional
+          authentication is expected.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+
+      12) Merge (--no-ff) all roles except role1 devel branches to current branch (master). Display
+          all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_roles_reject=role1 -e rm_debug=true -e rm_debug2=true
+
+      13) Push all roles except role1 current branches to the configured upstream. If needed, a
+          functional authentication is expected.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_reject=role1 -e rm_debug=true -e rm_debug2=true
+
+      14) Add, commit, and push modified branches. Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update changelog.'" -e rm_debug=true -e rm_debug2=true
+
+      15) Merge (--no-ff) all roles devel branches to current branch (master). Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_debug=true -e rm_debug2=true
+
+      16) Push all roles current branches to the configured upstream. Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_debug=true -e rm_debug2=true
+
+      17) Create new tags by incrementing the semantic version patch number. Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_create_tag -e semver=patch -e rm_debug=true -e rm_debug2=true
+
+      18) Push tags. Display all debugs.
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push-tags.sh -e rm_debug=true -e rm_debug2=true
+
+      *   Create LICENSE-test and see the diff
+          shell> for i in `find roles -name "MY-PROJECT*"`; do
+               (echo $i; cd $i; diff LICENSE LICENSE-test); done
+
+      BEST PRACTICE
+
+      * Make sure the variable my_roles_path is created properly. Run the tag
+        rm_debug and set rm_debug=true to see the values.
+
+      * Initially write the objects to files.
+
+      * Switch to the devel branch.
+
+      * Bump version in variables. Then add, commit, and push modifications.
+
+      * Make changes to the source, if any. Add, commit, and push changes as
+        usually.
+
+      * Edit object's files if you want to update objects globally. Then run the
+        tags as needed: rm_restore_meta, rm_restore_license, and
+        rm_restore_travis together with the tag rm_run_script and select the
+        script add_commit_push.sh (See examples).
+
+      * Bump changelog after you completed all changes. There is no scheme in
+        the commits messages. All commits are listed in the section 'Minor
+        Changes'. This step is idempotent. You can run it during the development
+        as you like. When you repeat it new commits will be added, if any.
+
+      * To release new versions:
+        - Manually complete changelogs.
+        - Add, commit, and push modifications. (Ex.14)
+        - Switch to master. (Ex.3)
+        - Merge devel. (Ex.15)
+        - Push master to the configured upstream. (Ex.16)
+        - Create tags. Make sure the same semver is used for:
+          rm_bump_changelog, rm_bump_version, and rm_create-tag (Ex.17)
+        - Push tags. (Ex.18)
+        - Import the roles to Ansible Galaxy.
 
       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      https://github.com/vbotka/ansible-ansible/contrib/rolemaster/rolemaster.yml
+      https://github.com/vbotka/ansible-ansible/tree/master/contrib/rolemaster
 
     rm_debug: false
+    rm_debug2: false
     rm_backup_conf: false
-    rm_ansible_conf_path: "{{ playbook_dir }}/ansible.cfg"
-    rm_roles_path: "" # Get roles_path from ansible.cfg
-    # rm_roles_path: '/home/{{ rm_owner }}/.ansible/roles'
+
     rm_roles_file_mode: "0664"
+
     rm_roles_meta_file_write: true
     rm_roles_meta_file: /home/{{ rm_owner }}/.ansible/db/roles_meta.yml
     rm_roles_meta_dir: /home/{{ rm_owner }}/.ansible/db/meta
+
     rm_roles_travis_file_write: true
     rm_roles_travis_file: /home/{{ rm_owner }}/.ansible/db/roles_travis.yml
     rm_roles_travis_dir: /home/{{ rm_owner }}/.ansible/db/travis
+
     rm_roles_license_file_write: false
     rm_roles_license_file: /home/{{ rm_owner }}/.ansible/db/roles_license.yml
     rm_roles_license_dir: /home/{{ rm_owner }}/.ansible/db/license
+
     rm_roles_docs_file: /home/{{ rm_owner }}/.ansible/db/roles_docs.yml
     # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
     #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
-    rm_roles_blacklist_file: /home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml
-    rm_known_tags:
-      - rm-list-roles
-      - rm-write-objects
-      - rm-read-objects
-      - rm-restore-meta
-      - rm-restore-license
-      - rm-restore-travis
-      - rm-copy-common-files
-      - rm-update_docs_themes
+
+    rm_scripts_dir: scripts
+
+    # Evaluate my_roles_path
+    # If empty get roles_path from ansible.cfg
+    # rm_roles_path: ""
+    # rm_roles_path: "/home/{{ rm_owner }}/.ansible/roles"
+    rm_ansible_conf_path: "{{ playbook_dir }}/ansible.cfg"
+    my_ini_params: "roles_path section=defaults file={{ rm_ansible_conf_path }}"
+    my_roles_path: "{{ (rm_roles_path | d('') | length == 0) |
+                       ternary(lookup('ini', my_ini_params), rm_roles_path) }}"
+
+    # Evaluate my_roles_select
     # Comma separated list of selected roles. An empty strings selects all roles.
-    rm_roles_select: ""
-    rm_roles_select_list: "{{ (rm_roles_select | length > 0) |
-                               ternary(rm_roles_select | split(',') | map('trim') | list, [] ) }}"
+    # rm_roles_select: ""
+    rm_roles_select_def: "{{ rm_roles_select | d('') }}"
+    my_roles_select: "{{ (rm_roles_select_def | length > 0) |
+                         ternary(rm_roles_select_def | split(',') | map('trim'), []) }}"
+
+    # Evaluate my_roles_reject
+    # Comma separated list of rejected roles. An empty strings rejects no roles.
+    # rm_roles_reject: ""
+    rm_roles_reject_def: "{{ rm_roles_reject | d('') }}"
+    my_roles_reject: "{{ (rm_roles_reject_def | length > 0) |
+                         ternary(rm_roles_reject_def | split(',') | map('trim'), my_roles_reject_file) }}"
+    # rm_roles_reject_file: ""
+    rm_roles_reject_file: /home/{{ rm_owner }}/.ansible/db/roles_blacklist.yml
+    my_roles_reject_file: "{{ rm_roles_reject_file is exists |
+                              ternary(lookup('file', rm_roles_reject_file) | split | map('trim'), []) }}"
 
   tasks:
+
     #    - name: 'rm: Help variables'
     #      block:
     #        - ansible.builtin.set_fact:
-    #            my_tags: "{{ ansible_run_tags|difference(['all']) }}"
+    #            my_tags: "{{ ansible_run_tags | difference(['all']) }}"
     #        - ansible.builtin.debug:
     #            var: my_tags
     #        - ansible.builtin.debug:
-    #            msg: "known tags: {{ my_tags|intersect(rm_known_tags) }}"
+    #            msg: "known tags: {{ my_tags | intersect(rm_known_tags) }}"
     #      tags: always
 
-    - name: "Rm: Help"
+    - name: Help. The play will not run without tag(s)
       vars:
         my_tags: "{{ ansible_run_tags | difference(['all']) }}"
-      when: my_tags | intersect(rm_known_tags) | length == 0
+      when: my_tags | length == 0
       tags: always
       block:
+
         - name: Help
           ansible.builtin.debug:
             msg: "{{ '{}'.format(rm_help_text) }}"
@@ -120,78 +304,94 @@
         - name: End play
           ansible.builtin.meta: end_play
 
-    - name: "Rm: Set roles_path"
+    - name: End play when unkown tag(s)
+      vars:
+        my_tags: "{{ ansible_run_tags | difference(['all']) }}"
+        unknown_tags: "{{ my_tags | difference(rm_known_tags) }}"
+      when: unknown_tags | length > 0
       tags: always
       block:
-        - name: "Rm: list-roles-path: Get roles_path from {{ rm_ansible_conf_path }}"
-          ansible.builtin.set_fact:
-            roles_path: "{{ lookup('ini', ini_params) }}"
-          vars:
-            ini_params: roles_path section=defaults file={{ rm_ansible_conf_path }}
-          when: rm_roles_path | length == 0
 
-        - name: "Rm: list-roles-path: Get roles_path from rm_roles_path"
-          ansible.builtin.set_fact:
-            roles_path: "{{ rm_roles_path }}"
-          when: rm_roles_path | length > 0
-
-        - name: "Rm: list-roles-path: Debug {{ roles_path }}"
+        - name: Help
           ansible.builtin.debug:
-            var: roles_path
-          when: rm_debug | bool
+            msg: |
+              [ERR] Unknown tag(s): {{ unknown_tags }}
 
-        - name: "Rm: list-roles-path: Fail when roles_path is undefined"
-          ansible.builtin.fail:
-            msg: "[ERROR] roles_path is undefined. End of play."
-          when: roles_path is undefined
+        - name: End play
+          ansible.builtin.meta: end_play
 
-    - name: "Rm: Set rm_roles_blacklist"
-      tags: always
-      block:
-        - name: "Rm: roles-blacklist: Set empty list rm_roles_blaclist"
-          ansible.builtin.set_fact:
-            rm_roles_blacklist: []
-          when: rm_roles_blacklist_file is not exists
+    - name: "Debug rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |
+          rm_ansible_conf_path: "{{ rm_ansible_conf_path }}"
+          rm_roles_path: {{ rm_roles_path | d('UNDEFINED') }}
+          my_roles_path: {{ my_roles_path }}
+          rm_roles_select: {{ rm_roles_select | d('UNDEFINED') }}
+          my_roles_select:
+            {{ my_roles_select | to_nice_yaml(indent=2) | indent(2) }}
+          rm_roles_reject: {{ rm_roles_reject | d('UNDEFINED') }}
+          rm_roles_reject_file: {{ rm_roles_reject_file | d('UNDEFINED') }}
+          my_roles_reject:
+            {{ my_roles_reject | to_nice_yaml(indent=2) | indent(2) }}
+      when: rm_debug | bool
+      tags: rm_debug
 
-        - name: "Rm: roles-blacklist: Include {{ rm_roles_blacklist_file }}"
-          ansible.builtin.include_vars: "{{ rm_roles_blacklist_file }}"
-          when: rm_roles_blacklist_file is exists
+    - name: "Debug my_roles_path rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: my_roles_path
+      when: rm_debug | bool
+      tags: [rm_list_roles, rm_list_changed_roles]
 
-        - name: "Rm: roles-blacklist: Debug roles_blacklist"
-          ansible.builtin.debug:
-            var: rm_roles_blacklist
-          when: rm_debug | bool
-
-    - name: "Rm: Create list of roles paths rm_roles_path"
+    - name: Create list of roles paths my_roles
       ansible.builtin.import_tasks: tasks/list-roles.yml
-      tags: rm-list-roles
+      tags: rm_list_roles
 
-    - name: "Rm: Write roles objects to files"
+    - name: Create list of modified roles paths my_roles
+      ansible.builtin.import_tasks: tasks/list-modified-roles.yml
+      tags: rm_list_modified_roles
+
+    - name: Write roles objects to files
       ansible.builtin.import_tasks: tasks/write-objects.yml
-      tags: rm-write-objects
+      tags: rm_write_objects
 
-    - name: "Rm: Read roles objects from files"
+    - name: Read roles objects from files
       ansible.builtin.import_tasks: tasks/read-objects.yml
-      tags: rm-read-objects
+      tags: rm_read_objects
 
-    - name: "Rm: Restore roles meta-data from rm_roles_meta_file"
+    - name: Restore roles meta-data from rm_roles_meta_file
       ansible.builtin.import_tasks: tasks/restore-meta.yml
-      tags: rm-restore-meta
+      tags: rm_restore_meta
 
-    - name: "Rm: Restore roles license from rm_roles_license_file"
+    - name: Restore roles license from rm_roles_license_file
       ansible.builtin.import_tasks: tasks/restore-license.yml
-      tags: rm-restore-license
+      tags: rm_restore_license
 
-    - name: "Rm: Restore roles travis from rm_roles_travis_file"
+    - name: Restore roles travis from rm_roles_travis_file
       ansible.builtin.import_tasks: tasks/restore-travis.yml
-      tags: rm-restore-travis
+      tags: rm_restore_travis
 
-    - name: "Rm: Copy common files"
+    - name: Copy common files
       ansible.builtin.import_tasks: tasks/copy-common-files.yml
-      tags: rm-copy-common-files
+      tags: rm_copy_common_files
 
-    - name: "Rm: Update docs/source/_themes"
+    - name: Update docs/source/_themes
       ansible.builtin.import_tasks: tasks/update_docs_themes.yml
-      tags: rm-update_docs_themes
+      tags: rm_update_docs_themes
+
+    - name: Bump changelog
+      ansible.builtin.import_tasks: tasks/bump-changelog.yml
+      tags: rm_bump_changelog
+
+    - name: Bump version
+      ansible.builtin.import_tasks: tasks/bump-version.yml
+      tags: rm_bump_version
+
+    - name: Create tag
+      ansible.builtin.import_tasks: tasks/create-tag.yml
+      tags: rm_create_tag
+
+    - name: Run script
+      ansible.builtin.import_tasks: tasks/run-script.yml
+      tags: rm_run_script
 
 # EOF

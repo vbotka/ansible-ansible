@@ -1,0 +1,36 @@
+---
+
+- name: Get new versions and set new_versions_dict
+  block:
+
+    - name: "Bump-version: Get new versions {{ semver }}"
+      ansible.builtin.script:
+        cmd: "{{ rm_scripts_dir }}/{{ script }} {{ item | quote }}"
+        chdir: "{{ item }}"
+      loop: "{{ my_roles }}"
+      vars:
+        script: "new-tag-{{ semver }}.sh"
+      register: out
+      check_mode: false
+      changed_when: false
+
+    - name: "Bump-version: Set var new_versions_dict"
+      ansible.builtin.set_fact:
+        new_versions_dict: "{{ out.results | json_query('[].stdout') | map('trim') | map('from_yaml') | combine }}"
+
+- name: Debug new_versions_dict
+  when: rm_debug | bool
+  block:
+
+    - name: "Bump-version: Debug new_versions_dict rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        var: new_versions_dict | to_nice_yaml
+
+    - name: "Bump-version: Debug new_tags_dict rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |
+          {% for k, v in new_versions_dict.items() %}
+          {{ v | to_yaml | trim }}: {{ k }}
+          {% endfor %}
+
+# EOF
