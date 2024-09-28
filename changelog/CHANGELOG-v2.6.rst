@@ -20,6 +20,9 @@ Minor Changes
 * Update contrib/rolemaster
 * Update contrib/playbooks/modules-in-playbook.yml
 * Update contrib/playbooks/modules-in-role.yml
+* Update docs/annotation/annotation-tasks.rst.j2
+* Update docs/annotation/annotation-tasks.yml.j2
+
 
 2.6.14
 ======
