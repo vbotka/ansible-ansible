@@ -26,7 +26,9 @@
                               map('trim') |
                               map('from_yaml') |
                               combine }}"
-  when: rm_debug | bool
+  when:
+    - rm_script_display_resutls | d(true) | bool
+    - rm_debug | bool
   block:
 
     - name: "Run-script: Debug result rm_debug={{ rm_debug }}"

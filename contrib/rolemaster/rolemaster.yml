@@ -10,22 +10,25 @@
   vars_files:
     - rm_role_prefix.yml
     - rm_known_tags.yml
+    - rm_docs.yml
 
   vars:
 
-    rm_version: 2.5.0
+    rm_version: 2.6.0
 
     # > > > CHANGE THIS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     rm_owner: admin
     rm_group: admin
-    rm_roles_namespace: admin
-    rm_roles_pattern: '{{ rm_roles_namespace }}.*'
-    rm_roles_license_holder: administrator <admin@example.com>
+    rm_github_user: my_github_user
+    rm_github_branch: master
+    rm_galaxy_namespace: my_galaxy_namespace
+    rm_roles_pattern: '{{ rm_galaxy_namespace }}*'
+    rm_roles_license_holder: John Dow <john@example.com>
     rm_roles_license_year_to: 2024
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - CHANGE THIS < < <
 
     rm_help_text: |
-      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       RoleMaster version {{ rm_version }}
 
       Management of Ansible roles:
@@ -36,26 +39,21 @@
         * Misc (Bump version, ...)
         * Run external scripts
 
-      Without any tag this help will be displayed. Select the functionality by a
-      single tag or a combination of tags. Take a look at the imported tasks
-      before you run them.
+      Without any tag this help will be displayed. Select the functionality by a single tag or a
+      combination of tags. Take a look at the imported tasks before you run them.
 
-      The tag rm_read_objects and rm_restore_* tags run on all stored roles
-      created by rm_write_objects (or any other way you might want to). You can
-      use the variable rm_roles_select to select role(s) (todo:
-      rm_roles_reject). Other tags require list of roles stored in the variable
-      my_roles. This list is created by the tags rm_list_roles or
-      rm_list_modified_roles. Run one of these tags first. You can select/reject
-      items in this list by using comma separated lists
-      rm_roles_select/rm_roles_reject.
+      The tag rm_read_objects and rm_restore_* tags run on all stored roles created by
+      rm_write_objects (or any other way you might want to). You can use the variable
+      rm_roles_select to select role(s) (todo: rm_roles_reject). Other tags require list of roles
+      stored in the variable my_roles. This list is created by the tags rm_list_roles or
+      rm_list_modified_roles. Run one of these tags first. You can select/reject items in this list
+      by using comma separated lists rm_roles_select/rm_roles_reject.
 
-      The tags rm_list_roles and rm_list_modified_roles require the path to the
-      roles in the variable my_roles_path. This variable is created
-      automatically (See the vars section 'Evaluate my_roles_path' below). You
-      can declare the variable rm_roles_path. If undefined or empty the option
-      roles_path from the configuration file will be taken. The expected value
-      is a single path string (todo: Parse multiple paths. The find module
-      parameter paths works with a list).
+      The tags rm_list_roles and rm_list_modified_roles require the path to the roles in the
+      variable my_roles_path. This variable is created automatically (See the vars section 'Evaluate
+      my_roles_path' below). You can declare the variable rm_roles_path. If undefined or empty the
+      option roles_path from the configuration file will be taken. The expected value is a single
+      path string (todo: Parse multiple paths. The find module parameter paths works with a list).
 
       USAGE
 
@@ -73,8 +71,10 @@
         shell> ansible-playbook rolemaster.yml -t rm_restore_travis
       * Copy common files
         shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_copy_common_files
-      * Update docs/source/_themes
+      * Update docs themes
         shell> ansible-playbook rolemaster.yml -t rm_update_docs_themes
+      * Update docs utils. The customization of templates is not idempotent.
+        shell> ansible-playbook rolemaster.yml -t rm_update_docs_utils
       * Run script
         shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=<script-file>
       * Bump changelog
@@ -83,43 +83,47 @@
         shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_version -e semver=[major|minor|patch]
       * Create list of modified roles' paths my_roles
         shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles
+      * Create dictionaries my_git_galaxy and my_galaxy_git
+        shell> ansible-playbook rolemaster.yml -t rm_git_galaxy
 
       WARNING
 
-        Some tasks won't display correct differences predictions (--diff) when
-        running in the check mode (--check). For example, run.script doesn't run
-        the task ansible.builtin.script in the check mode. Therefore, the
-        results will be an empty dictionaries and following loops, if any, will
-        be skipped.
+        Some tasks won't display correct differences predictions (--diff) when running in the check
+        mode (--check). For example, run.script doesn't run the task ansible.builtin.script in the
+        check mode. Therefore, the results will be an empty dictionaries and following loops, if
+        any, will be skipped.
 
       NOTES
 
       * Append --check --diff to dry-run and display predicted changes.
       * Append --extra-vars rm_debug=true to display debug messages.
+      * Append --extra-vars rm_debug2=true to display more details.
       * Append --extra-vars rm_roles_select=role1,role2 to select roles.
       * Append --extra-vars rm_roles_reject=role8,role9 to reject roles.
 
-      * Optionally, put the list of the rejected roles into a file and set the
-        variable my_roles_reject_file
+      * Optionally, put the list of the rejected roles into a file and set the variable
+        my_roles_reject_file
 
-      * Put the path to the roles into the variable rm_roles_path. If
-        rm_roles_path is missing or empty the path will be taken from the
-        configuration file (default ansible.cfg in the playbook
-        dir). Optionally, put path to other configuration file into the variable
+      * Put the path to the roles into the variable rm_roles_path. If rm_roles_path is missing or
+        empty the path will be taken from the configuration file (default ansible.cfg in the
+        playbook dir). Optionally, put path to other configuration file into the variable
         rm_ansible_conf_path
 
-      * Tag rm_run_script expects the list my_roles. Run it after rm_list_roles
-        or rm_list_modified_roles
+      * Tag rm_run_script expects the list my_roles. Run it after rm_list_roles or
+        rm_list_modified_roles
 
-      * Git scripts expect functional authentication configured, if
-        necessary. For example, use git-credential-oauth
+      * The script's first parameter shall be a role's path. There are two optional parameters:
+        rm_script_param2 and rm_script_param3. For example, the second parameter provides the git
+        message for the scripts: add_commit_push.sh and commit_push.sh (See examples). Empty
+        parameters are omitted. Don't use rm_script_param3 if rm_script_param2 doesn't exist or
+        empty.
 
-      * The first parameter of a script is always the path to the role. There
-        are two optional parameters: rm_script_param2 and rm_script_param3. For
-        example, the second parameter provides the git message for the scripts:
-        add_commit_push.sh and commit_push.sh (See examples). Empty parameters
-        are omitted. Don't use rm_script_param3 if rm_script_param2 doesn't
-        exist or empty.
+      * Tag rm_run_script expects the scripts to return a result in YAML dictionary '{$repository:
+        $<result>}' on the last stdout line. Set rm_script_display_results=false (default true) if
+        your script doesn't provide such format on the last line.
+
+      * Git scripts expect functional authentication configured, if necessary. For example, use
+        git-credential-oauth
 
       EXAMPLES
 
@@ -141,19 +145,19 @@
 
       6)  Restore Travis configuration. Git add and commit changes. Push current
           branch to the configured upstream.
-          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'"
+          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'"
 
       7)  Update Travis configuration on role1. Git add and commit modifications. Push current branch
           to the configured upstream.
-          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'" -e rm_roles_select=role1
+          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'" -e rm_roles_select=role1
 
       8)  Bump version in variables (SEE tasks/bump-version.yml). Then add, commit, and push
           modifications.
           shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_bump_version -e semver=patch
-          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Bump version'"
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Bump version'"
 
       9)  Add, commit, and push role1 modifications, if any. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update changelog.'" -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update changelog.'" -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
 
       10) Merge (--no-ff) role1 devel branch to current branch (master). Display all debugs.
           shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
@@ -171,7 +175,7 @@
           shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_reject=role1 -e rm_debug=true -e rm_debug2=true
 
       14) Add, commit, and push modified branches. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add_commit_push.sh -e rm_script_param2="'Update changelog.'" -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update changelog.'" -e rm_debug=true -e rm_debug2=true
 
       15) Merge (--no-ff) all roles devel branches to current branch (master). Display all debugs.
           shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_debug=true -e rm_debug2=true
@@ -185,33 +189,37 @@
       18) Push tags. Display all debugs.
           shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push-tags.sh -e rm_debug=true -e rm_debug2=true
 
+      19) Update docs utils
+          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_git_galaxy,rm_update_docs_utils -e @extra-vars/select-docs.yml
+
       *   Create LICENSE-test and see the diff
           shell> for i in `find roles -name "MY-PROJECT*"`; do
                (echo $i; cd $i; diff LICENSE LICENSE-test); done
 
       BEST PRACTICE
 
-      * Make sure the variable my_roles_path is created properly. Run the tag
-        rm_debug and set rm_debug=true to see the values.
+      * Make sure the variable my_roles_path is created properly. Run the tag rm_debug and set
+        rm_debug=true to see the values.
+
+      * In my_roles_path install the roles by ansible-galaxy or put them into the directories as if
+        they were installed by ansible-galaxy. Optionally, symlink them to git project names.
 
       * Initially write the objects to files.
 
-      * Switch to the devel branch.
+      * Switch to the devel branch. (Ex.2)
 
-      * Bump version in variables. Then add, commit, and push modifications.
+      * Bump version in variables. Then add, commit, and push modifications. (Ex.8)
 
-      * Make changes to the source, if any. Add, commit, and push changes as
-        usually.
+      * Make changes to the source, if any. Add, commit, and push changes as usually.
 
-      * Edit object's files if you want to update objects globally. Then run the
-        tags as needed: rm_restore_meta, rm_restore_license, and
-        rm_restore_travis together with the tag rm_run_script and select the
-        script add_commit_push.sh (See examples).
+      * Edit object's files if you want to update objects globally. Then run the tags as needed:
+        rm_restore_meta, rm_restore_license, and rm_restore_travis together with the tag
+        rm_run_script and select the script add_commit_push.sh (See examples).
 
-      * Bump changelog after you completed all changes. There is no scheme in
-        the commits messages. All commits are listed in the section 'Minor
-        Changes'. This step is idempotent. You can run it during the development
-        as you like. When you repeat it new commits will be added, if any.
+      * Bump changelog after you completed all changes. There is no scheme in the commits
+        messages. All commits are listed in the section 'Minor Changes'. This step is
+        idempotent. You can run it during the development as you like. When you repeat it new
+        commits will be added, if any.
 
       * To release new versions:
         - Manually complete changelogs.
@@ -224,12 +232,18 @@
         - Push tags. (Ex.18)
         - Import the roles to Ansible Galaxy.
 
-      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       https://github.com/vbotka/ansible-ansible/tree/master/contrib/rolemaster
 
     rm_debug: false
     rm_debug2: false
     rm_backup_conf: false
+
+    # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
+    #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
+
+    rm_scripts_dir: scripts
+    rm_docs_utils: vbotka.ansible/contrib/docs
 
     rm_roles_file_mode: "0664"
 
@@ -246,10 +260,6 @@
     rm_roles_license_dir: /home/{{ rm_owner }}/.ansible/db/license
 
     rm_roles_docs_file: /home/{{ rm_owner }}/.ansible/db/roles_docs.yml
-    # rm_ansible_lint: '/home/{{ rm_owner }}/bin/ansible-lint -c
-    #                   /home/{{ rm_owner }}/.ansible/.ansible-lint'
-
-    rm_scripts_dir: scripts
 
     # Evaluate my_roles_path
     # If empty get roles_path from ansible.cfg
@@ -340,7 +350,7 @@
       ansible.builtin.debug:
         var: my_roles_path
       when: rm_debug | bool
-      tags: [rm_list_roles, rm_list_changed_roles]
+      tags: [rm_list_roles, rm_list_modified_roles, rm_git_galaxy]
 
     - name: Create list of roles paths my_roles
       ansible.builtin.import_tasks: tasks/list-roles.yml
@@ -349,6 +359,10 @@
     - name: Create list of modified roles paths my_roles
       ansible.builtin.import_tasks: tasks/list-modified-roles.yml
       tags: rm_list_modified_roles
+
+    - name: Create dictionaries my_git_galaxy and my_galaxy_git
+      ansible.builtin.import_tasks: tasks/git-galaxy.yml
+      tags: rm_git_galaxy
 
     - name: Write roles objects to files
       ansible.builtin.import_tasks: tasks/write-objects.yml
@@ -373,6 +387,10 @@
     - name: Copy common files
       ansible.builtin.import_tasks: tasks/copy-common-files.yml
       tags: rm_copy_common_files
+
+    - name: Update docs utils
+      ansible.builtin.import_tasks: tasks/update_docs_utils.yml
+      tags: rm_update_docs_utils
 
     - name: Update docs/source/_themes
       ansible.builtin.import_tasks: tasks/update_docs_themes.yml

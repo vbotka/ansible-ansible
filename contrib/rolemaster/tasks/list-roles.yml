@@ -1,28 +1,31 @@
 ---
 
-- name: "List-roles: Find roles in {{ my_roles_path }}"
-  ansible.builtin.find:
-    paths: "{{ my_roles_path }}"
-    patterns: "{{ rm_roles_pattern }}"
-    file_type: directory
-  register: results
+- name: Set my_roles list
+  block:
 
-- name: "List-roles: Collect my_roles"
-  ansible.builtin.set_fact:
-    my_roles: "{{ my_roles_all | difference(my_roles_rej) | intersect(my_roles_sel) | sort }}"
-  vars:
-    regex_reject: "({{ my_roles_reject | join('|') }})$"
-    regex_select: "({{ my_roles_select | join('|') }})$"
-    my_roles_all: "{{ results.files | json_query('[].path') | sort }}"
-    my_roles_rej: "{{ my_roles_reject | ternary(my_roles_all | select('search', regex_reject), []) }}"
-    my_roles_sel: "{{ my_roles_select | ternary(my_roles_all | select('search', regex_select), my_roles_all) }}"
+    - name: "List-roles: Find roles in {{ my_roles_path }}"
+      ansible.builtin.find:
+        paths: "{{ my_roles_path }}"
+        patterns: "{{ rm_roles_pattern }}"
+        file_type: directory
+      register: out
 
-- name: "List-roles: Debug my_roles rm_debug={{ rm_debug }}"
-  ansible.builtin.debug:
-    msg: |
-      Number of roles: {{ my_roles | length }}"
-      my_roles:
-        {{ my_roles | to_nice_yaml(indent=2) | indent(2) }}
-  when: rm_debug | bool
+    - name: "List-roles: Set my_roles"
+      ansible.builtin.set_fact:
+        my_roles: "{{ my_roles_all | difference(my_roles_rej) | intersect(my_roles_sel) | sort }}"
+      vars:
+        regex_reject: "({{ my_roles_reject | join('|') }})$"
+        regex_select: "({{ my_roles_select | join('|') }})$"
+        my_roles_all: "{{ out.files | json_query('[].path') | sort }}"
+        my_roles_rej: "{{ my_roles_reject | ternary(my_roles_all | select('search', regex_reject), []) }}"
+        my_roles_sel: "{{ my_roles_select | ternary(my_roles_all | select('search', regex_select), my_roles_all) }}"
+
+    - name: "List-roles: Debug my_roles rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |
+          Number of roles: {{ my_roles | length }}"
+          my_roles:
+            {{ my_roles | to_nice_yaml(indent=2) | indent(2) }}
+      when: rm_debug | bool
 
 # EOF

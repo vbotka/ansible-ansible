@@ -1,0 +1,50 @@
+---
+
+- name: Set dicts my_git_galaxy and my_galaxy_git
+  block:
+
+    - name: "Git-galaxy: Find links in {{ my_roles_path }}"
+      ansible.builtin.find:
+        paths: "{{ my_roles_path }}"
+        file_type: link
+      register: out
+
+    - name: "Git-galaxy: Set my_links_all"
+      ansible.builtin.set_fact:
+        my_links_all: "{{ out.files | json_query('[].path') }}"
+
+    - name: "Git-galaxy: Debug my_links_all rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: my_links_all
+      when: rm_debug2 | bool
+
+    - name: "Git-galaxy: Stat my_links_all"
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop: "{{ my_links_all }}"
+      register: out
+
+    - name: "Git-galaxy: Debug out rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        var: out
+      when: rm_debug2 | bool
+
+    - name: "Git-galaxy: Set my_git_galaxy"
+      ansible.builtin.set_fact:
+        my_git_galaxy: "{{ dict(out.results |
+	                        json_query('[].[item, stat.lnk_target]') |
+	                        map('map', 'basename')) }}"
+        my_galaxy_git: "{{ dict(out.results |
+	                        json_query('[].[stat.lnk_target, item]') |
+	                        map('map', 'basename')) }}"
+
+    - name: "Git-galaxy: Debug my_git_galaxy rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |
+          my_git_galaxy:
+            {{ my_git_galaxy | to_nice_yaml(indent=2) | indent(2) }}
+          my_galaxy_git:
+            {{ my_galaxy_git | to_nice_yaml(indent=2) | indent(2) }}
+      when: rm_debug | bool
+
+# EOF

@@ -1,0 +1,134 @@
+---
+
+- name: Update docs utils
+  vars:
+    regex_select: "({{ my_roles_select | join('|') }})$"
+    rm_docs_roles_list: "{{ rm_docs_roles | dict2items }}"
+    my_docs_roles: "{{ my_roles_select |
+                       ternary(rm_docs_roles_list | selectattr('key', 'search', regex_select),
+                               rm_docs_roles_list) |
+                       items2dict }}"
+    my_roles: "{{ my_docs_roles.keys() }}"
+    my_docs_dirs: "{{ my_roles | product([rm_docs_dirs]) |
+                      map('zip', ['role', 'dirs']) |
+                      map('map', 'reverse') |
+                      map('community.general.dict') }}"
+    my_docs_files: "{{ my_roles | product([rm_docs_files]) |
+                       map('zip', ['role', 'files']) |
+                       map('map', 'reverse') |
+                       map('community.general.dict') }}"
+    my_docs_annotation_files: "{{ my_roles | product([rm_docs_annotation_files]) |
+                                  map('zip', ['role', 'files']) |
+                                  map('map', 'reverse') |
+                                  map('community.general.dict') }}"
+    my_docs_annotation_templates: "{{ my_roles | product([rm_docs_annotation_templates]) |
+                                      map('zip', ['role', 'templates']) |
+                                      map('map', 'reverse') |
+                                      map('community.general.dict') }}"
+  block:
+
+    - name: "Rm update_docs_utils: Debug rm_debug={{ rm_debug }}"
+      ansible.builtin.debug:
+        msg: |-
+          my_roles_path: {{ my_roles_path }}
+
+          my_roles_select_No: {{ my_roles_select | length }}
+          my_roles_select:
+            {{ my_roles_select | to_nice_yaml(indent=2) | indent(2) }}
+          my_roles_No: {{ my_docs_roles | length }}
+          my_roles:
+            {{ my_roles | to_nice_yaml(indent=2) | indent(2) }}
+          my_docs_roles_No: {{ my_docs_roles | length }}
+          my_docs_roles:
+            {{ my_docs_roles | to_yaml(indent=2) | indent(2) }}
+          rm_docs_dirs:
+            {{ rm_docs_dirs | to_nice_yaml(indent=2) | indent(2) }}
+          rm_docs_files:
+            {{ rm_docs_files | to_nice_yaml(indent=2) | indent(2) }}
+          rm_docs_annotation_files:
+            {{ rm_docs_annotation_files | to_nice_yaml(indent=2) | indent(2) }}
+          rm_docs_annotation_templates:
+            {{ rm_docs_annotation_templates | to_nice_yaml(indent=2) | indent(2) }}
+      when: rm_debug | bool
+
+    - name: "Rm update_docs_utils: Create docs directories"
+      ansible.builtin.file:
+        state: directory
+        path: "{{ item.0.role }}/{{ item.1 }}"
+      loop: "{{ my_docs_dirs | subelements('dirs') }}"
+      loop_control:
+        label: "{{ item.0.role | basename }} {{ item.1 }}"
+
+    - name: "Rm update_docs_utils: Copy docs files"
+      ansible.builtin.copy:
+        src: "{{ my_roles_path }}/{{ rm_docs_utils }}/{{ item.1 }}"
+        dest: "{{ item.0.role }}/docs/{{ item.1 }}"
+      loop: "{{ my_docs_files | subelements('files') }}"
+      loop_control:
+        label: "{{ item.0.role | basename }} {{ item.1 }}"
+
+    - name: "Rm update_docs_utils: Copy docs annotation files"
+      ansible.builtin.copy:
+        src: "{{ my_roles_path }}/{{ rm_docs_utils }}/annotation/{{ item.1 }}"
+        dest: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+      loop: "{{ my_docs_annotation_files | subelements('files') }}"
+      loop_control:
+        label: "{{ item.0.role | basename }} {{ item.1 }}"
+
+    - name: "Rm update_docs_utils: Copy docs annotation templates"
+      ansible.builtin.copy:
+        src: "{{ my_roles_path }}/{{ rm_docs_utils }}/annotation/{{ item.1 }}"
+        dest: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+      loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
+      loop_control:
+        label: "{{ item.0.role | basename }} {{ item.1 }}"
+
+    - name: "Rm update_docs_utils: Debug replace globals in annotation templates rm_debug2={{ rm_debug2 }}"
+      ansible.builtin.debug:
+        msg: |
+          path: {{ item.0.role }}/docs/annotation/{{ item.1 }}
+          __GITHUB_USERNAME__: {{ rm_github_user }}
+          __BRANCH__ : {{ rm_github_branch }}
+          __GALAXY_PROJECT__ : {{ my_galaxy_role }}
+          __PROJECT__ : {{ my_galaxy_git[my_galaxy_role] }}
+      loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
+      loop_control:
+        label: "{{ my_galaxy_role }} {{ item.1 }}"
+      vars:
+        my_galaxy_role: "{{ item.0.role | basename }}"
+      when: rm_debug2 | bool
+
+    - name: "Rm update_docs_utils: Replace __GITHUB_USERNAME__ in annotation templates"
+      ansible.builtin.replace:
+        path: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+        regexp: '__GITHUB_USERNAME__'
+        replace: "{{ rm_github_user }}"
+      loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
+      loop_control:
+        label: "{{ my_galaxy_role }} {{ item.1 }}"
+      vars:
+        my_galaxy_role: "{{ item.0.role | basename }}"
+
+    - name: "Rm update_docs_utils: Replace __BRANCH__ in annotation templates"
+      ansible.builtin.replace:
+        path: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+        regexp: '__BRANCH__'
+        replace: "{{ rm_github_branch }}"
+      loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
+      loop_control:
+        label: "{{ my_galaxy_role }} {{ item.1 }}"
+      vars:
+        my_galaxy_role: "{{ item.0.role | basename }}"
+
+    - name: "Rm update_docs_utils: Replace __PROJECT__ in annotation templates"
+      ansible.builtin.replace:
+        path: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+        regexp: '__PROJECT__'
+        replace: "{{ my_galaxy_git[my_galaxy_role] }}"
+      loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
+      loop_control:
+        label: "{{ my_galaxy_role }} {{ item.1 }}"
+      vars:
+        my_galaxy_role: "{{ item.0.role | basename }}"
+
+# EOF
