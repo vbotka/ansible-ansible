@@ -17,6 +17,7 @@ Major Changes
 
 Minor Changes
 -------------
+* Update contrib/rolemaster
 * Update contrib/docs
 * Update docs
 * Remove docs/templates
