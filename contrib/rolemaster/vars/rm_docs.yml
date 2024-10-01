@@ -1,0 +1,57 @@
+---
+# Variables to update docs
+
+rm_docs_roles:
+  vbotka.ansible:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.ansible_runner:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.apache:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.config_light:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.freebsd_custom_image:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.freebsd_postinstall:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.freebsd_poudriere:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.freebsd_wpa_cli:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+  vbotka.linux_postinstall:
+    themes_path: docs/source/_themes
+    themes: [sphinx_rtd_theme, guzzle_sphinx_theme]
+
+rm_docs_themes:
+  sphinx_rtd_theme: /scratch/sphinx/sphinx_rtd_theme/sphinx_rtd_theme
+  guzzle_sphinx_theme: /scratch/sphinx/guzzle_sphinx_theme/guzzle_sphinx_theme/guzzle_sphinx_theme
+
+rm_docs_dirs:
+  - docs
+  - docs/annotation
+  - docs/annotation/vars
+
+rm_docs_files:
+  - batch1.sh
+  - init.sh
+  - playbook.yml
+
+rm_docs_annotation_files:
+  - README
+  - pb-annotations.yml
+
+rm_docs_annotation_templates:
+  - annotation-handlers.rst.j2
+  - annotation-handlers.yml.j2
+  - annotation-tasks.rst.j2
+  - annotation-tasks.yml.j2
+  - annotation-templates.rst.j2
+  - annotation-templates.yml.j2

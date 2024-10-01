@@ -1,23 +1,26 @@
 ---
 
-- name: "List-modified-roles: Find roles in {{ my_roles_path }}"
-  ansible.builtin.find:
-    paths: "{{ my_roles_path }}"
-    patterns: "{{ rm_roles_pattern }}"
-    file_type: directory
-  register: results
+- name: Set my_roles list
+  block:
 
-- name: "List-modified-roles: Collect my_roles"
-  ansible.builtin.set_fact:
-    my_roles: "{{ my_roles_all | difference(my_roles_rej) | intersect(my_roles_sel) | sort }}"
-  vars:
-    regex_reject: "({{ my_roles_reject | join('|') }})$"
-    regex_select: "({{ my_roles_select | join('|') }})$"
-    my_roles_all: "{{ results.files | json_query('[].path') | sort }}"
-    my_roles_rej: "{{ my_roles_reject | ternary(my_roles_all | select('search', regex_reject), []) }}"
-    my_roles_sel: "{{ my_roles_select | ternary(my_roles_all | select('search', regex_select), my_roles_all) }}"
+    - name: "List-modified-roles: Find roles in {{ my_roles_path }}"
+      ansible.builtin.find:
+        paths: "{{ my_roles_path }}"
+        patterns: "{{ rm_roles_pattern }}"
+        file_type: directory
+      register: results
 
-- name: Get modified roles and set my_roles
+    - name: "List-modified-roles: Collect my_roles"
+      ansible.builtin.set_fact:
+        my_roles: "{{ my_roles_all | difference(my_roles_rej) | intersect(my_roles_sel) | sort }}"
+      vars:
+        regex_reject: "({{ my_roles_reject | join('|') }})$"
+        regex_select: "({{ my_roles_select | join('|') }})$"
+        my_roles_all: "{{ results.files | json_query('[].path') | sort }}"
+        my_roles_rej: "{{ my_roles_reject | ternary(my_roles_all | select('search', regex_reject), []) }}"
+        my_roles_sel: "{{ my_roles_select | ternary(my_roles_all | select('search', regex_select), my_roles_all) }}"
+
+- name: Set modified my_roles list
   block:
 
     - name: "List-modified-roles: Get modified roles"
@@ -38,10 +41,12 @@
 
     - name: "List-modified-roles: Set modified roles my_roles"
       ansible.builtin.set_fact:
-        my_roles: "{{ out.results | json_query('[].stdout') | map('trim') | map('from_yaml') | combine |
+        my_roles: "{{ out.results |
+	              rejectattr('stderr', 'search', 'Everything up-to-date') |
+                      json_query('[].stdout_lines') | map('last') | map('trim') | map('from_yaml') | combine |
 	              dict2items | selectattr('value') | map(attribute='key') }}"
 
-    - name: "List-modified-roles: Debug my_roles rm_debug={{ rm_debug }}"
+    - name: "List-modified-roles: Debug modified my_roles rm_debug={{ rm_debug }}"
       ansible.builtin.debug:
         msg: |
           Number of roles: {{ my_roles | length }}"

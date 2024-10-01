@@ -5,6 +5,7 @@ rm_known_tags:
   - rm_copy_common_files
   - rm_create_tag
   - rm_debug
+  - rm_git_galaxy
   - rm_list_roles
   - rm_list_modified_roles
   - rm_read_objects
@@ -16,4 +17,5 @@ rm_known_tags:
   - rm_restore_travis
   - rm_run_script
   - rm_update_docs_themes
+  - rm_update_docs_utils
   - rm_write_objects

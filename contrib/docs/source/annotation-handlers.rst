@@ -22,7 +22,3 @@ Import handlers.
     :language: Yaml
     :emphasize-lines: 1,2
     :linenos:
-
-
-
-
