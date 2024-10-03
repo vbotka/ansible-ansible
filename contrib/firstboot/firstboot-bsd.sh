@@ -3,7 +3,7 @@
 # All rights reserved (c) 2021-2022, Vladimir Botka <vbotka@gmail.com>
 # Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
 
-VERSION="1.0.0"
+# VERSION="1.0.1"
 USERNAME="admin"
 
 # Install packages
@@ -16,12 +16,13 @@ env ASSUME_ALWAYS_YES=YES pkg install archivers/gtar
 # Create user
 if (! getent passwd ${USERNAME} > /dev/null); then
     if (pw useradd -n ${USERNAME} -s /bin/sh -m); then
-	printf "[OK] user ${USERNAME} created\n"
+	printf "[OK] user %s created\n" "$USERNAME"
     else
-	printf "[ERR] can not create user ${USERNAME}\n"
+	printf "[ERR] can not create user %s\n" "$USERNAME"
     fi
 else
-    printf "[OK] user ${USERNAME} exists\n"
+    chmod 0755 /home/${USERNAME}
+    printf "[OK] user %s exists\n" "$USERNAME"
 fi
 
 # Create directories and files
@@ -29,12 +30,12 @@ fi
 # $HOME/.ssh
 if [ ! -e /home/${USERNAME}/.ssh ]; then
     if (mkdir /home/${USERNAME}/.ssh); then
-	printf "[OK] dir /home/${USERNAME}/.ssh created\n"
+	printf "[OK] dir /home/%s/.ssh created\n" "$USERNAME"
     else
-	printf "[ERR] can not create dir /home/${USERNAME}/.ssh\n"
+	printf "[ERR] can not create dir /home/%s/.ssh\n" "$USERNAME"
     fi
 else
-    printf "[OK] dir /home/${USERNAME}/.ssh exists\n"
+    printf "[OK] dir /home/%s/.ssh exists\n" "$USERNAME"
 fi
 [ -e /home/${USERNAME}/.ssh ] && chmod 0700 /home/${USERNAME}/.ssh
 
