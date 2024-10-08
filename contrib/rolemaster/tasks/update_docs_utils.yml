@@ -55,6 +55,7 @@
       ansible.builtin.file:
         state: directory
         path: "{{ item.0.role }}/{{ item.1 }}"
+        mode: "0775"
       loop: "{{ my_docs_dirs | subelements('dirs') }}"
       loop_control:
         label: "{{ item.0.role | basename }} {{ item.1 }}"
@@ -63,6 +64,7 @@
       ansible.builtin.copy:
         src: "{{ my_roles_path }}/{{ rm_docs_utils }}/{{ item.1 }}"
         dest: "{{ item.0.role }}/docs/{{ item.1 }}"
+        mode: "0664"
       loop: "{{ my_docs_files | subelements('files') }}"
       loop_control:
         label: "{{ item.0.role | basename }} {{ item.1 }}"
@@ -71,6 +73,7 @@
       ansible.builtin.copy:
         src: "{{ my_roles_path }}/{{ rm_docs_utils }}/annotation/{{ item.1 }}"
         dest: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+        mode: "0664"
       loop: "{{ my_docs_annotation_files | subelements('files') }}"
       loop_control:
         label: "{{ item.0.role | basename }} {{ item.1 }}"
@@ -79,6 +82,7 @@
       ansible.builtin.copy:
         src: "{{ my_roles_path }}/{{ rm_docs_utils }}/annotation/{{ item.1 }}"
         dest: "{{ item.0.role }}/docs/annotation/{{ item.1 }}"
+        mode: "0664"
       loop: "{{ my_docs_annotation_templates | subelements('templates') }}"
       loop_control:
         label: "{{ item.0.role | basename }} {{ item.1 }}"
