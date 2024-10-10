@@ -5,6 +5,20 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.19
+======
+
+Release Summary
+---------------
+Maintenance update.
+
+Major Changes
+-------------
+
+Minor Changes
+-------------
+
+
 2.6.18
 ======
 
