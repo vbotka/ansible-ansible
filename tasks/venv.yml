@@ -1,15 +1,17 @@
 ---
 - name: "Venv: Install packages for Python virtual environment."
-  ansible.builtin.include_tasks: fn/packages.yml
+  when: ma_virtualenv_packages | length > 0
   vars:
     ma_packages_incl: "{{ ma_virtualenv_packages }}"
-  when: ma_virtualenv_packages|length > 0
+  ansible.builtin.include_tasks: fn/packages.yml
 
 - name: Install Ansible Lint PyPI packages for ma_owner
   block:
+
     - name: "Venv: Install Ansible PyPI packages for {{ ma_owner }}"
       become_user: "{{ ma_owner }}"
       become: true
+      register: result
       # changed_when: result.changed
       ansible.builtin.pip:
         name: "{{ item.name }}"
@@ -22,17 +24,17 @@
         virtualenv_python: "{{ ma_virtualenv_python | d(omit) }}"
         virtualenv_site_packages: "{{ ma_virtualenv_site_packages | d(omit) }}"
       loop: "{{ ma_pip_packages }}"
-      register: result
       until: result is succeeded
       retries: "{{ pip_install_retries }}"
       delay: "{{ pip_install_delay }}"
 
-    - name: "Venv: Debug PyPI packages"
+    - name: "Venv: Debug PyPI packages ma_debug={{ ma_debug }}"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool
 
   rescue:
+
     - name: "Venv: Rescue PyPI packages"
       ansible.builtin.fail:
         msg: |

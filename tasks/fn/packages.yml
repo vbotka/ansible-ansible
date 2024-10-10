@@ -4,22 +4,24 @@
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'packages'
   block:
+
     - name: "Packages: Install Ansible Lint FreeBSD packages"
+      register: result
       community.general.pkgng:
         name: "{{ item.name }}"
         state: "{{ item.state | d(omit) }}"
       loop: "{{ ma_packages_incl }}"
-      register: result
       until: result is succeeded
       retries: "{{ freebsd_install_retries }}"
       delay: "{{ freebsd_install_delay }}"
 
-    - name: "Packages: Debug FreeBSD packages"
+    - name: "Packages: Debug FreeBSD packages ma_debug={{ ma_debug }}"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool
 
   rescue:
+
     - name: "Packages: Rescue FreeBSD packages"
       ansible.builtin.fail:
         msg: |
@@ -34,22 +36,24 @@
     - ansible_os_family == 'FreeBSD'
     - freebsd_install_method | lower == 'ports'
   block:
+
     - name: "Packages: Install Ansible Lint FreeBSD ports"
+      register: result
       community.general.portinstall:
         name: "{{ item.name }}"
         use_packages: "{{ freebsd_use_packages }}"
       loop: "{{ ma_packages_incl }}"
-      register: result
       until: result is succeeded
       retries: "{{ freebsd_install_retries }}"
       delay: "{{ freebsd_install_delay }}"
 
     - name: "Packages: Debug FreeBSD ports"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool
 
   rescue:
+
     - name: "Packages: Rescue FreeBSD ports"
       ansible.builtin.fail:
         msg: |
@@ -62,22 +66,24 @@
 - name: Linux packages
   when: ansible_os_family in ma_supported_linux_family
   block:
+
     - name: "Packages: Install Ansible Lint Linux packages"
+      register: result
       ansible.builtin.package:
         name: "{{ item.name }}"
         state: "{{ item.state | d(omit) }}"
       loop: "{{ ma_packages_incl }}"
-      register: result
       until: result is succeeded
       retries: "{{ linux_install_retries }}"
       delay: "{{ linux_install_delay }}"
 
     - name: "Packages: Debug Linux packages"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool
 
   rescue:
+
     - name: "Packages: Rescue Linux packages"
       ansible.builtin.fail:
         msg: |
