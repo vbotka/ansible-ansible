@@ -1,7 +1,7 @@
 ---
 - name: "Pkg: Include fn/packages.yml"
-  ansible.builtin.include_tasks: fn/packages.yml
   vars:
     ma_packages_incl: "{{ ma_packages }}"
+  ansible.builtin.include_tasks: fn/packages.yml
 
 # EOF

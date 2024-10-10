@@ -9,6 +9,7 @@
     label: "{{ item.path | dirname }}"
 
 - name: "Config: Ansible configuration from template"
+  when: ma_config_type | lower == 'template'
   ansible.builtin.template:
     src: "{{ item.template | d(ma_config_template_default) }}"
     dest: "{{ item.path }}"
@@ -19,9 +20,9 @@
   loop: "{{ ma_config }}"
   loop_control:
     label: "{{ item.path }}"
-  when: ma_config_type | lower == 'template'
 
 - name: "Config: Ansible configuration by lineinfile"
+  when: ma_config_type | lower == 'lineinfile'
   ansible.builtin.lineinfile:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
@@ -35,9 +36,9 @@
   loop: "{{ ma_config | subelements('config') }}"
   loop_control:
     label: "{{ item.0.path }}"
-  when: ma_config_type | lower == 'lineinfile'
 
 - name: "Config: Ansible configuration by ini_file"
+  when: ma_config_type | lower == 'ini_file'
   community.general.ini_file:
     path: "{{ item.0.path }}"
     owner: "{{ item.0.owner }}"
@@ -51,6 +52,5 @@
   loop: "{{ ma_config | subelements('config') }}"
   loop_control:
     label: "{{ item.0.path }}"
-  when: ma_config_type | lower == 'ini_file'
 
 # EOF

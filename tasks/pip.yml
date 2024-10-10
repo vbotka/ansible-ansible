@@ -10,12 +10,12 @@
 
 - name: Install Ansible Lint PyPI packages for ma_owner
   block:
+
     - name: "Pip: Install Ansible Lint PyPI packages for {{ ma_owner }}"
       become_user: "{{ ma_owner }}"
       become: true
-      changed_when:
-        - result.changed
-        - not ansible_check_mode
+      register: result
+      # changed_when: result.changed
       ansible.builtin.pip:
         name: "{{ item.name }}"
         executable: "{{ ma_pip_executable }}"
@@ -23,17 +23,17 @@
         version: "{{ item.version | d(omit) }}"
         state: "{{ item.state | d(omit) }}"
       loop: "{{ ma_pip_packages }}"
-      register: result
       until: result is succeeded
       retries: "{{ pip_install_retries }}"
       delay: "{{ pip_install_delay }}"
 
-    - name: "Pip: Debug PyPI packages"
+    - name: "Pip: Debug PyPI packages ma_debug={{ ma_debug }}"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool or ansible_check_mode
 
   rescue:
+
     - name: "Pip: Rescue PyPI packages"
       ansible.builtin.fail:
         msg: |
@@ -45,9 +45,12 @@
 
 - name: Install Ansible Lint PyPI requirements for ma_owner
   block:
+
     - name: "Pip: Install Ansible Lint pip requirements for {{ ma_owner }}"
+      when: ma_pip_requirements | length > 0
       become_user: "{{ ma_owner }}"
       become: true
+      register: result
       changed_when:
         - result.changed
         - not ansible_check_mode
@@ -55,16 +58,14 @@
         requirements: "{{ ma_pip_requirements }}"
         executable: "{{ ma_pip_executable }}"
         extra_args: "{{ pip_extraagrs | d(omit) }}"
-      register: result
       until: result is succeeded
       retries: "{{ pip_install_retries }}"
       delay: "{{ pip_install_delay }}"
-      when: ma_pip_requirements | length > 0
 
-    - name: "Pip: Debug PyPI requirements"
+    - name: "Pip: Debug PyPI requirements ma_debug={{ ma_debug }}"
+      when: ma_debug | bool
       ansible.builtin.debug:
         var: result
-      when: ma_debug | bool
 
   rescue:
     - name: "Pip: Rescue PyPI requirements"

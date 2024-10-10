@@ -3,14 +3,15 @@
   when: ma_repo | bool
   tags: ma_devel_repo
   block:
+
     - name: "Devel: Create directory {{ ma_repo_dir }}"
+      tags: ma_repo_path
       ansible.builtin.file:
         state: directory
         path: "{{ ma_repo_dir }}"
         owner: "{{ ma_devel_owner }}"
         group: "{{ ma_devel_group | d(omit) }}"
         mode: "{{ ma_devel_dmode | d(omit) }}"
-      tags: ma_repo_path
 
     - name: "Devel: Checkout {{ ma_repo_version }}"
       become: "{{ ma_devel_owner }}"
@@ -23,7 +24,9 @@
   when: ma_rnotes | bool
   tags: ma_devel_rnotes
   block:
+
     - name: "Devel: Create directories for release notes"
+      tags: ma_rnotes_path
       ansible.builtin.file:
         state: directory
         path: "{{ item }}"
@@ -33,10 +36,12 @@
       loop:
         - "{{ ma_rnotes_core_dir }}"
         - "{{ ma_rnotes_build_dir }}"
-      tags: ma_rnotes_path
 
     - name: "Devel: Get core release notes {{ ma_rnotes_core_list }}"
       check_mode: false # Note 1.
+      vars:
+        _file: CHANGELOG-v{{ item }}.rst
+        _url: "{{ (ma_rnotes_core_url ~ item, 'changelogs', _file) | community.general.path_join }}"
       ansible.builtin.get_url:
         url: "{{ _url }}"
         dest: "{{ (ma_rnotes_core_dir, _file) | community.general.path_join }}"
@@ -46,12 +51,12 @@
       loop: "{{ ma_rnotes_core_list }}"
       loop_control:
         label: "{{ _url }}"
-      vars:
-        _file: CHANGELOG-v{{ item }}.rst
-        _url: "{{ (ma_rnotes_core_url ~ item, 'changelogs', _file) | community.general.path_join }}"
 
     - name: "Devel: Get build release notes {{ ma_rnotes_build_list }}"
       check_mode: false #  Note 1.
+      vars:
+        _file: CHANGELOG-v{{ item }}.rst
+        _url: "{{ (ma_rnotes_build_url, item, _file) | community.general.path_join }}"
       ansible.builtin.get_url:
         url: "{{ _url }}"
         dest: "{{ (ma_rnotes_build_dir, _file) | community.general.path_join }}"
@@ -61,9 +66,6 @@
       loop: "{{ ma_rnotes_build_list }}"
       loop_control:
         label: "{{ _url }}"
-      vars:
-        _file: CHANGELOG-v{{ item }}.rst
-        _url: "{{ (ma_rnotes_build_url, item, _file) | community.general.path_join }}"
 
 # Notes:
 #
