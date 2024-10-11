@@ -28,6 +28,8 @@
 
 - name: "Plugins: Extract archives"
   tags: ma_plugins_extract
+  environment:
+    CRYPTOGRAPHY_OPENSSL_NO_LEGACY: '1'
   ansible.builtin.unarchive:
     remote_src: true
     src: "{{ ma_src_path }}/{{ item.archive }}"
