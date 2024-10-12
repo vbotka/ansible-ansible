@@ -5,6 +5,22 @@ vbotka.ansible 2.6 Release Notes
 .. contents:: Topics
 
 
+2.6.20
+======
+
+Release Summary
+---------------
+Maintenance update.
+
+Major Changes
+-------------
+
+Minor Changes
+-------------
+* Fix ansible.builtin.get_url; environment:
+  CRYPTOGRAPHY_OPENSSL_NO_LEGACY: '1'
+
+
 2.6.19
 ======
 
