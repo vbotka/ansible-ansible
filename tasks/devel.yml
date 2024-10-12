@@ -42,6 +42,8 @@
       vars:
         _file: CHANGELOG-v{{ item }}.rst
         _url: "{{ (ma_rnotes_core_url ~ item, 'changelogs', _file) | community.general.path_join }}"
+      environment:
+        CRYPTOGRAPHY_OPENSSL_NO_LEGACY: '1'
       ansible.builtin.get_url:
         url: "{{ _url }}"
         dest: "{{ (ma_rnotes_core_dir, _file) | community.general.path_join }}"
@@ -57,6 +59,8 @@
       vars:
         _file: CHANGELOG-v{{ item }}.rst
         _url: "{{ (ma_rnotes_build_url, item, _file) | community.general.path_join }}"
+      environment:
+        CRYPTOGRAPHY_OPENSSL_NO_LEGACY: '1'
       ansible.builtin.get_url:
         url: "{{ _url }}"
         dest: "{{ (ma_rnotes_build_dir, _file) | community.general.path_join }}"
