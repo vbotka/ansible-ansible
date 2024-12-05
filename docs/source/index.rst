@@ -3,7 +3,7 @@ Ansible
 
 **vbotka.ansible**
 
-Role version 2.6.22
+Role version 2.6.23
 
 This `role <https://galaxy.ansible.com/vbotka/ansible/>`_ and the
 documentation is work in progess.
@@ -12,7 +12,7 @@ documentation is work in progess.
 | `Contributions are welcome <https://github.com/firstcontributions/first-contributions>`_.
 
 | GitHub: `ansible-ansible <https://github.com/vbotka/ansible-ansible>`_
-| Ansible Galaxy: `vbotka.ansible <https://galaxy.ansible.com/ansible/>`_
+| Ansible Galaxy: `vbotka.ansible <https://galaxy.ansible.com/vbotka/ansible/>`_
 
 | This role is licensed and distributed as a whole under
 | **BSD 2-Clause "Simplified" License**
