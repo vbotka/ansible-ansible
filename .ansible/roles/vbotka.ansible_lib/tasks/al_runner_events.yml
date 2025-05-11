@@ -1,0 +1,70 @@
+---
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_runner_events
+#
+# Description: Create list of ansible-runer's job events.
+#
+#   ansible-runner records all job's events in the directory
+#   artifacts/<ID>/job_events. Read files from this directory and
+#   create a list of the dictionaries with the job event's data.
+#
+# Input:
+#
+#   al_runner_events_dir ........ Path to the directory job_events
+#
+# Output:
+#
+#   al_runner_events_list ....... List with job_events data
+#
+# Example: Display tasks and hosts that failed.
+#
+#   vars:
+#     al_runner_events_dir: private3/artifacts/ID01/job_events
+#
+#   tasks:
+#     - include_role:
+#         name: vbotka.ansible_lib
+#         tasks_from: al_runner_events
+#     - debug:
+#         msg: "host: {{ item.event_data.host }}
+#               task: {{ item.event_data.task_action }}"
+#       loop: "{{ al_runner_events_list|sort(attribute='counter') }}"
+#       loop_control:
+#         label: "{{ item.counter }}"
+#       when: item.event == 'runner_on_failed'
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_runner_events.yml
+
+- name: "Al_runner_events: Find files"
+  ansible.builtin.find:
+    paths: "{{ al_runner_events_dir }}"
+  register: result
+
+- name: "Al_runner_events: Include events from the files"
+  ansible.builtin.include_vars:
+    file: "{{ item }}"
+    name: "{{ 'my_var_' ~ my_idx }}"
+  loop: "{{ result.files | json_query('[].path') }}"
+  loop_control:
+    index_var: my_idx
+
+- name: "Al_runner_events: Create list of events"
+  ansible.builtin.set_fact:
+    al_runner_events_list: "{{ al_runner_events_list | d([]) +
+                               [lookup('ansible.builtin.vars', my_key)] }}"
+  loop: "{{ range(0, result.matched) | list }}"
+  loop_control:
+    index_var: my_idx
+  vars:
+    my_key: "{{ 'my_var_' ~ my_idx }}"
+
+- name: "Al_runner_events: Sort list of events"
+  ansible.builtin.set_fact:
+    al_runner_events_list: "{{ al_runner_events_list | sort(attribute='counter') }}"
+
+# EOF
+...

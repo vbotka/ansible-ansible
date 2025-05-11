@@ -1,0 +1,117 @@
+---
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_find_newer
+
+# Description: Create a list of newer files in a directory compared to
+#              a time stored in a timestamp.
+#
+#   Read time from the file 'al_find_newer_timestamp'. Find files in
+#   the directory 'al_find_newer_dir' and select newer files compared
+#   to the time (default: mtime) read from timestamp. Return list of
+#   the newer files 'al_find_newer_list' and time of the newest file
+#   'al_find_newer_maxtime'.
+#
+# Input:
+#
+#   al_find_newer_timestamp .. Timestamp file
+#                              (default: /var/tmp/al-newer-timestamp)
+#   al_find_newer_time ....... Type of the time (ctime, atime, mtime)
+#                              (default: mtime)
+#   al_find_newer_dir ........ Directory with newer files
+#                              (mandatory)
+#
+# Output:
+#
+#   al_find_newer_list ....... List of the newer files
+#   al_find_newer_maxtime .... Time of the newest file
+#                              (default: 0 if the list is empty)
+#
+# Example: Reload DNS slave if new zone file was found
+#
+#   shell> cat playbook.yml
+#   - hosts: dns_slave
+#     become: true
+#     vars:
+#       al_find_newer_dir: /usr/local/etc/namedb/slave
+#       al_find_newer_time: mtime
+#     tasks:
+#       - include_role:
+#           name: vbotka.ansible_lib
+#           tasks_from: al_find_newer
+#       - name: Reload named and update timestamp if new zones found
+#         block:
+#           - name: "Reload {{ al_find_newer_list|map('basename')|list }}"
+#             service:
+#               name: named
+#               state: reloaded
+#           - name: "Update timestamp"
+#             template:
+#               src: timestamp.j2
+#               dest: "{{ al_find_newer_timestamp }}"
+#         when: al_find_newer_list|length > 0
+#   # EOF
+#
+#   shell> cat timestamp.j2
+#   {{ al_find_newer_maxtime }}
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_find_newer.yml
+
+- name: "Al_find_newer: Default variables."
+  ansible.builtin.set_fact:
+    al_find_newer_timestamp: "{{ al_find_newer_timestamp | d('/var/tmp/al-newer-timestamp') }}"
+    al_find_newer_time: "{{ al_find_newer_time | d('mtime') }}"
+
+- name: "Al_find_newer: Sanity al_find_newer_dir."
+  ansible.builtin.fail:
+    msg: "[ERR] Variable al_find_newer_dir not defined."
+  when: al_find_newer_dir is not defined
+
+- name: "Al_find_newer: Sanity al_find_newer_time."
+  ansible.builtin.fail:
+    msg: "[ERR] Variable al_find_newer_time must be one of [ctime, atime, mtime]."
+  when: al_find_newer_time not in ['ctime', 'atime', 'mtime']
+
+- name: "Al_find_newer: Read timestamp (default=0)"
+  ansible.builtin.set_fact:
+    my_timestamp: "{{ lookup('ansible.builtin.pipe', 'sh -c ' ~ my_command) }}"
+  vars:
+    my_command: >-
+      '[ -e {{ al_find_newer_timestamp }} ] &&
+      cat {{ al_find_newer_timestamp }} ||
+      echo 0'
+
+- name: "Al_find_newer: Debug my_timestamp al_debug={{ al_debug }}"
+  ansible.builtin.debug:
+    var: my_timestamp
+  when: al_debug | bool
+
+- name: "Al_find_newer: Find files in {{ al_find_newer_dir }}"
+  ansible.builtin.find:
+    paths: "{{ al_find_newer_dir }}"
+  register: my_result
+
+- name: "Al_find_newer: Debug my_result al_debug={{ al_debug }}"
+  ansible.builtin.debug:
+    var: my_result
+  when: al_debug | bool
+
+- name: "Al_find_newer: Select newer files. Set default time 0"
+  ansible.builtin.set_fact:
+    al_find_newer_maxtime: 0
+    al_find_newer_list: "{{ my_result.files | json_query(jquery) }}"
+  vars:
+    jquery: "[?{{ al_find_newer_time }} > to_number('{{ my_timestamp }}')].path"
+
+- name: "Al_find_newer: Find newest file by {{ al_find_newer_time }}"
+  ansible.builtin.set_fact:
+    al_find_newer_maxtime: "{{ my_result.files | json_query(jquery) | max }}"
+  vars:
+    jquery: "[].{{ al_find_newer_time }}"
+  when: my_result.files | length > 0
+
+# EOF
+...

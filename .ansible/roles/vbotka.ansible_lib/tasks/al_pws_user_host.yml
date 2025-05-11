@@ -1,0 +1,415 @@
+---
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_pws_user_host
+#
+# Description: Manage user's passwords at hosts by passwordstore
+#
+#   Retrieve, create, or update passwords of selected users at remote
+#   hosts by the passwordstore.org pass utility. It also retrieves
+#   YAML style keys stored as multilines in the passwordfile.
+#
+#
+# Input:
+#
+#   al_pws_query .......... List of passwordstore's queries [1]. (default: [])
+#   al_pws_create ......... New userpass will be created by pass if it doesn't
+#                           exist. (default: false)
+#   al_pws_idempotent_password_hash .. Make password_hash idempotent [5]
+#                           (default: true)
+#   al_pws_hostname_var ... Name of the variable with the name of the host [6]
+#                           (default: inventory_hostname)
+#   al_pws_debug .......... Display debug info.
+#                           WARNING: userpass will be displayed (default: false)
+#
+# Output:
+#
+#   al_pws_query_result ... List of passwordstore's queries with updated
+#                           attributes "userpass" [2,3] and "password" [4].
+#
+# Notes:
+#
+#   [1] See parameters of Ansible lookup plugin "passwordstore". Optionally
+#       set custom defaults. See defaults/main/al_pws.yml.
+#   [2] If "usrpass" is omitted in the input "usrpass" will be retrieved
+#       from passwordstore and added to the dictionary al_pws_query.
+#   [3] A new "usrpass" will be created if it does not exist in
+#       passwordstore. (when al_pws_create: true)
+#   [4] Attribute "password" with encrypted userpass for the user module
+#       will be added to the dictionary "al_pws_query_result".
+#   [5] See Ansible "Encryption filters" e.g. random(seed=inventory_hostname).
+#   [6] The variable "al_pws_hostname_var" is used to create pass-name (see man pass) "{{
+#       lookup('ansible.builtin.vars', al_pws_hostname_var) }}/user". The default value is
+#       "inventory_hostname. Other options include "ansible_fqdn", "ansible_hostname",
+#       "ansible_nodename", or any other custom variable.
+#
+#
+# Example 1: Update userpass, or create it if does not exists
+#
+#   Update or create, if it does not exist, userpass for users in the
+#   dictionary al_pws_query at all hosts in the group my_domain. The
+#   utility pass will generate userpass. Store the userpass at
+#   controller only. Do not update passwords at hosts.
+#
+#   shell> cat playbook.yml
+#   - hosts: my_domain
+#     become: true
+#
+#     vars:
+#       al_pws_create: true
+#       al_pws_overwrite: true
+#       al_pws_query:
+#         - name: user1
+#         - name: user2
+#
+#     tasks:
+#
+#       - name: Update passwords in passwordstore
+#         include_role:
+#           name: vbotka.ansible_lib
+#           tasks_from: al_pws_user_host.yml
+#   # EOF
+#
+# Example 2: Update, or create userpass provided by the variable
+#
+#   Update or create, if it does not exist, userpass for users in the
+#   dictionary al_pws_query at all hosts in the group my_domain. The
+#   userpass is provided by the variable. Include tasks to update the
+#   passwords at hosts.
+#
+#   shell> cat playbook.yml
+#   - hosts: my_domain
+#     become: true
+#
+#     vars:
+#       al_pws_create: true
+#       al_pws_query:
+#         - name: user1
+#           overwrite: true
+#           userpass: user1_password
+#         - name: user2
+#           overwrite: true
+#           userpass: user2_password
+#
+#     tasks:
+#
+#       - name: Update passwords in passwordstore
+#         include_role:
+#           name: vbotka.ansible_lib
+#           tasks_from: al_pws_user_host.yml
+#
+#       - name: update passwords in FreeBSD hosts
+#         include_role:
+#           name: vbotka.freebsd_postinstall
+#           tasks_from: users.yml
+#         vars:
+#           freebsd_users: al_pws_query_result
+#         when: ansible_os_family == 'FreeBSD'
+#
+#       - name: update passwords in Linux hosts
+#         include_role:
+#           name: vbotka.linux_postinstall
+#           tasks_from: users.yml
+#         vars:
+#           lp_users: al_pws_query_result
+#         when: ansible_os_family == 'Debian'
+#   # EOF
+#
+#    "msg": [
+#        "al_pws_query_result",
+#        "-   name: user1",
+#        "    overwrite: true",
+#        "    password: $6$53844$JRx.AS ... 5e81",
+#        "    userpass: user1_password",
+#        "-   name: user2",
+#        "    overwrite: true",
+#        "    password: $6$51944$hCT7vK ... 5WM.",
+#        "    userpass: user2_password"
+#
+# Example 3: Retrieve userpass
+#
+#   Retrieve userpass create passwords for users in the dictionary
+#   al_pws_query at all hosts in the group my_domain.
+#
+#   shell> cat playbook.yml
+#   - hosts: my_domain
+#     become: true
+#
+#     vars:
+#       al_pws_query:
+#         - name: user1
+#         - name: user2
+#
+#     tasks:
+#
+#       - name: Retrieve userpass from passwordstore
+#         include_role:
+#           name: vbotka.ansible_lib
+#           tasks_from: al_pws_user_host.yml
+#   # EOF
+#
+#    "msg": [
+#        "al_pws_query_result",
+#        "-   name: user1",
+#        "    password: $6$53844$JRx.AS ... 5e81",
+#        "    userpass: user1_password",
+#        "-   name: user2",
+#        "    password: $6$51944$hCT7vK ... 5WM.",
+#        "    userpass: user2_password"
+#
+# Notes:
+#
+# 1) This task will crash if a user's password is not present in the
+#    passwordstore, the creation is disabled 'al_pws_create: false',
+#    and the user's password is not disabled 'disabled_password: false'
+#    (default).
+#
+# Troubleshooting:
+#
+# 1) Error: pass "gpg: decryption failed: No secret key"
+#    - gnupg: There is no assurance this key belongs to the named user
+#      https://stackoverflow.com/questions/33361068/
+#    - gopass: “gpg: decryption failed: No secret key”
+#      https://www.krenger.ch/blog/gopass-gpg-decryption-failed-no-secret-key/
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_pws_user_host.yml
+
+# defaults moved to defaults/main/al_pws.yml
+# - name: "Al_pws_user_host: Default variables."
+#   ansible.builtin.set_fact:
+#     al_pws_debug: "{{ al_pws_debug | d(false) }}"
+#     al_pws_sanity_quiet: "{{ al_pws_sanity_quiet | bool }}"
+#     al_pws_backup: "{{ al_pws_backup | d(false) }}"
+#     al_pws_create: "{{ al_pws_create | d(false) }}"
+#     al_pws_length: "{{ al_pws_length | d(16) }}"
+#     al_pws_nosymbols: "{{ al_pws_nosymbols | d(false) }}"
+#     al_pws_overwrite: "{{ al_pws_overwrite | d(false) }}"
+#     al_pws_passwordstore: "{{ al_pws_passwordstore | d('~/.password-store') }}"
+#     al_pws_returnall: "{{ al_pws_returnall | d(false) }}"
+#     al_pws_subkey: "{{ al_pws_subkey | d('password') }}"
+#     al_pws_idempotent_password_hash: "{{ al_pws_idempotent_password_hash | d(true) }}"
+#     al_pws_hostname_var: "{{ al_pws_hostname_var | d('inventory_hostname') }}"
+#     al_pws_query: "{{ al_pws_query | d([]) }}"
+#   no_log: true  # no-log-password password should not be logged.
+
+- name: "Al_pws_user_host: Debug al_pws_debug={{ al_pws_debug }}"
+  when: al_pws_debug | bool
+  vars:
+    msg: |-
+      al_pws_backup: {{ al_pws_backup }}
+      al_pws_create: {{ al_pws_create }}
+      al_pws_hostname_var: {{ al_pws_hostname_var }}
+      al_pws_idempotent_password_hash: {{ al_pws_idempotent_password_hash }}
+      al_pws_length: {{ al_pws_length }}
+      al_pws_nosymbols: {{ al_pws_nosymbols }}
+      al_pws_overwrite: {{ al_pws_overwrite }}
+      al_pws_passwordstore: {{ al_pws_passwordstore }}
+      al_pws_returnall: {{ al_pws_returnall }}
+      al_pws_sanity_quiet: {{ al_pws_sanity_quiet }}
+      al_pws_subkey: {{ al_pws_subkey }}
+      al_pws_query:
+        {{ al_pws_query | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+
+# Sanity  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: Sanity dependencies
+  delegate_to: localhost
+  run_once: true
+  block:
+
+    - name: "Al_pws_user_host: Sanity dependencies collect."
+      community.general.python_requirements_info:
+        dependencies:
+          - passlib
+      register: out
+
+    - name: "Al_pws_user_host: Sanity dependencies assert."
+      ansible.builtin.assert:
+        that: out.not_found|length == 0
+        success_msg: "[OK]  All dependencies installed."
+        fail_msg: "[ERR] dependencies not installed: {{ out.not_found }}"
+        quiet: "{{ al_pws_sanity_quiet | bool }}"
+
+- name: "Al_pws_user_host: Sanity of al_pws_query. Empty."
+  ansible.builtin.assert:
+    that: al_pws_query|length > 0
+    success_msg: "[OK]  List of queries al_pws_query not empty."
+    fail_msg: "[ERR] List of queries al_pws_query is empty."
+    quiet: "{{ al_pws_sanity_quiet | bool }}"
+
+- name: "Al_pws_user_host: Sanity of al_pws_query. Attribute name is mandatory."
+  ansible.builtin.assert:
+    that: number_of_names == number_of_items
+    success_msg: "[OK]  Attribute name in all items."
+    fail_msg: "[ERR] Attribute name is mandatory."
+    quiet: "{{ al_pws_sanity_quiet | bool }}"
+  vars:
+    number_of_names: "{{ al_pws_query | json_query('[].name') | length }}"  # noqa: jinja[invalid]
+    number_of_items: "{{ al_pws_query | length }}"
+
+# Create queries to passwordstore - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_pws_user_host: Create empty dictionary my_queries"
+  ansible.builtin.set_fact:
+    my_queries: {}
+
+- name: "Al_pws_user_host: Create passwordstore queries."
+  ansible.builtin.set_fact:
+    my_queries: "{{ my_queries | combine({item.name: my_query}) }}"
+  loop: "{{ al_pws_query }}"
+  loop_control:
+    label: "{{ item.name }}"
+  vars:
+    my_hostname: "{{ lookup('ansible.builtin.vars', al_pws_hostname_var) }}"
+    my_query: >
+      {{ my_hostname }}/{{ item.name }}
+      backup={{ item.backup | d(al_pws_backup) }}
+      create={{ item.create | d(al_pws_create) }}
+      length={{ item.length | d(al_pws_length) }}
+      nosymbols={{ item.nosymbols | d(al_pws_nosymbols) }}
+      overwrite={{ item.overwrite | d(al_pws_overwrite) }}
+      returnall={{ item.returnall | d(al_pws_returnall) }}
+      subkey={{ item.subkey | d(al_pws_subkey) }}
+      {{ (item.userpass is defined) |
+         ternary('userpass=' ~ item.userpass | d('UNDEF') | quote, '') }}
+      {{ (item.directory is defined) |
+         ternary('directory=' ~ item.directory | d('UNDEF') | quote, '') }}
+  when:
+    - not item.disabled_password | d(false)
+    - item.shell | d('') is not search('nologin')
+    - item.state | d('present') == 'present'
+
+- name: "Al_pws_user_host: Debug my_queries 1 al_pws_debug={{ al_pws_debug }}"
+  vars:
+    msg: |-
+      my_queries | length: {{ my_queries | length }}
+      my_queries (JSON):
+        {{ my_queries | to_nice_json(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_pws_debug | bool
+
+- name: "Al_pws_user_host: Debug my_queries 2 al_pws_debug={{ al_pws_debug }}"
+  ansible.builtin.debug:
+    msg: "{{ {item.key: item.value} }}"
+  loop: "{{ my_queries | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: al_pws_debug | bool
+
+# Query passwordstore - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_pws_user_host: Create empty dictionary my_userpass_dict"
+  ansible.builtin.set_fact:
+    my_userpass_dict: {}
+
+- name: "Al_pws_user_host: Retrieve, create or update userpass in passwordstore."
+  ansible.builtin.set_fact:
+    my_userpass_dict: "{{ my_userpass_dict | combine({item.key: my_userpass}) }}"
+  loop: "{{ my_queries | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    my_userpass: "{{ lookup('community.general.passwordstore', item.value) }}"
+
+- name: "Al_pws_user_host: Debug my_userpass_dict al_pws_debug={{ al_pws_debug }}"
+  vars:
+    msg: |-
+      my_userpass_dict:
+        {{ my_userpass_dict | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_pws_debug | bool
+
+# Create salt dictionary - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_pws_user_host: Create empty dictionary my_salt_dict."
+  ansible.builtin.set_fact:
+    my_salt_dict: {}
+
+- name: "Al_pws_user_host: Create dictionary with salt."
+  ansible.builtin.set_fact:
+    my_salt_dict: "{{ my_salt_dict | combine({item.name: my_salt}) }}"
+  loop: "{{ al_pws_query }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - not item.disabled_password | d(false)
+    - item.shell | d('') is not search('nologin')
+    - item.state | d('present') == 'present'
+  vars:
+    my_salt: "{{ al_pws_idempotent_password_hash |
+                 ternary( 65534 | random(seed=(item.name ~ inventory_hostname)) | string,
+                          65534 | random | string) }}"
+
+- name: "Al_pws_user_host: Debug my_salt_dict al_pws_debug={{ al_pws_debug }}"
+  vars:
+    msg: |-
+      my_salt_dict:
+        {{ my_salt_dict | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_pws_debug | bool
+
+# Hash passwords - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_pws_user_host: Create empty dictionary my_password_dict"
+  ansible.builtin.set_fact:
+    my_password_dict: {}
+  no_log: true  # no-log-password password should not be logged.
+
+- name: "Al_pws_user_host: Hash userpass to password."
+  ansible.builtin.set_fact:
+    my_password_dict: "{{ my_password_dict | combine({item.key: my_password}) }}"
+  loop: "{{ my_userpass_dict | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    my_password: "{{ item.value | password_hash('sha512', my_salt_dict[item.key]) }}"
+  no_log: true  # no-log-password password should not be logged.
+
+- name: "Al_pws_user_host: Debug my_password_dict al_pws_debug={{ al_pws_debug }}"
+  vars:
+    msg: |-
+      my_password_dict:
+        {{ my_password_dict | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_pws_debug | bool
+
+# Create return dictionary - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_pws_user_host: Create empy list al_pws_query_result"
+  ansible.builtin.set_fact:
+    al_pws_query_result: []
+
+- name: "Al_pws_user_host: Add attributes userpass and password."
+  ansible.builtin.set_fact:
+    al_pws_query_result: "{{ al_pws_query_result + [item | combine(_dict)] }}"
+  loop: "{{ al_pws_query }}"
+  loop_control:
+    label: "{{ item.name }}"
+  vars:
+    _dict: "{{ dict([('userpass', my_userpass_dict[item.name]),
+                     ('password', my_password_dict[item.name])]) }}"
+  when:
+    - not item.disabled_password | d(false)
+    - item.shell | d('') is not search('nologin')
+    - item.state | d('present') is match('present')
+
+- name: "Al_pws_user_host: Debug al_pws_query_result al_pws_debug={{ al_pws_debug }}"
+  vars:
+    msg: |-
+      al_pws_query_result:
+        {{ al_pws_query_result | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_pws_debug | bool
+
+# EOF
+...

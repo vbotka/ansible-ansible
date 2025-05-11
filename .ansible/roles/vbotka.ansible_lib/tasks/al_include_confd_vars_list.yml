@@ -1,0 +1,127 @@
+---
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_include_confd_vars_list
+#
+# Description: Create list of vars from files in al_include_confd_dir
+#
+# Input:
+#
+#   al_include_confd_dir ........... direcotry with the configuration files
+#   al_include_confd_patterns ...... see ansible module:find parameter:patterns
+#   al_include_confd_excludes ...... see ansible module:find parameter:excludes
+#   al_include_confd_vars_list_type  type of the list. See defaults.
+#
+# Output:
+#
+#   al_include_confd_vars_list ..... created list of varables
+#
+# Example:
+#
+#   vars:
+#     al_include_confd_dir: "{{ playbook_dir }}/conf.d"
+#     al_include_confd_vars_list_type: "plain"
+#   tasks:
+#     - include_role:
+#         name: vbotka.ansible_lib
+#         tasks_from: al_include_confd_vars_list.yml
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_include_confd_vars_list.yml
+
+# Debug and Test input variable al_include_confd_dir - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_confd_vars_list: Debug al_debug={{ al_debug }}"
+  vars:
+    msg: |-
+      al_include_confd_dir: {{ al_include_confd_dir | d('UNDEFINED') }}
+      al_include_confd_vars_list_type: {{ al_include_confd_vars_list_type }}
+      al_include_confd_patterns: {{ al_include_confd_patterns }}
+      al_include_confd_excludes: {{ al_include_confd_excludes }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_debug | bool
+
+- name: "Al_include_confd_vars_list: Test al_include_confd_dir defined"
+  ansible.builtin.fail:
+    msg: Variable al_include_confd_dir is not defined. End of play.
+  when: al_include_confd_dir is not defined
+
+- name: "Al_include_confd_vars_list: Test al_include_confd_dir exists"
+  ansible.builtin.fail:
+    msg: Path {{ al_include_confd_dir }} does not exist. End of play.
+  when: al_include_confd_dir is not exists
+
+- name: "Al_include_confd_vars_list: Test al_include_confd_vars_list_type valid"
+  ansible.builtin.fail:
+    msg: Unknown type of al_include_confd_vars_list_type. End of play.
+  when: al_include_confd_vars_list_type not in al_include_confd_vars_list_options
+
+# List of configuration files - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_confd_vars_list: Find configuration files"
+  ansible.builtin.find:
+    file_type: file
+    paths: "{{ al_include_confd_dir }}"
+    patterns: "{{ al_include_confd_patterns }}"
+    excludes: "{{ al_include_confd_excludes }}"
+  delegate_to: localhost
+  register: result
+
+- name: "Al_include_confd_vars_list: Create list of configuration files"
+  ansible.builtin.set_fact:
+    al_local_path_list: "{{ result | json_query('files[].path') }}"
+
+- name: "Al_include_confd_vars_list: Debug list of configuration files al_debug={{ al_debug }}"
+  ansible.builtin.debug:
+    var: al_local_path_list
+  when: al_debug | bool
+
+# List of configuration links - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_confd_vars_list: Find configuration links"
+  ansible.builtin.find:
+    file_type: link
+    paths: "{{ al_include_confd_dir }}"
+    patterns: "{{ al_include_confd_patterns }}"
+  delegate_to: localhost
+  register: result
+
+- name: "Al_include_confd_vars_list: Add list of configuration links"
+  ansible.builtin.set_fact:
+    al_local_path_list: "{{ al_local_path_list + result | json_query('files[].path') }}"
+
+- name: "Al_include_confd_vars_list: Debug list of configuration paths al_debug={{ al_debug }}"
+  ansible.builtin.debug:
+    var: al_local_path_list
+  when: al_debug | bool
+
+# Include vars from configuration paths - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Create output variable al_include_confd_vars_list
+- name: "Al_include_confd_vars_list: Create empty al_include_confd_vars_list"
+  ansible.builtin.set_fact:
+    al_include_confd_vars_list: []
+
+# Create plain list of variables
+- name: "Al_include_confd_vars_list: Create plain list of vars"
+  ansible.builtin.include_tasks:
+    file: fn/al_include_confd_vars_list_plain.yml
+  loop: "{{ al_local_path_list }}"
+  when: al_include_confd_vars_list_type == 'plain'
+
+# Create list of dictionaries with fname
+- name: "Al_include_confd_vars_list: Create list of vars incl. fname"
+  ansible.builtin.include_tasks:
+    file: fn/al_include_confd_vars_list_fname.yml
+  loop: "{{ al_local_path_list }}"
+  when: al_include_confd_vars_list_type == 'fname'
+
+- name: "Al_include_confd_vars_list: Debug al_include_confd_vars_list al_debug={{ al_debug }}"
+  ansible.builtin.debug:
+    var: al_include_confd_vars_list
+  when: al_debug | bool
+
+# EOF
+...

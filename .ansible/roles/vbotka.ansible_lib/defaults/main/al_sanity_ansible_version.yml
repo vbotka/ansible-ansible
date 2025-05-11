@@ -1,0 +1,4 @@
+---
+al_sanity_ansible_version_fail: true
+al_sanity_ansible_version_end_host: false
+al_sanity_ansible_version_warning: true

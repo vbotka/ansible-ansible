@@ -1,0 +1,157 @@
+---
+# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_git_checkout
+#
+# Description: Git checkouts of repositories.
+#
+#   Use either Ansible git module (al_git_checkout_module: true) or
+#   git command to checkout repositories. Read data from file formated
+#   as requirements.yml. See "Installing Multiple Roles From a File".
+#   https://galaxy.ansible.com/docs/using/installing.html#installing-multiple-roles-from-a-file
+#
+# Input:
+#
+#   al_git_checkout_module ...... Use Ansible git module or git command (default: true)
+#   al_git_checkout_git_user .... User allowed to read the repos from git (default: admin)
+#   al_git_checkout_user ........ Owner of the repos dir (default: $USER)
+#   al_git_checkout_group ....... Group of the repos dir  (default: $USER)
+#   al_git_checkout_mode ........ Mode of the repos dir (default: u=+rwX,g=+rX-w,o=-rwx)
+#   al_git_checkout_repos_path .. Directory the repos will be fetched to (default: $HOME/.ansible/repos)
+#   al_git_checkout_repos_file .. File with the list of the repos (default: vars/requirements.yml)
+#
+# Output:
+#
+#   None.
+#
+# Example:
+#
+#   shell> playbook.yml
+#   ---
+#   - name: Checkout roles from vars/requirements.yml
+#     hosts: localhost
+#     gather_facts: false
+#     tasks:
+#       - include_role:
+#           name: vbotka.ansible_lib
+#           tasks_from: al_git_checkout
+#         vars:
+#           al_git_checkout_repos_path: "{{ lookup('ansible.builtin.env','HOME') ~ '/.ansible/roles' }}"
+#   ...
+#
+#   shell> cat vars/requirements-roles.yml
+#   ---
+#   requirements:
+#     - name: vbotka.ansible
+#       src: https://github.com/vbotka/ansible-ansible
+#       version: '1.10.2'
+#       scm: git
+#     - name: vbotka.ansible_lib
+#       src: https://github.com/vbotka/ansible-lib
+#       version: '1.7.2'
+#       scm: git
+#   ...
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_git_checkout.yml
+
+- name: "Al_git_checkout: Set default values."
+  ansible.builtin.set_fact:
+    my_default_user: "{{ lookup('ansible.builtin.env', 'USER') }}"
+    my_default_path: "{{ lookup('ansible.builtin.env','HOME') ~ '/.ansible/repos' }}"
+
+- name: "Al_git_checkout: Default variables."
+  ansible.builtin.set_fact:
+    al_git_checkout_module: "{{ al_git_checkout_module | d(true) }}"
+    al_git_checkout_git_user: "{{ al_git_checkout_git_user | d('admin') }}"
+    al_git_checkout_user: "{{ al_git_checkout_user | d(my_default_user) }}"
+    al_git_checkout_group: "{{ al_git_checkout_group | d(my_default_user) }}"
+    al_git_checkout_mode: "{{ al_git_checkout_mode | d('u=+rwX,g=+rX-w,o=-rwx') }}"
+    al_git_checkout_repos_path: "{{ al_git_checkout_repos_path | d(my_default_path) }}"
+    al_git_checkout_repos_file: "{{ al_git_checkout_repos_file | d('vars/repos.yml') }}"
+
+- name: "Al_git_checkout: Include list of repos from {{ al_git_checkout_repos_file }}"
+  ansible.builtin.include_vars:
+    file: "{{ al_git_checkout_repos_file }}"
+
+- name: "Al_git_checkout: Debug al_debug={{ al_debug }}"
+  vars:
+    msg: |-
+      al_git_checkout_module: {{ al_git_checkout_module }}
+      al_git_checkout_git_user: {{ al_git_checkout_git_user }}
+      al_git_checkout_user: {{ al_git_checkout_user }}
+      al_git_checkout_group: {{ al_git_checkout_group }}
+      al_git_checkout_mode: {{ al_git_checkout_mode }}
+      al_git_checkout_repos_path: {{ al_git_checkout_repos_path }}
+      al_git_checkout_repos_file: {{ al_git_checkout_repos_file }}
+      requirements:
+        {{ requirements | to_nice_yaml(indent=2) | indent(2) }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_debug | bool
+
+- name: "Al_git_checkout: Create directory {{ al_git_checkout_repos_path }}"
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ al_git_checkout_repos_path }}"
+    owner: "{{ al_git_checkout_user }}"
+    group: "{{ al_git_checkout_group }}"
+    mode: "{{ al_git_checkout_mode }}"
+
+- name: "Al_git_checkout: Git install repos."
+  ansible.builtin.git:
+    repo: "{{ item.src }}"
+    dest: "{{ al_git_checkout_repos_path }}/{{ item.name }}"
+    version: "{{ item.version | d('HEAD') }}"
+  loop: "{{ requirements }}"
+  when:
+    - item.install | d(true)
+    - al_git_checkout_module | bool
+
+- name: "Al_git_checkout: Command install repos."
+  ansible.builtin.command:
+    chdir: "{{ al_git_checkout_repos_path }}"
+    cmd: >-
+      /bin/sh -c
+      'cd {{ al_git_checkout_repos_path }};
+      if [ -e {{ item.name | quote }} ]; then
+         (cd {{ item.name }}; git pull);
+      else
+         git clone {{ item.src }} {{ item.name }};
+      fi'
+  loop: "{{ requirements }}"
+  changed_when: false  # TODO: Test registered result
+  when:
+    - item.install | d(true)
+    - not al_git_checkout_module | bool
+    - not ansible_check_mode
+
+- name: "Al_git_checkout: Chown and chmod repos."
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ al_git_checkout_repos_path }}/{{ item.name }}"
+    owner: "{{ al_git_checkout_user }}"
+    group: "{{ al_git_checkout_group }}"
+    mode: "{{ al_git_checkout_mode }}"
+  loop: "{{ requirements }}"
+  when:
+    - item.install | d(true)
+    - not ansible_check_mode
+
+- name: "Al_git_checkout: Link repos."
+  ansible.builtin.file:
+    state: link
+    src: "{{ al_git_checkout_repos_path }}/{{ item.name }}"
+    dest: "{{ al_git_checkout_repos_path }}/{{ item.link }}"
+    owner: "{{ al_git_checkout_user }}"
+    group: "{{ al_git_checkout_group }}"
+  loop: "{{ requirements }}"
+  when:
+    - item.install | d(true)
+    - item.link is defined
+    - not ansible_check_mode
+
+# EOF
+...

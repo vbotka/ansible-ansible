@@ -1,0 +1,90 @@
+---
+# All rights reserved (c) 2021-2024, Vladimir Botka <vbotka@gmail.com>
+# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ansible_lib: al_include_os_vars_path_incr
+#
+# Description: Include OS specific variables from al_os_vars_path incrementally
+#
+# Input:
+#
+#   al_os_vars_path ................ directory to read variables from
+#
+# Output: none
+#
+# Example:
+#
+#   vars:
+#     al_os_vars_path: "{{ playbook_dir }}"
+#   tasks:
+#     - include_role:
+#         name: vbotka.ansible_lib
+#         tasks_from: al_include_os_vars_path_incr.yml
+#
+# Notes:
+#
+#   1) Create files vars/defaults/default.yml and vars/default.yml (at
+#      least empty).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://github.com/vbotka/ansible-lib/tasks/al_include_os_vars_path_incr.yml
+
+# Debug and Test input variable al_os_vars_path - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_os_vars_path_incr: Debug al_debug={{ al_debug }}"
+  vars:
+    msg: |-
+      al_os_vars_path: {{ al_os_vars_path | d('UNDEFINED') }}
+  ansible.builtin.debug:
+    msg: "{{ '{}'.format(msg) }}"
+  when: al_debug | bool
+
+- name: "Al_include_os_vars_path_incr: Test al_os_vars_path not defined"
+  ansible.builtin.fail:
+    msg: Variable al_os_vars_path not defined. End of play.
+  when: al_os_vars_path is not defined
+
+# Default variables - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_os_vars_path_incr: vars from {{ al_os_vars_path ~ '/vars/defaults' }}"
+  ansible.builtin.include_vars: "{{ item }}"
+  # register: result
+  loop: "{{ options | unique }}"
+  when: item is exists
+  vars:
+    my_path: "{{ al_os_vars_path }}/vars/defaults"
+    options:
+      - "{{ my_path }}/defaults.yml"
+      - "{{ my_path }}/default.yml"
+      - "{{ my_path }}/{{ ansible_os_family }}.yml"
+      - "{{ my_path }}/{{ ansible_distribution }}.yml"
+      - "{{ my_path }}/{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+
+# - name: "al_include_os_vars_path_incr: Debug include default vars al_debug={{ al_debug }}"
+#   ansible.builtin.debug:
+#     var: result
+#   when: al_debug | bool
+
+# Custom variables - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- name: "Al_include_os_vars_path_incr: vars from {{ al_os_vars_path ~ '/vars' }}"
+  ansible.builtin.include_vars: "{{ item }}"
+  # register: result
+  loop: "{{ options | unique }}"
+  when: item is exists
+  vars:
+    my_path: "{{ al_os_vars_path }}/vars"
+    options:
+      - "{{ my_path }}/defaults.yml"
+      - "{{ my_path }}/default.yml"
+      - "{{ my_path }}/{{ ansible_os_family }}.yml"
+      - "{{ my_path }}/{{ ansible_distribution }}.yml"
+      - "{{ my_path }}/{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+
+# - name: "al_include_os_vars_path_incr: Debug include custom vars al_debug={{ al_debug }}"
+#   ansible.builtin.debug:
+#     var: result
+#   when: al_debug | bool
+
+# EOF
+...
