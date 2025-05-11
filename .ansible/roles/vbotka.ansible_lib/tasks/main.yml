@@ -1,9 +1,0 @@
----
-# All rights reserved (c) 2020-2024, Vladimir Botka <vbotka@gmail.com>
-# Simplified BSD License, https://opensource.org/licenses/BSD-2-Clause
-
-- name: Import debug.yml
-  ansible.builtin.import_tasks: debug.yml
-
-# EOF
-...

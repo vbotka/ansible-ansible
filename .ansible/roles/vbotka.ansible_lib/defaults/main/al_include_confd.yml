@@ -1,5 +1,0 @@
----
-al_include_confd_vars_list_type: plain
-al_include_confd_vars_list_options: [plain, fname]
-al_include_confd_patterns: "*"
-al_include_confd_excludes: "*~, #*"

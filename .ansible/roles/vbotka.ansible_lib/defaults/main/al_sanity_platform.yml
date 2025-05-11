@@ -1,7 +1,0 @@
----
-al_sanity_platform_fail: true
-al_sanity_platform_version_fail: true
-al_sanity_platform_end_host: false
-al_sanity_platform_version_end_host: false
-al_sanity_platform_warning: true
-al_sanity_platform_gather_subset: true

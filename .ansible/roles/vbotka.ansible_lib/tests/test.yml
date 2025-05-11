@@ -1,6 +1,0 @@
----
-- name: Test
-  hosts: localhost
-  connection: local
-  roles:
-    - ansible-lib
