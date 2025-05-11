@@ -86,7 +86,7 @@ ma_repo_dir: /scratch/ansible-git
 ma_rnotes: false
 ma_rnotes_core_url: https://raw.githubusercontent.com/ansible/ansible/stable-
 ma_rnotes_core_dir: /scratch/ansible-release-notes/core
-ma_rnotes_core_list: ["2.15", "2.16", "2.17"]
+ma_rnotes_core_list: ["2.16", "2.17", "2.18"]
 ma_rnotes_build_url: https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/
 ma_rnotes_build_dir: /scratch/ansible-release-notes/build
-ma_rnotes_build_list: ["7", "8", "9"]
+ma_rnotes_build_list: ["8", "9", "10"]
