@@ -19,8 +19,8 @@ Major Changes
 
 Minor Changes
 -------------
-* Updated docs.
-
+* Updated contrib/docs
+* Updated documentation. Updated annotation templates.
 
 Bugfixes
 --------
