@@ -1,22 +1,19 @@
 .. _ug:
 
-############
 User's guide
 ############
 
 .. contents:: Table of Contents
-   :depth: 4
-
+   :local:
+   :depth: 2
 
 .. _ug_introduction:
 
-************
 Introduction
 ************
 
-Run this role to install and configure Ansible. Optionally, install
-Ansible plugins, checkout repo with the source code, and download the
-Ansible release notes.
+Run this role to install and configure Ansible. Optionally, install Ansible plugins, checkout repo
+with the source code, and download the Ansible release notes.
 
 * Ansible role: `ansible`_
 
@@ -36,18 +33,15 @@ Ansible release notes.
    * `Ansible project source code`_
    * `Other Tools And Programs`_
 
-
 .. _ug_installation:
 
-************
 Installation
 ************
 
-The most convenient way how to install an Ansible role is to use
-Ansible Galaxy CLI ``ansible-galaxy``. The utility comes with the
-standard Ansible package and provides the user with a simple interface
-to the Ansible Galaxy's services. For example, take a look at the
-current status of the role ::
+The most convenient way how to install an Ansible role is to use Ansible Galaxy CLI
+``ansible-galaxy``. The utility comes with the standard Ansible package and provides the user with a
+simple interface to the Ansible Galaxy's services. For example, take a look at the current status of
+the role ::
 
   shell> ansible-galaxy role info vbotka.ansible
 
@@ -69,10 +63,8 @@ and install the collection if necessary ::
 
    * Take a look at other roles ``shell> ansible-galaxy search --author=vbotka``
 
-
 .. _ug_playbook:
 
-********
 Playbook
 ********
 
@@ -94,26 +86,22 @@ srv.example.com (2)
      roles:
        - vbotka.ansible
 
-.. note:: ``gather_facts: true`` (3) must be set to gather facts
-   needed to evaluate OS-specific options of the role. For example, to
-   install packages, the variable ``ansible_os_family`` is needed to
-   select the appropriate Ansible module.
+.. note:: ``gather_facts: true`` (3) must be set to gather facts needed to evaluate OS-specific
+   options of the role. For example, to install packages, the variable ``ansible_os_family`` is
+   needed to select the appropriate Ansible modules.
 
 .. seealso::
 
-   * For details see `Connection Plugins`_ (4-5)
+   * `Connection Plugins`_ (4-5)
 
-   * See also `Understanding Privilege Escalation`_ (6-8)
-
+   * `Understanding Privilege Escalation`_ (6-8)
 
 .. _ug_debug:
 
-*****
 Debug
 *****
 
-To see additional debug information enable debug output in the
-configuration
+To see additional debug information enable debug output in the configuration
 
 .. code-block:: yaml
 
@@ -127,64 +115,41 @@ configuration
 
 .. note::
 
-   * The debug output of this role is optimized for the **yaml**
-     callback plugin. Set this plugin for example in the environment
-     ``shell> export ANSIBLE_STDOUT_CALLBACK=yaml``.
-
-   * See details about the yaml callback plugin ``shell> ansible-doc -t callback yaml``
-
-   * See list of other callback plugins ``shell> ansible-doc -t callback -l``
-
+   Use `callback_result_format`_ = yaml
 
 .. seealso::
 
    * `Playbook Debugger`_
 
-
 .. _ug_tags:
 
-****
 Tags
 ****
 
-The tags provide the user with a very useful tool to run selected
-tasks of the role. To see what tags are available list the tags of the
-role:
+The tags provide the user with a very useful tool to run selected tasks of the role. To see what
+tags are available list the tags of the role:
 
 .. include:: tags-list.rst
 
-For example, display the list of the variables and their values with
-the tag ``ma_debug`` (when the debug is enabled ``ma_debug=true``)
-
-.. code-block:: sh
+For example, display the list of the variables and their values with the tag ``ma_debug`` (when the
+debug is enabled ``ma_debug=true``) ::
 
   shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
-
-Create directories
-
-.. code-block:: sh
+Create directories ::
 
   shell> ansible-playbook ansible.yml -t ma_plugins_path,ma_src_path,ma_repo_path,ma_rnotes_path
 
-
-See what OS packages will be installed
-
-.. code-block:: sh
+See what OS packages will be installed ::
 
   shell> ansible-playbook ansible.yml -t ma_pkg --check
 
-
-Install OS packages and exit the play
-
-.. code-block:: sh
+Install OS packages and exit the play ::
 
   shell> ansible-playbook ansible.yml -t ma_pkg
 
-
 .. _ug_tasks:
 
-*****
 Tasks
 *****
 
@@ -206,10 +171,8 @@ Then dry-run the selected task and see what will be changed. Replace <tag> with 
 
   shell> ansible-playbook ansible.yml -t <tag> --check --diff
 
-When all seems to be ready run the command. Run the command twice and
-make sure the playbook and the configuration is idempotent
-
-.. code-block:: sh
+When all seems to be ready run the command. Run the command twice and make sure the playbook and the
+configuration is idempotent ::
 
    shell> ansible-playbook ansible.yml -t <tag>
 
@@ -221,7 +184,6 @@ make sure the playbook and the configuration is idempotent
 
 .. _ug_task_plugins:
 .. include:: task-plugins.rst
-
 
 Examples
 --------
@@ -235,7 +197,6 @@ Examples
 .. _ug_task_devel:
 .. include:: task-devel.rst
 
-
 Examples
 --------
 
@@ -245,22 +206,19 @@ Examples
    task-ansible-devel-ex1
    task-ansible-devel-ex2
 
-
 .. _ug_vars:
 
-*********
 Variables
 *********
 
-The default variables are stored in the directory **defaults**. OS
-specific variables are stored in the directory **vars/defaults**.
+The default variables are stored in the directory **defaults**. OS specific variables are stored in
+the directory **vars/defaults**.
 
 .. seealso::
 
    * Annotated Source code :ref:`as_vars.yml`
 
    * `Ansible variable precedence. Where should I put a variable?`_
-
 
 .. _ug_defaults:
 
@@ -278,14 +236,11 @@ Default variables
     :emphasize-lines: 2
     :linenos:
 
-
 .. _ug_varsos:
 .. include:: guide-variables-os.rst
 
-
 .. _ug_bp:
 
-*************
 Best practice
 *************
 
@@ -293,8 +248,7 @@ Test the syntax ::
 
   shell> ansible-playbook ansible.yml --syntax-check
 
-Display and review the variables. Then disable debug
-``ma_debug=false`` to speedup the playbook ::
+Display and review the variables. Then disable debug ``ma_debug=false`` to speedup the playbook ::
 
   shell> ansible-playbook ansible.yml -t ma_debug -e ma_debug=true
 
@@ -302,9 +256,8 @@ Dry-run the playbook in the check mode and display changes ::
 
   shell> ansible-playbook ansible.yml --check --diff
 
-Install OS packages ``ma_pkg_install=true`` or PyPI packages
-``ma_pip_install=true``. Optionally, install the packages in Python
-virtual environment ``ma_venv_install=true``. Then disable the
+Install OS packages ``ma_pkg_install=true`` or PyPI packages ``ma_pip_install=true``. Optionally,
+install the packages in Python virtual environment ``ma_venv_install=true``. Then disable the
 installation to speedup the playbook ::
 
   shell> ansible-playbook ansible.yml -t ma_pkg -e ma_pkg_install=true
@@ -318,13 +271,11 @@ also these directories ::
 
   shell> ansible-playbook ansible.yml -t ma_repo_path,ma_rnotes_path
 
-If all seems to be right run the playbook. The role and the
-configuration data in the examples are idempotent. After the
-installation and configuration completed there should be no changes
-reported by *ansible-playbook* when running the playbook repeatedly ::
+If all seems to be right run the playbook. The role and the configuration data in the examples are
+idempotent. After the installation and configuration completed there should be no changes reported
+by *ansible-playbook* when running the playbook repeatedly ::
 
   shell> ansible-playbook ansible.yml
-
 
 .. _ansible: https://galaxy.ansible.com/vbotka/ansible
 .. _ansible_lib: https://galaxy.ansible.com/vbotka/ansible_lib
@@ -342,3 +293,4 @@ reported by *ansible-playbook* when running the playbook repeatedly ::
 .. _Installing content: https://galaxy.ansible.com/docs/using/installing.html
 .. _Playbook Debugger: https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html
 .. _Ansible variable precedence. Where should I put a variable?: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+.. _callback_result_format: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/default_callback.html#parameter-result_format
