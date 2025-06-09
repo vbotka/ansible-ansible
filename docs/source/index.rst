@@ -3,7 +3,7 @@ Ansible
 
 `vbotka.ansible`_
 
-Role version 2.7.0
+version |release|
 
 This `role`_ and the
 documentation is work in progess.
