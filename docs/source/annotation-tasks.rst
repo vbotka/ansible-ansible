@@ -14,7 +14,7 @@ Synopsis: Main task.
 Import tasks if enabled.
 
 
-[`tasks/main.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/main.yml>`_]
+[`tasks/main.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/main.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -38,7 +38,7 @@ Synopsis: Configure ara
 Description of the task.
 
 
-[`tasks/ara.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/ara.yml>`_]
+[`tasks/ara.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/ara.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -62,7 +62,7 @@ Synopsis: Configure config
 Description of the task.
 
 
-[`tasks/config.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/config.yml>`_]
+[`tasks/config.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/config.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -86,7 +86,7 @@ Synopsis: Configure debug
 Description of the task.
 
 
-[`tasks/debug.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/debug.yml>`_]
+[`tasks/debug.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/debug.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -110,7 +110,7 @@ Synopsis: Configure devel
 Description of the task.
 
 
-[`tasks/devel.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/devel.yml>`_]
+[`tasks/devel.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/devel.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -134,7 +134,7 @@ Synopsis: Configure pkg
 Description of the task.
 
 
-[`tasks/pkg.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/pkg.yml>`_]
+[`tasks/pkg.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/pkg.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -158,7 +158,7 @@ Synopsis: Configure packages
 Description of the task.
 
 
-[`tasks/fn/packages.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/fn/packages.yml>`_]
+[`tasks/fn/packages.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/fn/packages.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -182,7 +182,7 @@ Synopsis: Configure pip
 Description of the task.
 
 
-[`tasks/pip.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/pip.yml>`_]
+[`tasks/pip.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/pip.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -206,7 +206,7 @@ Synopsis: Configure plugins
 Description of the task.
 
 
-[`tasks/plugins.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/plugins.yml>`_]
+[`tasks/plugins.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/plugins.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -230,7 +230,7 @@ Synopsis: Configure sanity
 Description of the task.
 
 
-[`tasks/sanity.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/sanity.yml>`_]
+[`tasks/sanity.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/sanity.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -254,7 +254,7 @@ Synopsis: Configure vars
 Description of the task.
 
 
-[`tasks/vars.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/vars.yml>`_]
+[`tasks/vars.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/vars.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
@@ -278,7 +278,7 @@ Synopsis: Configure venv
 Description of the task.
 
 
-[`tasks/venv.yml <https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/tasks/venv.yml>`_]
+[`tasks/venv.yml <https://github.com/vbotka/ansible-ansible/blob/master/tasks/venv.yml>`_]
 
 .. highlight:: yaml
     :linenothreshold: 5
