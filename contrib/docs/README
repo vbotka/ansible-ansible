@@ -45,19 +45,19 @@ Customize the templates in dir annotation
 
 * Replace __GITHUB_USERNAME__ by the GitHub username, e.g. vbotka
   Example:
-  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
+  https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/{{ i.path }}
   find annotation -name '*.rst.j2' | xargs grep __GITHUB_USERNAME__
   find annotation -name '*.rst.j2' | xargs sed -i 's/__GITHUB_USERNAME__/vbotka/g'
 
-* Replace __PROJECT__ by the name of the GitHub project, e.g. freebsd-custom-image
+* Replace __PROJECT__ by the name of the GitHub project, e.g. ansible-freebsd-postinstall
   Example:
-  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
+  https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/{{ i.path }}
   find annotation -name '*.rst.j2' | xargs grep __PROJECT__
-  find annotation -name '*.rst.j2' | xargs sed -i 's/__PROJECT__/freebsd-custom-image/g'
+  find annotation -name '*.rst.j2' | xargs sed -i 's/__PROJECT__/ansible-freebsd-postinstall/g'
 
 * Replace __BRANCH__ by the name of the GitHub branch, e.g. master
   Example:
-  https://github.com/__GITHUB_USERNAME__/ansible-__PROJECT__/blob/__BRANCH__/{{ i.path }}
+  https://github.com/__GITHUB_USERNAME__/__PROJECT__/blob/__BRANCH__/{{ i.path }}
   find annotation -name '*.rst.j2' | xargs grep __BRANCH__
   find annotation -name '*.rst.j2' | xargs sed -i 's/__BRANCH__/master/g'
 
