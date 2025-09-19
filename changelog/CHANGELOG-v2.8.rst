@@ -17,6 +17,7 @@ Major Changes
 
 Minor Changes
 -------------
+* Explicit conversion of GroupTouple to lists.
 
 Bugfixes
 --------
