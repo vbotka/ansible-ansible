@@ -9,7 +9,7 @@ ma_virtualenv_command: python3 -m venv
 ma_virtualenv_packages:
   - name: python3-venv
     state: "{{ ma_packages_state }}"
-  - name: python{{ ansible_python_version | splitext | first }}-venv
+  - name: python{{ ansible_facts['python_version'] | splitext | first }}-venv
     state: "{{ ma_packages_state }}"
 
 ma_pip_executable: /usr/bin/pip3

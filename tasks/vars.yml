@@ -13,12 +13,11 @@
       ansible.builtin.debug:
         msg: |
           ansible_user: {{ ansible_user | d('UDEFINED') }}
-          ansible_user_id: {{ ansible_user_id | d('UDEFINED') }}
+          ansible_user_id: {{ ansible_facts['user_id'] | d('UDEFINED') }}
 
     - name: "Vars: Declare ma_owner"
       ansible.builtin.set_fact:
-        ma_owner: "{{ ansible_user | d(ansible_user_id) }}"
-
+        ma_owner: "{{ ansible_user | d(ansible_facts['user_id']) }}"
 - name: "Vars: Include OS vars"
   vars:
     al_os_vars_path: "{{ ansible_parent_role_paths.0 }}"
