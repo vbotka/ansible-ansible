@@ -78,7 +78,7 @@
 
     - name: "Plugins: Group plugins by ini_key to ma_plugins_grouped"
       ansible.builtin.set_fact:
-        ma_plugins_grouped: "{{ ma_plugins_list | groupby('ini_key') }}"
+        ma_plugins_grouped: "{{ ma_plugins_list | groupby('ini_key') | map('list') }}"
 
     - name: "Plugins: Debug ma_plugins_grouped ma_debug={{ ma_debug }}"
       when: ma_debug | bool
