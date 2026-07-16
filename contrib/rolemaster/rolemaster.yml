@@ -145,11 +145,20 @@
 
       6)  Restore Travis configuration. Git add and commit changes. Push current
           branch to the configured upstream.
-          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'"
+          shell>  ansible-playbook \
+                  -t rm_restore_travis,rm_run_script \
+                  -e script=add-commit-push.sh \
+                  -e rm_script_param2="'Update python 3.11 in .travis.yml'" \
+                  rolemaster.yml
 
       7)  Update Travis configuration on role1. Git add and commit modifications. Push current branch
           to the configured upstream.
-          shell>  ansible-playbook rolemaster.yml -t rm_restore_travis,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update python 3.11 in .travis.yml'" -e rm_roles_select=role1
+          shell>  ansible-playbook \
+                  -t rm_restore_travis,rm_run_script \
+                  -e script=add-commit-push.sh \
+                  -e rm_script_param2="'Update python 3.11 in .travis.yml'" \
+                  -e rm_roles_select=role1 \
+                  rolemaster.yml
 
       8)  Bump version in variables (SEE tasks/bump-version.yml). Then add, commit, and push
           modifications.
@@ -157,40 +166,100 @@
           shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Bump version'"
 
       9)  Add, commit, and push role1 modifications, if any. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update changelog.'" -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_modified_roles,rm_run_script \
+                 -e script=add-commit-push.sh \
+                 -e rm_script_param2="'Update changelog.'" \
+                 -e rm_roles_select=role1 \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       10) Merge (--no-ff) role1 devel branch to current branch (master). Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=merge-noff-devel.sh \
+                 -e rm_roles_select=role1 \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       11) Push role1 current branch to the configured upstream. If needed, a functional
           authentication is expected.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_select=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=push.sh \
+                 -e rm_roles_select=role1 \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       12) Merge (--no-ff) all roles except role1 devel branches to current branch (master). Display
           all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_roles_reject=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=merge-noff-devel.sh \
+                 -e rm_roles_reject=role1 \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       13) Push all roles except role1 current branches to the configured upstream. If needed, a
           functional authentication is expected.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_roles_reject=role1 -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=push.sh \
+                 -e rm_roles_reject=role1 \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       14) Add, commit, and push modified branches. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_modified_roles,rm_run_script -e script=add-commit-push.sh -e rm_script_param2="'Update changelog.'" -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_modified_roles,rm_run_script \
+                 -e script=add-commit-push.sh \
+                 -e rm_script_param2="'Update changelog.'" \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       15) Merge (--no-ff) all roles devel branches to current branch (master). Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=merge-noff-devel.sh -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=merge-noff-devel.sh \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       16) Push all roles current branches to the configured upstream. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push.sh -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=push.sh \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       17) Create new tags by incrementing the semantic version patch number. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_create_tag -e semver=patch -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_create_tag \
+                 -e semver=patch \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       18) Push tags. Display all debugs.
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_run_script -e script=push-tags.sh -e rm_debug=true -e rm_debug2=true
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_run_script \
+                 -e script=push-tags.sh \
+                 -e rm_debug=true \
+                 -e rm_debug2=true \
+                 rolemaster.yml
 
       19) Update docs utils
-          shell> ansible-playbook rolemaster.yml -t rm_list_roles,rm_git_galaxy,rm_update_docs_utils -e @extra-vars/select-docs.yml
+          shell> ansible-playbook \
+                 -t rm_list_roles,rm_git_galaxy,rm_update_docs_utils \
+                 -e @extra-vars/select-docs.yml \
+                  rolemaster.yml
 
       *   Create LICENSE-test and see the diff
           shell> for i in `find roles -name "MY-PROJECT*"`; do

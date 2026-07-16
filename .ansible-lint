@@ -1,4 +1,2 @@
 ---
 skip_list: []
-exclude_paths:
-  - contrib/rolemaster/rolemaster.yml
