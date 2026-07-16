@@ -18,6 +18,7 @@ Major Changes
 
 Minor Changes
 -------------
+* Docs. Remove from_yaml filter from the annotations templates.
 
 Bugfixes
 --------
