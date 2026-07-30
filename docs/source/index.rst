@@ -5,18 +5,15 @@ Ansible
 
 version |release|
 
-This `role`_ and the
-documentation is work in progess.
-
-| Feel free to `share your feedback and report issues`_.
-| `Contributions are welcome`_.
-
 | GitHub: `ansible-ansible`_
 | Ansible Galaxy: `vbotka.ansible`_
 
 | This role is licensed and distributed as a whole under
 | **BSD 2-Clause "Simplified" License**
 | SPDX-License-Identifier: `BSD-2-Clause`_
+
+| Feel free to `share your feedback and report issues`_.
+| `Contributions are welcome`_.
 
 .. toctree::
    :maxdepth: 1
